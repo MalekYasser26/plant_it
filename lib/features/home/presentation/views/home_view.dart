@@ -1,10 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:plant_it/features/auth/presentation/views/widgets/cust_text_field.dart';
 import 'package:plant_it/features/home/presentation/views/widgets/cust_grid_view.dart';
-import 'package:plant_it/features/home/presentation/views/widgets/cust_stag_tile.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
@@ -31,9 +29,10 @@ class HomeView extends StatelessWidget {
               padding: EdgeInsets.all(15.0),
               child: Column(
                 children: [
-                  SizedBox(height: kToolbarHeight,),
-                  CustTextField(
-                      text: "Search", custIcon: Icon(Icons.search)),
+                  SizedBox(
+                    height: kToolbarHeight,
+                  ),
+                  CustTextField(text: "Search", custIcon: Icon(Icons.search)),
                   SizedBox(height: 40),
                   Expanded(
                     child: CustomGridView(),
@@ -47,4 +46,3 @@ class HomeView extends StatelessWidget {
     );
   }
 }
-

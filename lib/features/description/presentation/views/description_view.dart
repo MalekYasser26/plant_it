@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:plant_it/constants/constants.dart';
 import 'package:plant_it/features/auth/presentation/views/widgets/login_button.dart';
+import 'package:plant_it/features/cart/presentation/views/cart_view.dart';
 
 class DescriptionView extends StatefulWidget {
   const DescriptionView({super.key});
@@ -170,9 +171,9 @@ class _DescriptionViewState extends State<DescriptionView> {
                         },
                       ),                    ],
                   ),
-                  SizedBox(height: 20,),
+                  const SizedBox(height: 20,),
                   CustButton(onPressed: () {
-
+                    Navigator.push(context,MaterialPageRoute(builder: (context) => const CartView(),));
                   }, text: "Add to cart")
 
                 ],
