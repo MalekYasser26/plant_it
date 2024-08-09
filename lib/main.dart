@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:plant_it/features/auth/presentation/views/log_in_view.dart';
+import 'package:plant_it/features/splash/presentation/views/splash_view.dart';
 
 void main() {
   runApp(const MyApp());
@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home: LoginView(),
+      home: SplashView(),
       debugShowCheckedModeBanner: false,
     );
   }

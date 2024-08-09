@@ -40,7 +40,7 @@ class CartItem extends StatelessWidget {
                 Text(
                   "7nklish",
                   style: GoogleFonts.montserrat(
-                    fontSize: getResponsiveFontSize(context, fontSize: 25),
+                    fontSize: getResponsiveSize(context, fontSize: 25),
                     color: Colors.black,
                   ),
                   textAlign: TextAlign.center,
@@ -49,14 +49,14 @@ class CartItem extends StatelessWidget {
                 Text(
                   "Quantity : 2",
                   style: GoogleFonts.montserrat(
-                    fontSize: getResponsiveFontSize(context, fontSize: 20),
+                    fontSize: getResponsiveSize(context, fontSize: 20),
                     color: Colors.black,
                   ),
                 ),
                 Text(
                   "Price : 10",
                   style: GoogleFonts.montserrat(
-                    fontSize: getResponsiveFontSize(context, fontSize: 20),
+                    fontSize: getResponsiveSize(context, fontSize: 20),
                     color: Colors.black,
                   ),
                 ),

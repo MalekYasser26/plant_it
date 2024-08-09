@@ -32,7 +32,7 @@ class HomeView extends StatelessWidget {
                   SizedBox(
                     height: kToolbarHeight,
                   ),
-                  CustTextField(text: "Search", custIcon: Icon(Icons.search)),
+                  CustTextField(text: "Search", custIcon: Icon(Icons.search),aboveText: "search",),
                   SizedBox(height: 40),
                   Expanded(
                     child: CustomGridView(),

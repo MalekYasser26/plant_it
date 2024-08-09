@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:plant_it/constants/constants.dart';
 import 'package:plant_it/features/auth/presentation/views/widgets/login_button.dart';
-
 import 'cust_checkout_text_field.dart';
 
 class CheckoutViewBody extends StatelessWidget {
@@ -42,7 +41,7 @@ class CheckoutViewBody extends StatelessWidget {
                           },
                           icon: Icon(
                             Icons.arrow_back,
-                            size: getResponsiveFontSize(context, fontSize: 35),
+                            size: getResponsiveSize(context, fontSize: 35),
                             color: Colors.black,
                           ),
                         ),
@@ -51,7 +50,7 @@ class CheckoutViewBody extends StatelessWidget {
                           textAlign: TextAlign.center,
                           style: GoogleFonts.montserrat(
                               fontSize:
-                              getResponsiveFontSize(context, fontSize: 35),
+                              getResponsiveSize(context, fontSize: 35),
                               color: Colors.black),
                         ),
                         const SizedBox()
@@ -85,19 +84,19 @@ class CheckoutViewBody extends StatelessWidget {
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text("Products : 123",style:  GoogleFonts.montserrat(
-                              fontSize:  getResponsiveFontSize(context, fontSize: 22),
+                              fontSize:  getResponsiveSize(context, fontSize: 22),
                             ),),
                           ),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text("Fees : 10\$",style:  GoogleFonts.montserrat(
-                              fontSize:  getResponsiveFontSize(context, fontSize: 22),
+                              fontSize:  getResponsiveSize(context, fontSize: 22),
                             ),),
                           ),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text("Delivery : 20\$",style:  GoogleFonts.montserrat(
-                              fontSize:  getResponsiveFontSize(context, fontSize: 22),
+                              fontSize:  getResponsiveSize(context, fontSize: 22),
                             ),),
                           ),
 
@@ -114,7 +113,7 @@ class CheckoutViewBody extends StatelessWidget {
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text("Total Price : 50\$",style:  GoogleFonts.montserrat(
-                              fontSize:  getResponsiveFontSize(context, fontSize: 22),
+                              fontSize:  getResponsiveSize(context, fontSize: 22),
                               fontWeight: FontWeight.bold
                             ),),
                           ),

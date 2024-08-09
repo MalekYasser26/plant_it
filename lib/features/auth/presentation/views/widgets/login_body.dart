@@ -42,9 +42,13 @@ class LoginBody extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 40),
-                  const EmailField(),
+                  const EmailField(
+                    aboveText: "Email",
+                  ),
                   const SizedBox(height: 20),
-                  const PasswordField(),
+                  const PasswordField(
+                    aboveText: "Password",
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
@@ -52,7 +56,7 @@ class LoginBody extends StatelessWidget {
                         onTap: () => Navigator.push(context,MaterialPageRoute(builder: (context) =>const SignUpView() ,)),
                         child: Text("Don't have an account ? SIGN UP ",
                         style: GoogleFonts.montserrat(
-                          fontSize: getResponsiveFontSize(context, fontSize: 16),
+                          fontSize: getResponsiveSize(context, fontSize: 16),
                           color: Colors.white
                         ),
                         ),

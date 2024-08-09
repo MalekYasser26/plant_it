@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:plant_it/constants/constants.dart';
 
 class CustButton extends StatelessWidget {
@@ -9,20 +8,25 @@ class CustButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: onPressed,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.green,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
+    return SizedBox(
+      width: getResponsiveSize(context, fontSize: 306),
+      child: ElevatedButton(
+        onPressed: onPressed,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.darkGreenL,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
         ),
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-      ),
-      child:  Text(text,
-          style: GoogleFonts.montserrat(
-            fontSize:  getResponsiveFontSize(context, fontSize: 16),
-            color: Colors.white
-          )
+        child:  Text(text,
+            style: TextStyle(
+                fontFamily: "Poppins",
+              fontSize:  getResponsiveSize(context, fontSize: 18),
+              color: Colors.white,
+              fontWeight: FontWeight.bold
+            )
+        ),
       ),
     );
   }

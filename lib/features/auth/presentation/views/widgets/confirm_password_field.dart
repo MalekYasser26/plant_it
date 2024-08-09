@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:plant_it/constants/constants.dart';
 
 class ConfirmPasswordField extends StatefulWidget {
@@ -14,32 +13,58 @@ class _ConfirmPasswordFieldState extends State<ConfirmPasswordField> {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      keyboardType: TextInputType.visiblePassword,
-      onTapOutside: (event) => FocusManager.instance.primaryFocus?.unfocus(),
-      obscureText: _obscureText,
-      decoration: InputDecoration(
-        labelText: 'Confirm password',
-        labelStyle: GoogleFonts.montserrat(
-          fontSize: getResponsiveFontSize(context, fontSize: 16),
-        ),
-        prefixIcon: Icon(Icons.lock),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-        filled: true,
-        fillColor: Colors.green[50],
-        suffixIcon: IconButton(
-          icon: Icon(
-            _obscureText ? Icons.visibility : Icons.visibility_off,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "Confirm Password",
+          style: TextStyle(
+            fontFamily: "Raleway",
+            color: AppColors.darkGreen,
+            fontWeight: FontWeight.w600,
+            fontSize: getResponsiveSize(
+              context,
+              fontSize: 16,
+            ),
           ),
-          onPressed: () {
-            setState(() {
-              _obscureText = !_obscureText;
-            });
-          },
         ),
-      ),
+        const SizedBox(height: 10,),
+        TextFormField(
+          keyboardType: TextInputType.visiblePassword,
+          onTapOutside: (event) =>
+              FocusManager.instance.primaryFocus?.unfocus(),
+          obscureText: _obscureText,
+          decoration: InputDecoration(
+            labelText: 'Confirm password',
+            labelStyle: TextStyle(
+              fontFamily: "Poppins",
+              fontSize: getResponsiveSize(context, fontSize: 16),
+              color: AppColors.darkGreen
+            ),
+            focusedBorder: const OutlineInputBorder(
+              borderSide: BorderSide(
+                color: AppColors.darkGreen
+              ),
+            ),
+            prefixIcon: const Icon(Icons.lock),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            filled: true,
+            fillColor: Colors.green[50],
+            suffixIcon: IconButton(
+              icon: Icon(
+                _obscureText ? Icons.visibility : Icons.visibility_off,
+              ),
+              onPressed: () {
+                setState(() {
+                  _obscureText = !_obscureText;
+                });
+              },
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

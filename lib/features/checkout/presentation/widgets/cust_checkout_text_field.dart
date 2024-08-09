@@ -16,7 +16,7 @@ class CustCheckoutTextField extends StatelessWidget {
       decoration: InputDecoration(
         labelText: text,
         labelStyle: GoogleFonts.montserrat(
-          fontSize:  getResponsiveFontSize(context, fontSize: 16),
+          fontSize:  getResponsiveSize(context, fontSize: 16),
         ),
         suffixIcon: custIcon,
         border: OutlineInputBorder(

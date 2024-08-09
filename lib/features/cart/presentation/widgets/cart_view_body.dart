@@ -42,7 +42,7 @@ class CartViewBody extends StatelessWidget {
                           },
                           icon: Icon(
                             Icons.arrow_back,
-                            size: getResponsiveFontSize(context, fontSize: 35),
+                            size: getResponsiveSize(context, fontSize: 35),
                             color: Colors.black,
                           ),
                         ),
@@ -51,7 +51,7 @@ class CartViewBody extends StatelessWidget {
                           textAlign: TextAlign.center,
                           style: GoogleFonts.montserrat(
                               fontSize:
-                              getResponsiveFontSize(context, fontSize: 35),
+                              getResponsiveSize(context, fontSize: 35),
                               color: Colors.black),
                         ),
                         const SizedBox()
@@ -67,7 +67,7 @@ class CartViewBody extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.all(15.0),
                     child: Text("Total Price : 22222\$",style: GoogleFonts.montserrat(
-                        fontSize: getResponsiveFontSize(context, fontSize: 20),
+                        fontSize: getResponsiveSize(context, fontSize: 20),
                         color: Colors.white
                     ),),
                   ),

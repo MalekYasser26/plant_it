@@ -84,7 +84,7 @@ class _DescriptionViewState extends State<DescriptionView> {
                                 child: Text(
                               "50\$",
                               style: GoogleFonts.montserrat(
-                                fontSize: getResponsiveFontSize(context,
+                                fontSize: getResponsiveSize(context,
                                     fontSize: 14),
                               ),
                             )),
@@ -107,7 +107,7 @@ class _DescriptionViewState extends State<DescriptionView> {
                                 child: Text(
                               "Shadow Category",
                               style: GoogleFonts.montserrat(
-                                fontSize: getResponsiveFontSize(context,
+                                fontSize: getResponsiveSize(context,
                                     fontSize: 14),
                               ),
                             )),
@@ -120,7 +120,7 @@ class _DescriptionViewState extends State<DescriptionView> {
                     height: 40,
                   ),
                   Text("Lotus Flower",style: GoogleFonts.montserrat(
-                    fontSize: getResponsiveFontSize(context, fontSize: 25),
+                    fontSize: getResponsiveSize(context, fontSize: 25),
                     color: Colors.white
                   ),),
                   const SizedBox(height: 30,),
@@ -137,7 +137,7 @@ class _DescriptionViewState extends State<DescriptionView> {
                             child: Text(
                               "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
                               style: GoogleFonts.montserrat(
-                                fontSize: getResponsiveFontSize(context,
+                                fontSize: getResponsiveSize(context,
                                     fontSize: 14),
                               ),
                             )),
@@ -149,7 +149,7 @@ class _DescriptionViewState extends State<DescriptionView> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       InkWell(
-                          child:  Icon(Icons.add,size: getResponsiveFontSize(context, fontSize: 25),),
+                          child:  Icon(Icons.add,size: getResponsiveSize(context, fontSize: 25),),
                       onTap: () {
                         quantity++;
                         setState(() {
@@ -158,10 +158,10 @@ class _DescriptionViewState extends State<DescriptionView> {
                       },
                       ),
                        Text('$quantity',style: GoogleFonts.montserrat(
-                         fontSize: getResponsiveFontSize(context, fontSize: 25)
+                         fontSize: getResponsiveSize(context, fontSize: 25)
                        ),),
                       InkWell(
-                        child:  Icon(Icons.remove, size: getResponsiveFontSize(context, fontSize: 25),),
+                        child:  Icon(Icons.remove, size: getResponsiveSize(context, fontSize: 25),),
                         onTap: () {
                           if (quantity >0) {
                             quantity--;
