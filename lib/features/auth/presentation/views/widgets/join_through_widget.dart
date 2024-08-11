@@ -1,0 +1,56 @@
+import 'package:flutter/material.dart';
+import 'package:plant_it/constants/constants.dart';
+
+class JoinThroughWidget extends StatelessWidget {
+  const JoinThroughWidget({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text(
+          "Or",
+          style: TextStyle(
+              color: AppColors.darkGreen,
+              fontFamily: "Poppins",
+              fontSize: getResponsiveSize(context, fontSize: 16),
+              fontWeight: FontWeight.w600),
+        ),
+        const SizedBox(
+          height: 5,
+        ),
+        Text(
+          "Join through",
+          style: TextStyle(
+              color: AppColors.darkGreen,
+              fontFamily: "Poppins",
+              fontSize: getResponsiveSize(context, fontSize: 16),
+              fontWeight: FontWeight.w600),
+        ),
+        const SizedBox(
+          height: 5,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(
+              ImagesCust.facebookLogo,
+              height: 30,
+              width: 30,
+            ),
+            const SizedBox(
+              width: 30,
+            ),
+            Image.asset(
+              ImagesCust.googleLogo,
+              height: 30,
+              width: 30,
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}

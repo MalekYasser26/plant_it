@@ -1,9 +1,11 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:plant_it/constants/constants.dart';
+import 'package:plant_it/features/auth/presentation/views/log_in_view.dart';
 import 'package:plant_it/features/auth/presentation/views/widgets/confirm_password_field.dart';
 import 'package:plant_it/features/auth/presentation/views/widgets/cust_text_field.dart';
 import 'package:plant_it/features/auth/presentation/views/widgets/email_widget.dart';
+import 'package:plant_it/features/auth/presentation/views/widgets/join_through_widget.dart';
 import 'package:plant_it/features/auth/presentation/views/widgets/login_button.dart';
 import 'package:plant_it/features/auth/presentation/views/widgets/password_widget.dart';
 import 'package:plant_it/features/home/presentation/views/home_view.dart';
@@ -67,47 +69,8 @@ class SignUpBody extends StatelessWidget {
                   const SizedBox(
                     height: 5,
                   ),
-                  Text(
-                    "Or",
-                    style: TextStyle(
-                        color: AppColors.darkGreen,
-                        fontFamily: "Poppins",
-                        fontSize: getResponsiveSize(context, fontSize: 16),
-                        fontWeight: FontWeight.w600),
-                  ),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  Text(
-                    "Join through",
-                    style: TextStyle(
-                        color: AppColors.darkGreen,
-                        fontFamily: "Poppins",
-                        fontSize: getResponsiveSize(context, fontSize: 16),
-                        fontWeight: FontWeight.w600),
-                  ),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset(
-                        ImagesCust.facebookLogo,
-                        height: 30,
-                        width: 30,
-                      ),
-                      const SizedBox(
-                        width: 30,
-                      ),
-                      Image.asset(
-                        ImagesCust.googleLogo,
-                        height: 30,
-                        width: 30,
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 20,),
+                  const JoinThroughWidget(),
+                  const SizedBox(height: 20,),
                   RichText(
                     text: TextSpan(
                       text: 'Already have an account? ',
@@ -127,8 +90,7 @@ class SignUpBody extends StatelessWidget {
                               color: AppColors.darkGreen),                          // Color for "Sign in"
                           recognizer: TapGestureRecognizer()
                             ..onTap = () {
-                              print("Sign in tapped");
-
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginView(),));
                             },
                         ),
                       ],
@@ -143,3 +105,4 @@ class SignUpBody extends StatelessWidget {
     );
   }
 }
+

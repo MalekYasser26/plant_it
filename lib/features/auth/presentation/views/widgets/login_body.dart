@@ -1,8 +1,9 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:plant_it/constants/constants.dart';
 import 'package:plant_it/features/auth/presentation/views/sign_up_view.dart';
 import 'package:plant_it/features/auth/presentation/views/widgets/email_widget.dart';
+import 'package:plant_it/features/auth/presentation/views/widgets/join_through_widget.dart';
 import 'package:plant_it/features/auth/presentation/views/widgets/password_widget.dart';
 import 'package:plant_it/features/home/presentation/views/home_view.dart';
 import 'login_button.dart';
@@ -15,30 +16,25 @@ class LoginBody extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         body: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Color(0xFF66BB6A),
-                Color(0xFF43A047),
-              ],
-              begin: FractionalOffset(0.0, 0.0),
-              end: FractionalOffset(1.0, 1.0),
-              stops: [0.0, 1.0],
-              tileMode: TileMode.clamp,
-            ),
-          ),
+          decoration: const BoxDecoration(color: AppColors.basicallyWhite),
           child: Center(
-            child: SingleChildScrollView(
+            child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text(
-                    'Plant It',
+                  Image.asset(
+                    ImagesCust.logo,
+                    width: 70,
+                    height: 70,
+                  ),
+                  Text(
+                    'Sign in',
                     style: TextStyle(
-                      fontSize: 32,
+                      fontSize: getResponsiveSize(context, fontSize: 32),
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                      color: AppColors.darkGreen,
+                      fontFamily: "Poppins",
                     ),
                   ),
                   const SizedBox(height: 40),
@@ -49,27 +45,53 @@ class LoginBody extends StatelessWidget {
                   const PasswordField(
                     aboveText: "Password",
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      InkWell(
-                        onTap: () => Navigator.push(context,MaterialPageRoute(builder: (context) =>const SignUpView() ,)),
-                        child: Text("Don't have an account ? SIGN UP ",
-                        style: GoogleFonts.montserrat(
-                          fontSize: getResponsiveSize(context, fontSize: 16),
-                          color: Colors.white
-                        ),
-                        ),
-                      )
-                    ],
-                  ),
                   const SizedBox(height: 20),
                   CustButton(
-                    text: "Login",
+                    text: "Sign in ",
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const HomeView(),));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const HomeView(),
+                          ));
                     },
                   ),
+                  const SizedBox(height: 25),
+                  const JoinThroughWidget(),
+                  const SizedBox(
+                    height: 50,
+                  ),
+                  RichText(
+                    text: TextSpan(
+                      text: 'Don\'t have an account yet ? ',
+                      style: TextStyle(
+                          fontFamily: "Poppins",
+                          fontSize: getResponsiveSize(context, fontSize: 14),
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black),
+                      // Default text color
+                      children: [
+                        TextSpan(
+                          text: 'Sign up',
+                          style: TextStyle(
+                              fontFamily: "Poppins",
+                              fontSize:
+                                  getResponsiveSize(context, fontSize: 14),
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.darkGreen),
+                          // Color for "Sign in"
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const SignUpView(),
+                                  ));
+                            },
+                        ),
+                      ],
+                    ),
+                  )
                 ],
               ),
             ),
