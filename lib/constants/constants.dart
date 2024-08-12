@@ -28,6 +28,7 @@ double getScaleFactor(BuildContext context) {
   static const Color barelyGreen= const Color(0xFFB7D7B2);
   static const Color basicallyWhite= const Color(0xFFEFF0EA);
   static const Color greyish= const Color(0xFFD3D3D3);
+  static const Color offWhite= const Color(0xFFF8F9EF);
 }
 abstract class ImagesCust{
   static const String logo = "assets/images/logo.png";
