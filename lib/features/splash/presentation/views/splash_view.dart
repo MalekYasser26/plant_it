@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:plant_it/constants/constants.dart';
-import 'package:plant_it/features/auth/presentation/views/sign_up_view.dart';
+import 'package:plant_it/features/cust_nav_bar/presentation/views/cust_nav_bar_selection_view.dart';
 
 class SplashView extends StatelessWidget {
   const SplashView({super.key});
@@ -35,7 +35,8 @@ class SplashView extends StatelessWidget {
             child: Center(
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const SignUpView(),));
+               //   Navigator.push(context, MaterialPageRoute(builder: (context) => const SignUpView(),));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => CustNavBarSelectionView(),));
                 },
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(

@@ -1,6 +1,8 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:plant_it/constants/constants.dart';
+import 'package:plant_it/features/auth/presentation/view_model/signup/signup_cubit.dart';
 import 'package:plant_it/features/auth/presentation/views/log_in_view.dart';
 import 'package:plant_it/features/auth/presentation/views/widgets/confirm_password_field.dart';
 import 'package:plant_it/features/auth/presentation/views/widgets/cust_text_field.dart';
@@ -15,6 +17,7 @@ class SignUpBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var sCubit = context.read<SignupCubit>();
     return SafeArea(
       child: Scaffold(
         body: Container(
@@ -57,24 +60,25 @@ class SignUpBody extends StatelessWidget {
                   const ConfirmPasswordField(),
                   const SizedBox(height: 20),
                   CustButton(
-                    text: "Register",
+                    text: "Sign up",
                     onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const HomeView(),
-                          ));
+                      print("Sign-up button pressed");
+                      sCubit.signUp("m@gmail.com", "Mm@123", "username",
+                          "displayedName", "011", "aa");
+                      print("Sign-up method invoked");
                     },
                   ),
                   const SizedBox(
                     height: 5,
                   ),
                   const JoinThroughWidget(),
-                  const SizedBox(height: 20,),
+                  const SizedBox(
+                    height: 20,
+                  ),
                   RichText(
                     text: TextSpan(
                       text: 'Already have an account? ',
-                      style:  TextStyle(
+                      style: TextStyle(
                           fontFamily: "Poppins",
                           fontSize: getResponsiveSize(context, fontSize: 14),
                           fontWeight: FontWeight.w600,
@@ -83,14 +87,20 @@ class SignUpBody extends StatelessWidget {
                       children: [
                         TextSpan(
                           text: 'Sign in',
-                          style:  TextStyle(
+                          style: TextStyle(
                               fontFamily: "Poppins",
-                              fontSize: getResponsiveSize(context, fontSize: 14),
+                              fontSize:
+                                  getResponsiveSize(context, fontSize: 14),
                               fontWeight: FontWeight.w600,
-                              color: AppColors.darkGreen),                          // Color for "Sign in"
+                              color: AppColors.darkGreen),
+                          // Color for "Sign in"
                           recognizer: TapGestureRecognizer()
                             ..onTap = () {
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginView(),));
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const LoginView(),
+                                  ));
                             },
                         ),
                       ],
@@ -105,4 +115,3 @@ class SignUpBody extends StatelessWidget {
     );
   }
 }
-

@@ -34,3 +34,6 @@ abstract class ImagesCust{
   static const String facebookLogo = "assets/images/facebookLogo.png";
   static const String googleLogo = "assets/images/googleLogo.png";
 }
+String? accesstoken;
+const String baseUrl = 'https://e078-197-43-97-29.ngrok-free.app/api';
+
