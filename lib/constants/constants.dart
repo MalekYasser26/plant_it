@@ -1,5 +1,8 @@
-
 import 'package:flutter/material.dart';
+import 'package:plant_it/features/cart/presentation/views/cart_view.dart';
+import 'package:plant_it/features/favourites/presentation/views/favourites_view.dart';
+import 'package:plant_it/features/home/presentation/views/home_view.dart';
+import 'package:plant_it/features/profile/presentation/views/profile_view.dart';
 
 double getResponsiveSize(BuildContext context, {required double fontSize}) {
   double scaleFactor = getScaleFactor(context);
@@ -41,6 +44,12 @@ abstract class IconsCust{
   static const String homeIcon = "assets/icons/home_icon.svg";
   static const String profileIcon = "assets/icons/profile_icon.svg";
 }
+final List<Widget> pages = [
+  const ProfileView(),
+  const HomeView(),
+  const FavouritesView(),
+  const CartView(),
+];
 String? accesstoken;
 const String baseUrl = 'https://e078-197-43-97-29.ngrok-free.app/api';
 

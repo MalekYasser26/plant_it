@@ -7,31 +7,28 @@ import 'package:plant_it/features/home/presentation/views/home_view.dart';
 import 'package:plant_it/features/profile/presentation/views/profile_view.dart';
 
 class CustNavBarSelectionView extends StatefulWidget {
+   int currentIndex ;
+
+   CustNavBarSelectionView({super.key, required this.currentIndex});
   @override
   _CustNavBarSelectionViewState createState() => _CustNavBarSelectionViewState();
 }
 
 class _CustNavBarSelectionViewState extends State<CustNavBarSelectionView> {
-  int _currentIndex = 0;
 
   // Define the pages you want to navigate between
-  final List<Widget> _pages = [
-    const ProfileView(),
-    const HomeView(),
-    const FavouritesView(),
-    const CartView(),
-  ];
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.basicallyWhite,
-      body: _pages[_currentIndex],
+      body: pages[widget.currentIndex],
       bottomNavigationBar: CustomBottomNavBar(
-        currentIndex: _currentIndex,
+        currentIndex: widget.currentIndex,
         onTap: (index) {
           setState(() {
-            _currentIndex = index;
+            widget.currentIndex = index;
           });
         },
       ),

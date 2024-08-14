@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_stars/flutter_rating_stars.dart';
 import 'package:plant_it/constants/constants.dart';
+import 'package:plant_it/features/cust_nav_bar/presentation/views/cust_nav_bar_selection_view.dart';
+import 'package:plant_it/features/cust_nav_bar/presentation/views/cust_nav_bar_view.dart';
 import 'package:plant_it/features/description/presentation/views/widgets/category_container.dart';
 import 'package:plant_it/features/description/presentation/views/widgets/description_section.dart';
 import 'package:plant_it/features/description/presentation/views/widgets/plant_images_description.dart';
@@ -22,14 +24,15 @@ class _DescriptionViewState extends State<DescriptionView> {
     "Split-Leaf Philodendron",
     "Monstera deliciosa",
   ];
+  int _currentIndex = 1;
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.basicallyWhite,
         appBar: AppBar(
-          backgroundColor: Colors.white,
+          backgroundColor: AppColors.basicallyWhite,
           title: const Text(
             "Monstera plant",
             style: TextStyle(
@@ -163,7 +166,8 @@ class _DescriptionViewState extends State<DescriptionView> {
               child: Row(
                 children: [
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 10),
                     decoration: BoxDecoration(
                       color: const Color(0xFFDCDCDC),
                       borderRadius: BorderRadius.circular(15),
@@ -171,42 +175,46 @@ class _DescriptionViewState extends State<DescriptionView> {
                     child: Row(
                       children: [
                         InkWell(
-                            child: Icon(Icons.remove,
+                          child: Icon(
+                            Icons.remove,
                             size: getResponsiveSize(context, fontSize: 15),
-                            ),
-                            onTap: () {
-                              setState(() {
-                                if (quantity > 1) {
-                                  quantity--;
-                                }
-                              });
-                            },
+                          ),
+                          onTap: () {
+                            setState(() {
+                              if (quantity > 1) {
+                                quantity--;
+                              }
+                            });
+                          },
                         ),
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 5.0),
                           child: Text(
                             quantity.toString(),
-                            style:  TextStyle(
-                              fontSize: getResponsiveSize(context, fontSize: 20),
+                            style: TextStyle(
+                              fontSize:
+                                  getResponsiveSize(context, fontSize: 20),
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
                         InkWell(
-                          child: Icon(Icons.add,
+                          child: Icon(
+                            Icons.add,
                             size: getResponsiveSize(context, fontSize: 15),
                           ),
                           onTap: () {
                             setState(() {
-                                quantity++;
-
+                              quantity++;
                             });
                           },
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(width: 20,),
+                  const SizedBox(
+                    width: 20,
+                  ),
                   Flexible(
                     child: SizedBox(
                       width: getResponsiveSize(context, fontSize: 350),
@@ -219,23 +227,38 @@ class _DescriptionViewState extends State<DescriptionView> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15),
                           ),
-                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 10),
                         ),
-                        child:  Text("Add to cart",
+                        child: Text("Add to cart",
                             style: TextStyle(
                                 fontFamily: "Poppins",
-                                fontSize:  getResponsiveSize(context, fontSize: 18),
+                                fontSize:
+                                    getResponsiveSize(context, fontSize: 18),
                                 color: Colors.black,
-                                fontWeight: FontWeight.bold
-                            )
-                        ),
+                                fontWeight: FontWeight.bold)),
                       ),
                     ),
-
                   ),
+
                 ],
               ),
             ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: CustomBottomNavBar(
+                currentIndex: 1,
+                onTap: (index) {
+                  setState(() {
+                    _currentIndex = index;
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => CustNavBarSelectionView(
+                      currentIndex: _currentIndex,
+                    ),));
+                  });
+                },
+              ),
+            ),
+
           ],
         ),
       ),

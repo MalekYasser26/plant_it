@@ -56,7 +56,9 @@ class LoginBody extends StatelessWidget {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => CustNavBarSelectionView(),
+                              builder: (context) => CustNavBarSelectionView(
+                                currentIndex: 0,
+                              ),
                             ));
                         // sCubit.signIn("malek@gmail.com", "Mm@123");
                       },

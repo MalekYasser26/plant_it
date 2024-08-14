@@ -36,7 +36,9 @@ class SplashView extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: () {
                //   Navigator.push(context, MaterialPageRoute(builder: (context) => const SignUpView(),));
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => CustNavBarSelectionView(),));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => CustNavBarSelectionView(
+                    currentIndex: 0,
+                  ),));
                 },
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(
