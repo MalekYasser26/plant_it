@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_rating_stars/flutter_rating_stars.dart';
 import 'package:plant_it/constants/constants.dart';
-import 'package:plant_it/features/auth/presentation/views/widgets/login_button.dart';
-import 'package:plant_it/features/cart/presentation/views/cart_view.dart';
+import 'package:plant_it/features/description/presentation/views/widgets/category_container.dart';
+import 'package:plant_it/features/description/presentation/views/widgets/plant_images_description.dart';
 
 class DescriptionView extends StatefulWidget {
   const DescriptionView({super.key});
@@ -12,173 +12,105 @@ class DescriptionView extends StatefulWidget {
 }
 
 class _DescriptionViewState extends State<DescriptionView> {
-  bool isStarFilled = false;
-  int quantity = 0 ;
+  bool isPressed = false;
+  double value = 1;
+  List<String> categories =[
+    "Swiss cheese",
+    "Mexican breadfruit",
+    "Split-Leaf Philodendron",
+    "Monstera deliciosa",
+  ];
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Color(0xFF66BB6A),
-                Color(0xFF43A047),
-              ],
-              begin: FractionalOffset(0.0, 0.0),
-              end: FractionalOffset(1.0, 1.0),
-              stops: [0.0, 1.0],
-              tileMode: TileMode.clamp,
+        backgroundColor: AppColors.basicallyWhite,
+        appBar: AppBar(
+          backgroundColor: AppColors.basicallyWhite,
+          title: Text(
+            "Monstera plant",
+            style: TextStyle(
+              fontFamily: "Poppins",
+              fontWeight: FontWeight.bold,
+              fontSize: getResponsiveSize(context, fontSize: 18),
             ),
           ),
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: Column(
+          centerTitle: true,
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const PlantImagesDescriptionWidget(),
+              const SizedBox(height: 15,),
+              Row(
                 children: [
-                  Flexible(
-                    flex: 3,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(8.0),
-                      child: Stack(
-                        children: [
-                          Image.asset(
-                            'assets/images/image1.png',
-                            fit: BoxFit.cover,
-                            height: MediaQuery.of(context).size.height * 0.3,
-                          ),
-                          Positioned(
-                            bottom: 10,
-                            left: 10,
-                            child: IconButton(
-                              icon: Icon(
-                                isStarFilled ? Icons.star : Icons.star_border,
-                                color: isStarFilled ? Colors.red : null,
-                              ),
-                              onPressed: () {
-                                setState(() {
-                                  isStarFilled = !isStarFilled;
-                                });
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 30,
-                  ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
-                            color: Colors.white,
-                            border: Border.all(color: Colors.black),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Center(
-                                child: Text(
-                              "50\$",
-                              style: GoogleFonts.montserrat(
-                                fontSize: getResponsiveSize(context,
-                                    fontSize: 14),
-                              ),
-                            )),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Expanded(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
-                            color: Colors.white,
-                            border: Border.all(color: Colors.black),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Center(
-                                child: Text(
-                              "Shadow Category",
-                              style: GoogleFonts.montserrat(
-                                fontSize: getResponsiveSize(context,
-                                    fontSize: 14),
-                              ),
-                            )),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 40,
-                  ),
-                  Text("Lotus Flower",style: GoogleFonts.montserrat(
+                  Text("EGP ", style: TextStyle(
+                    fontFamily: "Raleway",
                     fontSize: getResponsiveSize(context, fontSize: 25),
-                    color: Colors.white
+                    fontWeight: FontWeight.w300,
                   ),),
-                  const SizedBox(height: 30,),
-                  IntrinsicHeight(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15),
-                        color: Colors.white,
-                        border: Border.all(color: Colors.black),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Center(
-                            child: Text(
-                              "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-                              style: GoogleFonts.montserrat(
-                                fontSize: getResponsiveSize(context,
-                                    fontSize: 14),
-                              ),
-                            )),
-                      ),
+                  Text("220 ", style: TextStyle(
+                    fontFamily: "Raleway",
+                    fontSize: getResponsiveSize(context, fontSize: 25),
+                    fontWeight: FontWeight.bold,
+                  ),),
+                  const Spacer(),
+                  IconButton(
+                    onPressed: () {
+                      isPressed = !isPressed;
+                      setState(() {});
+                    },
+                    icon: isPressed
+                        ? Icon(
+                      Icons.favorite,
+                      color: Colors.red,
+                      size: getResponsiveSize(context, fontSize: 25),
+                    )
+                        : Icon(
+                      Icons.favorite_border,
+                      size: getResponsiveSize(context, fontSize: 25),
                     ),
-                  ),
-                  const SizedBox(height: 20,),
-                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      InkWell(
-                          child:  Icon(Icons.add,size: getResponsiveSize(context, fontSize: 25),),
-                      onTap: () {
-                        quantity++;
-                        setState(() {
-
-                        });
-                      },
-                      ),
-                       Text('$quantity',style: GoogleFonts.montserrat(
-                         fontSize: getResponsiveSize(context, fontSize: 25)
-                       ),),
-                      InkWell(
-                        child:  Icon(Icons.remove, size: getResponsiveSize(context, fontSize: 25),),
-                        onTap: () {
-                          if (quantity >0) {
-                            quantity--;
-                          }
-                          setState(() {
-                          });
-                        },
-                      ),                    ],
-                  ),
-                  const SizedBox(height: 20,),
-                  CustButton(onPressed: () {
-                    Navigator.push(context,MaterialPageRoute(builder: (context) => const CartView(),));
-                  }, text: "Add to cart")
-
+                  )
                 ],
               ),
-            ),
+              RatingStars(
+                axis: Axis.horizontal,
+                value: value,
+                onValueChanged: (v) {
+                  setState(() {
+                    value = v;
+                  });
+                },
+                starCount: 5,
+                starSize: 20,
+                maxValue: 5,
+                starSpacing: 2,
+                valueLabelVisibility: false,
+                animationDuration: const Duration(milliseconds: 1000),
+                valueLabelPadding:
+                const EdgeInsets.symmetric(vertical: 1, horizontal: 8),
+                valueLabelMargin: const EdgeInsets.only(right: 8),
+                starOffColor: Colors.blueGrey.withOpacity(0.5),
+                starColor: const Color(0xFFFFCB45),
+                angle: 12,
+              ),
+              const SizedBox(height: 10,),
+              SizedBox(
+                height: 40,
+                child: ListView.separated(
+                  physics: const BouncingScrollPhysics(),
+                  separatorBuilder: (context, index) => const SizedBox(width: 5,),
+                  scrollDirection: Axis.horizontal,
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) =>  CategoryContainer(text: categories[index]),
+                  itemCount: 4,
+                ),
+              ),
+              const SizedBox(height: 10,),
+              const Text("Sss"),
+            ],
           ),
         ),
       ),
