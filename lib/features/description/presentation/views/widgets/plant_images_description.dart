@@ -6,39 +6,37 @@ class PlantImagesDescriptionWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  Flexible(
-      child: StaggeredGrid.count(
-        crossAxisCount: 6,
-        mainAxisSpacing: 8,
-        crossAxisSpacing: 8,
-        children: [
-          StaggeredGridTile.count(
-            crossAxisCellCount: 2,
-            mainAxisCellCount: 5,
-            child: _buildImage("assets/images/plant1.png"),
-          ),
-          StaggeredGridTile.count(
-            crossAxisCellCount: 2,
-            mainAxisCellCount: 2,
-            child: _buildImage("assets/images/plant2.png"),
-          ),
-          StaggeredGridTile.count(
-            crossAxisCellCount: 2,
-            mainAxisCellCount: 1,
-            child: _buildImage("assets/images/plant3.png"),
-          ),
-          StaggeredGridTile.count(
-            crossAxisCellCount: 2,
-            mainAxisCellCount: 4,
-            child: _buildImage("assets/images/plant4.png"),
-          ),
-          StaggeredGridTile.count(
-            crossAxisCellCount: 2,
-            mainAxisCellCount: 3,
-            child: _buildImage("assets/images/plant5.png"),
-          ),
-        ],
-      ),
+    return StaggeredGrid.count(
+      crossAxisCount: 6,
+      mainAxisSpacing: 8,
+      crossAxisSpacing: 8,
+      children: [
+        StaggeredGridTile.count(
+          crossAxisCellCount: 2,
+          mainAxisCellCount: 5,
+          child: _buildImage("assets/images/plant1.png"),
+        ),
+        StaggeredGridTile.count(
+          crossAxisCellCount: 2,
+          mainAxisCellCount: 2,
+          child: _buildImage("assets/images/plant2.png"),
+        ),
+        StaggeredGridTile.count(
+          crossAxisCellCount: 2,
+          mainAxisCellCount: 1,
+          child: _buildImage("assets/images/plant3.png"),
+        ),
+        StaggeredGridTile.count(
+          crossAxisCellCount: 2,
+          mainAxisCellCount: 4,
+          child: _buildImage("assets/images/plant4.png"),
+        ),
+        StaggeredGridTile.count(
+          crossAxisCellCount: 2,
+          mainAxisCellCount: 3,
+          child: _buildImage("assets/images/plant5.png"),
+        ),
+      ],
     ) ;
 
   }
