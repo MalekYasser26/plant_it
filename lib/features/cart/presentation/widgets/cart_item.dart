@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:plant_it/constants/constants.dart';
 
 class CartItem extends StatelessWidget {
+  final int index;
   const CartItem({
-    super.key,
+    super.key, required this.index,
   });
 
   @override
@@ -28,7 +29,7 @@ class CartItem extends StatelessWidget {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(15),
                   child: Image.asset(
-                    'assets/images/plant4.png',
+                    'assets/images/plant$index.png',
                     fit: BoxFit.cover,
                   ),
                 ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:plant_it/constants/constants.dart';
+import 'package:plant_it/features/cart/presentation/views/cart_view.dart';
 import 'package:plant_it/features/cust_nav_bar/presentation/views/cust_nav_bar_selection_view.dart';
 import 'package:plant_it/features/cust_nav_bar/presentation/views/cust_nav_bar_view.dart';
 import 'package:plant_it/features/description/presentation/views/widgets/category_container.dart';
@@ -32,6 +33,7 @@ class _DescriptionViewState extends State<DescriptionView> {
         backgroundColor: AppColors.basicallyWhite,
         appBar: AppBar(
           backgroundColor: AppColors.basicallyWhite,
+          scrolledUnderElevation: 0.0,
           title: const Text(
             "Monstera plant",
             style: TextStyle(
@@ -200,6 +202,7 @@ class _DescriptionViewState extends State<DescriptionView> {
                       child: ElevatedButton(
                         onPressed: () {
                           print("add to cart");
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const CartView(),));
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFFDCDCDC),
