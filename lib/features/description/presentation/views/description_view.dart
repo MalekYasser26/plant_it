@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_stars/flutter_rating_stars.dart';
 import 'package:plant_it/constants/constants.dart';
 import 'package:plant_it/features/cust_nav_bar/presentation/views/cust_nav_bar_selection_view.dart';
 import 'package:plant_it/features/cust_nav_bar/presentation/views/cust_nav_bar_view.dart';
 import 'package:plant_it/features/description/presentation/views/widgets/category_container.dart';
+import 'package:plant_it/features/description/presentation/views/widgets/cust_rating_stars.dart';
 import 'package:plant_it/features/description/presentation/views/widgets/description_section.dart';
 import 'package:plant_it/features/description/presentation/views/widgets/plant_images_description.dart';
 
@@ -16,7 +16,6 @@ class DescriptionView extends StatefulWidget {
 
 class _DescriptionViewState extends State<DescriptionView> {
   bool isPressed = false;
-  double value = 1;
   int quantity = 1;
   List<String> categories = [
     "Swiss cheese",
@@ -91,27 +90,7 @@ class _DescriptionViewState extends State<DescriptionView> {
                         ),
                       ],
                     ),
-                    RatingStars(
-                      axis: Axis.horizontal,
-                      value: value,
-                      onValueChanged: (v) {
-                        setState(() {
-                          value = v;
-                        });
-                      },
-                      starCount: 5,
-                      starSize: 20,
-                      maxValue: 5,
-                      starSpacing: 2,
-                      valueLabelVisibility: false,
-                      animationDuration: const Duration(milliseconds: 1000),
-                      valueLabelPadding: const EdgeInsets.symmetric(
-                          vertical: 1, horizontal: 8),
-                      valueLabelMargin: const EdgeInsets.only(right: 8),
-                      starOffColor: Colors.blueGrey.withOpacity(0.5),
-                      starColor: const Color(0xFFFFCB45),
-                      angle: 12,
-                    ),
+                    const CustRatingStars(),
                     const SizedBox(
                       height: 10,
                     ),
@@ -188,7 +167,7 @@ class _DescriptionViewState extends State<DescriptionView> {
                           },
                         ),
                         Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 5.0),
+                          padding: const EdgeInsets.symmetric(horizontal: 5.0),
                           child: Text(
                             quantity.toString(),
                             style: TextStyle(

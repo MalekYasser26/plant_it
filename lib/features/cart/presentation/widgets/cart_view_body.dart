@@ -12,76 +12,60 @@ class CartViewBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Color(0xFF66BB6A),
-                Color(0xFF43A047),
-              ],
-              begin: FractionalOffset(0.0, 0.0),
-              end: FractionalOffset(1.0, 1.0),
-              stops: [0.0, 1.0],
-              tileMode: TileMode.clamp,
+        backgroundColor: AppColors.basicallyWhite,
+        appBar: AppBar(
+          backgroundColor: AppColors.basicallyWhite,
+          title: const Text(
+            "Your cart",
+            style: TextStyle(
+              fontFamily: "Poppins",
+              fontWeight: FontWeight.bold,
+              fontSize: 25,
             ),
           ),
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: Column(
-                children: [
-                  Container(
-                    height: kToolbarHeight,
-                    decoration: const BoxDecoration(),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        IconButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          icon: Icon(
-                            Icons.arrow_back,
-                            size: getResponsiveSize(context, fontSize: 35),
-                            color: Colors.black,
-                          ),
-                        ),
-                        Text(
-                          "Cart",
-                          textAlign: TextAlign.center,
-                          style: GoogleFonts.montserrat(
-                              fontSize:
-                              getResponsiveSize(context, fontSize: 35),
-                              color: Colors.black),
-                        ),
-                        const SizedBox()
-                      ],
+          centerTitle: true,
+        ),
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15.0),
+            child: Column(
+              children: [
+                Expanded(
+                  child: ListView.separated(
+                    physics: const BouncingScrollPhysics(),
+                    padding: const EdgeInsets.only(top: 20), // Add padding to the top
+                    itemBuilder: (context, index) => const CartItem(),
+                    separatorBuilder: (context, index) =>
+                    const SizedBox(height: 30),
+                    itemCount: 5,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: Text(
+                    "Total Price : 22222\$",
+                    style: GoogleFonts.montserrat(
+                      fontSize: getResponsiveSize(context, fontSize: 20),
+                      color: Colors.white,
                     ),
                   ),
-                  Expanded(
-                      child: ListView.separated(
-                          physics: const BouncingScrollPhysics(),
-                          itemBuilder: (context, index) =>  const CartItem(),
-                          separatorBuilder: (context, index) => const SizedBox(height: 15,),
-                          itemCount: 5)),
-                  Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: Text("Total Price : 22222\$",style: GoogleFonts.montserrat(
-                        fontSize: getResponsiveSize(context, fontSize: 20),
-                        color: Colors.white
-                    ),),
-                  ),
-                  CustButton(onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => CheckoutView(),));
-                  }, text: "Proceed to purchase ")
-
-                ],
-              ),
+                ),
+                CustButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const CheckoutView(),
+                      ),
+                    );
+                  },
+                  text: "Proceed to purchase ",
+                ),
+              ],
             ),
           ),
         ),
       ),
     );
-
   }
 }
