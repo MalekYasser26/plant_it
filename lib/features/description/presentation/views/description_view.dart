@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:plant_it/constants/constants.dart';
 import 'package:plant_it/features/cart/presentation/views/cart_view.dart';
+import 'package:plant_it/features/checkout/presentation/widgets/cust_app_bar.dart';
 import 'package:plant_it/features/cust_nav_bar/presentation/views/cust_nav_bar_selection_view.dart';
 import 'package:plant_it/features/cust_nav_bar/presentation/views/cust_nav_bar_view.dart';
 import 'package:plant_it/features/description/presentation/views/widgets/category_container.dart';
@@ -31,19 +32,7 @@ class _DescriptionViewState extends State<DescriptionView> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: AppColors.basicallyWhite,
-        appBar: AppBar(
-          backgroundColor: AppColors.basicallyWhite,
-          scrolledUnderElevation: 0.0,
-          title: const Text(
-            "Monstera plant",
-            style: TextStyle(
-              fontFamily: "Poppins",
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
-            ),
-          ),
-          centerTitle: true,
-        ),
+        appBar: const CustAppBar(text: "Monstera plant",),
         body: Column(
           children: [
             Expanded(
