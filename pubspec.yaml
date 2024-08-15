@@ -86,6 +86,9 @@ flutter:
     - family: Raleway
       fonts:
         - asset: assets/fonts/Raleway-Regular.ttf
+    - family: Poor Story
+      fonts:
+        - asset: assets/fonts/PoorStory-Regular.ttf
 
   # fonts:
   #   - family: Schyler
