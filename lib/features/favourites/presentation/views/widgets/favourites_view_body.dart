@@ -1,48 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:plant_it/constants/constants.dart';
 import 'package:plant_it/features/checkout/presentation/widgets/cust_app_bar.dart';
-import 'package:plant_it/features/favourites/presentation/views/widgets/liked_item.dart';
+import 'package:plant_it/features/favourites/presentation/views/widgets/based_on_picks_section.dart';
+import 'package:plant_it/features/favourites/presentation/views/widgets/recently_liked_section.dart';
 
-class FavouritesViewBody extends StatelessWidget {
+class FavouritesViewBody extends StatefulWidget {
   const FavouritesViewBody({super.key});
 
   @override
+  State<FavouritesViewBody> createState() => _FavouritesViewBodyState();
+}
+
+class _FavouritesViewBodyState extends State<FavouritesViewBody> {
+  @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    return const SafeArea(
       child: Scaffold(
         backgroundColor: AppColors.basicallyWhite,
-        appBar: const CustAppBar(
+        appBar: CustAppBar(
           text: "Liked plants",
         ),
-        body: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15.0),
+        // Wrap with SingleChildScrollView to allow scroll on smaller devices
+        body: SingleChildScrollView(
+          physics: BouncingScrollPhysics(),
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 15.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(
-                  height: 20,
-                ),
-                Text(
-                  "Recently liked",
-                  style: TextStyle(
-                    fontFamily: "Poppins",
-                    fontWeight: FontWeight.bold,
-                    fontSize: getResponsiveSize(context, fontSize: 30),
-                  ),
-                ),
-                Expanded(
-                  child: ListView.separated(itemBuilder: (context, index) {
-                    return LikedItem(
-                      index: index+1,
-                    );
-                  }, separatorBuilder: (context, index) {
-                    return const SizedBox(height: 10,);
-                  }, itemCount: 3),
-                )
+                RecentlyLikedSection(),
+                SizedBox(height: 10),
+                BasedOnPicksSection(),
               ],
-            )),
+            ),
+          ),
+        ),
       ),
     );
   }
 }
-

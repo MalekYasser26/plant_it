@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:plant_it/constants/constants.dart';
 import 'package:plant_it/features/description/presentation/views/description_view.dart';
 
-class CustomFrame extends StatefulWidget {
-  final int index;
-  const CustomFrame({super.key, required this.index});
+class LikedFrame extends StatefulWidget {
+  final String imagePath ;
+  const LikedFrame({super.key, required this.imagePath});
 
   @override
-  State<CustomFrame> createState() => _CustomFrameState();
+  State<LikedFrame> createState() => _LikedFrameState();
 }
 
-class _CustomFrameState extends State<CustomFrame> {
+class _LikedFrameState extends State<LikedFrame> {
   bool isPressed = false;
 
   @override
@@ -21,26 +21,32 @@ class _CustomFrameState extends State<CustomFrame> {
         borderRadius: BorderRadius.circular(20),
       ),
       child: Column(
-        mainAxisSize: MainAxisSize.min, // This will minimize the column size
         children: [
-          InkWell(
-            onTap: () => Navigator.push(context,MaterialPageRoute(builder: (context) => const DescriptionView(),)),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(
-                    color: const Color(0xFFE3DDDD),
-                    width: 2,
-                  ),
+          Expanded(
+            child: InkWell(
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const DescriptionView(),
                 ),
-                child: ClipRRect(
-                  clipBehavior: Clip.antiAlias,
-                  borderRadius: BorderRadius.circular(10),
-                  child: Image.asset(
-                    "assets/images/plant${widget.index}.png",
-                    fit: BoxFit.fitHeight, // Ensure image fits within the container
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                      color: const Color(0xFFE3DDDD),
+                      width: 2,
+                    ),
+                  ),
+                  child: ClipRRect(
+                    clipBehavior: Clip.antiAlias,
+                    borderRadius: BorderRadius.circular(10),
+                    child: Image.asset(
+                      widget.imagePath,
+                      fit: BoxFit.cover, // Adjusted to cover to fill the container
+                    ),
                   ),
                 ),
               ),
@@ -62,12 +68,13 @@ class _CustomFrameState extends State<CustomFrame> {
                     ),
                   ),
                 ),
-                IconButton(
-                  onPressed: () {
+                InkWell(
+                  onTap: () {
                     isPressed = !isPressed;
-                    setState(() {});
+                    setState(() {
+                    });
                   },
-                  icon: isPressed
+                  child:  isPressed
                       ? Icon(
                     Icons.favorite,
                     color: Colors.red,
@@ -78,6 +85,8 @@ class _CustomFrameState extends State<CustomFrame> {
                     size: getResponsiveSize(context, fontSize: 20),
                   ),
                 )
+
+
               ],
             ),
           ),
