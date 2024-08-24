@@ -39,7 +39,7 @@ class CheckoutItem extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(right: 4.0),
                   child: Text(
-                    "Monsterra plant",
+                    "Monstera Plant",
                     style: TextStyle(
                       fontFamily: "Poppins",
                       fontWeight: FontWeight.bold,

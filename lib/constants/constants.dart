@@ -43,11 +43,12 @@ abstract class IconsCust{
   static const String favIcon = "assets/icons/fav_icon.svg";
   static const String homeIcon = "assets/icons/home_icon.svg";
   static const String profileIcon = "assets/icons/profile_icon.svg";
+  static const String likedIcon = "assets/icons/liked_icon.svg";
 }
 final List<Widget> pages = [
-  const ProfileView(),
-  const HomeView(),
   const FavouritesView(),
+  const HomeView(),
+  const ProfileView(),
   const CartView(),
 ];
 String? accesstoken;

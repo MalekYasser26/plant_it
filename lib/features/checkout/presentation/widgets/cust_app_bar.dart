@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:plant_it/constants/constants.dart';
 
 class CustAppBar extends StatelessWidget implements PreferredSizeWidget {
-  final String text ;
+  final String text;
+
   const CustAppBar({
-    super.key, required this.text,
+    super.key,
+    required this.text,
   });
 
   @override
@@ -16,7 +18,12 @@ class CustAppBar extends StatelessWidget implements PreferredSizeWidget {
       child: AppBar(
         backgroundColor: AppColors.basicallyWhite,
         scrolledUnderElevation: 0.0,
-        title:  Text(
+        leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icon(Icons.arrow_back_ios)),
+        title: Text(
           text,
           style: const TextStyle(
             fontFamily: "Poppins",
