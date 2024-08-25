@@ -23,15 +23,15 @@ double getScaleFactor(BuildContext context) {
   }
 }
   abstract class AppColors {
-  static const Color darkGreen= const Color(0xFF267168);
-  static const Color darkGreenL= const Color(0xFF2B7D74);
-  static const Color normGreen= const Color(0xFF4C9A8D);
-  static const Color lightGreen= const Color(0xFF6FA59E);
-  static const Color lighterGreen= const Color(0xFF92B9A4);
-  static const Color barelyGreen= const Color(0xFFB7D7B2);
-  static const Color basicallyWhite= const Color(0xFFEFF0EA);
-  static const Color greyish= const Color(0xFFD3D3D3);
-  static const Color offWhite= const Color(0xFFF8F9EF);
+  static const Color darkGreen= Color(0xFF267168);
+  static const Color darkGreenL= Color(0xFF2B7D74);
+  static const Color normGreen= Color(0xFF4C9A8D);
+  static const Color lightGreen= Color(0xFF6FA59E);
+  static const Color lighterGreen= Color(0xFF92B9A4);
+  static const Color barelyGreen= Color(0xFFB7D7B2);
+  static const Color basicallyWhite= Color(0xFFEFF0EA);
+  static const Color greyish= Color(0xFFD3D3D3);
+  static const Color offWhite= Color(0xFFF8F9EF);
 }
 abstract class ImagesCust{
   static const String logo = "assets/images/logo.png";
@@ -46,9 +46,9 @@ abstract class IconsCust{
   static const String likedIcon = "assets/icons/liked_icon.svg";
 }
 final List<Widget> pages = [
-  const FavouritesView(),
-  const HomeView(),
   const ProfileView(),
+  const HomeView(),
+  const FavouritesView(),
   const CartView(),
 ];
 String? accesstoken;
