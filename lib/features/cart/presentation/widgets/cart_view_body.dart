@@ -11,7 +11,9 @@ class CartViewBody extends StatelessWidget {
     return const SafeArea(
       child: Scaffold(
         backgroundColor: AppColors.basicallyWhite,
-        appBar: CustAppBar(text: "Your cart",),
+        appBar: CustAppBar(text: "Your cart",
+        implyLeading: false,
+        ),
         body:  Center(
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 15.0),

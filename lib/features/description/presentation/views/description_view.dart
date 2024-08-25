@@ -32,7 +32,9 @@ class _DescriptionViewState extends State<DescriptionView> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: AppColors.basicallyWhite,
-        appBar: const CustAppBar(text: "Monstera plant",),
+        appBar: const CustAppBar(text: "Monstera plant",
+        implyLeading: true,
+        ),
         body: Column(
           children: [
             Expanded(

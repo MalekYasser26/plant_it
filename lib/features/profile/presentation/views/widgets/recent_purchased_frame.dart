@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:plant_it/constants/constants.dart';
+import 'package:plant_it/features/description/presentation/views/description_view.dart';
 import 'package:plant_it/features/profile/presentation/views/widgets/fixed_rating_stars.dart';
 
 class RecentPurchasedFrame extends StatelessWidget {
@@ -18,13 +19,18 @@ class RecentPurchasedFrame extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Image Section
-          ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: Image.asset(
-              imagePath, // Image path
-              width: 80,
-              height: 90,
-              fit: BoxFit.cover,
+          InkWell(
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const DescriptionView(),));
+            },
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Image.asset(
+                imagePath, // Image path
+                width: 80,
+                height: 90,
+                fit: BoxFit.cover,
+              ),
             ),
           ),
           const SizedBox(width: 10),

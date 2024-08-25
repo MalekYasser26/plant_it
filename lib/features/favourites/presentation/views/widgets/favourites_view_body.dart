@@ -19,6 +19,7 @@ class _FavouritesViewBodyState extends State<FavouritesViewBody> {
         backgroundColor: AppColors.basicallyWhite,
         appBar: CustAppBar(
           text: "Liked plants",
+          implyLeading: false,
         ),
         // Wrap with SingleChildScrollView to allow scroll on smaller devices
         body: SingleChildScrollView(

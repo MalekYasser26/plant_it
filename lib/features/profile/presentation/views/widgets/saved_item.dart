@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:plant_it/constants/constants.dart';
+import 'package:plant_it/features/description/presentation/views/description_view.dart';
 import 'package:plant_it/features/profile/presentation/views/widgets/fixed_rating_stars.dart';
 
 class SavedItem extends StatelessWidget {
@@ -24,11 +25,16 @@ class SavedItem extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
             ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(15),
-              child: Image.asset(
-                'assets/images/plant$index.png',
-                fit: BoxFit.cover,
+            child: InkWell(
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const DescriptionView(),));
+              },
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(15),
+                child: Image.asset(
+                  'assets/images/plant$index.png',
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
           ),

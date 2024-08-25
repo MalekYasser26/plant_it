@@ -20,18 +20,20 @@ class _CheckoutViewBodyState extends State<ProfileViewBody> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: AppColors.basicallyWhite,
-        appBar: CustAppBar(
+        appBar: const CustAppBar(
           text: "Your profile",
+          implyLeading: false,
         ),
         body: Center(
           child: Padding(
-            padding: EdgeInsets.all(15.0),
+            padding: const EdgeInsets.all(15.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                HiBrunoSection(),
-                YourInfoSection(),
-                RecentPurchasesSection(),
+                const HiBrunoSection(),
+                const YourInfoSection(),
+                const RecentPurchasesSection(),
                 Column(
                   children: [
                     Row(

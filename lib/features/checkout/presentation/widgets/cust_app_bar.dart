@@ -3,10 +3,10 @@ import 'package:plant_it/constants/constants.dart';
 
 class CustAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String text;
-
+  final bool implyLeading ;
   const CustAppBar({
     super.key,
-    required this.text,
+    required this.text, required this.implyLeading,
   });
 
   @override
@@ -14,15 +14,16 @@ class CustAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   Widget build(BuildContext context) {
     return PreferredSize(
-      preferredSize: Size.fromHeight(kToolbarHeight),
+      preferredSize: const Size.fromHeight(kToolbarHeight),
       child: AppBar(
         backgroundColor: AppColors.basicallyWhite,
         scrolledUnderElevation: 0.0,
-        leading: IconButton(
+        leading: implyLeading == true ?IconButton(
             onPressed: () {
               Navigator.pop(context);
             },
-            icon: Icon(Icons.arrow_back_ios)),
+            icon: const Icon(Icons.arrow_back_ios)) : const SizedBox.shrink(),
+
         title: Text(
           text,
           style: const TextStyle(

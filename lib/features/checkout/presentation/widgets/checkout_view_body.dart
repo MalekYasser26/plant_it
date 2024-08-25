@@ -6,6 +6,7 @@ import 'package:plant_it/features/checkout/presentation/widgets/items_section.da
 import 'package:plant_it/features/checkout/presentation/widgets/cust_app_bar.dart';
 import 'package:plant_it/features/checkout/presentation/widgets/order_summary.dart';
 import 'package:plant_it/features/checkout/presentation/widgets/payment_method_section.dart';
+import 'package:plant_it/features/cust_nav_bar/presentation/views/cust_nav_bar_selection_view.dart';
 
 class CheckoutViewBody extends StatefulWidget {
   const CheckoutViewBody({super.key});
@@ -23,6 +24,7 @@ class _CheckoutViewBodyState extends State<CheckoutViewBody> {
         backgroundColor: AppColors.basicallyWhite,
         appBar: const CustAppBar(
           text: "Checkout",
+          implyLeading: true,
         ),
         body: Center(
           child: Padding(
@@ -37,12 +39,12 @@ class _CheckoutViewBodyState extends State<CheckoutViewBody> {
                 const PaymentMethodSection(),
                 const SizedBox(height: 10),
                 const OrderSummary(),
-                const Spacer(),
+            const SizedBox(height: 5,),
             SizedBox(
               width:double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => CustNavBarSelectionView(currentIndex: 0),));
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.greyish,
