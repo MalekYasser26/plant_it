@@ -33,16 +33,33 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
   }
 
   Widget _buildNavItem({required IconData icon, required int index}) {
+    bool isSelected = widget.currentIndex == index;
+
     return GestureDetector(
       onTap: () {
         widget.onTap(index);
       },
-      child: Icon(
-        icon,
-        color: widget.currentIndex == index ? Colors.white : Colors.white70,
-        size: widget.currentIndex == index
-            ? getResponsiveSize(context, fontSize: 30)
-            : getResponsiveSize(context, fontSize: 24),
+      child: Container(
+        decoration: isSelected
+            ? BoxDecoration(
+          shape: BoxShape.circle,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.4), // Shadow color
+              spreadRadius: 1,
+              blurRadius: 15,
+              offset: const Offset(0, 4), // Shadow position
+            ),
+          ],
+        )
+            : null, // No shadow when the icon is not selected
+        child: Icon(
+          icon,
+          color: isSelected ? Colors.white : Colors.white70,
+          size: isSelected
+              ? getResponsiveSize(context, fontSize: 30)
+              : getResponsiveSize(context, fontSize: 24),
+        ),
       ),
     );
   }
@@ -76,6 +93,7 @@ class CustomNavBarClipper extends CustomClipper<Path> {
 
     return path;
   }
+
   @override
   bool shouldReclip(CustomClipper<Path> oldClipper) {
     return false;
