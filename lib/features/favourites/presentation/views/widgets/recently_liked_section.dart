@@ -27,8 +27,9 @@ class RecentlyLikedSection extends StatelessWidget {
         // Remove Expanded, let ListView build inside SingleChildScrollView
         ListView.separated(
           itemBuilder: (context, index) {
-            return LikedItem(
+            return LikedOrSavedItem(
               index: index + 1,
+              isLiked: true,
             );
           },
           shrinkWrap: true, // Make ListView take up only as much space as it needs

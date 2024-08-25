@@ -4,10 +4,11 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:plant_it/constants/constants.dart';
 import 'package:plant_it/features/description/presentation/views/description_view.dart';
 
-class LikedItem extends StatelessWidget {
+class LikedOrSavedItem extends StatelessWidget {
   final int index ;
-  const LikedItem({
-    super.key, required this.index,
+  final bool isLiked;
+  const LikedOrSavedItem({
+    super.key, required this.index, required this.isLiked,
   });
 
   @override
@@ -64,11 +65,11 @@ class LikedItem extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 10),
-                      SvgPicture.asset(
+                      isLiked ? SvgPicture.asset(
                         IconsCust.likedIcon,
                         height: 13,
                         width: 14,
-                      ),
+                      ) : SizedBox.shrink(),
                       const Spacer(),
                       // PopupMenuButton(itemBuilder: (context) {
                       //   return {'Logout', 'Settings'}.map((String choice) {
