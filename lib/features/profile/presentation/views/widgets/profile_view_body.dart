@@ -11,88 +11,79 @@ class ProfileViewBody extends StatefulWidget {
   const ProfileViewBody({super.key});
 
   @override
-  State<ProfileViewBody> createState() => _CheckoutViewBodyState();
+  State<ProfileViewBody> createState() => _ProfileViewBodyState();
 }
 
-class _CheckoutViewBodyState extends State<ProfileViewBody> {
+class _ProfileViewBodyState extends State<ProfileViewBody> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         backgroundColor: AppColors.basicallyWhite,
         appBar: const CustAppBar(
           text: "Your profile",
           implyLeading: false,
         ),
-        body: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                const HiBrunoSection(),
-                const YourInfoSection(),
-                const RecentPurchasesSection(),
-                Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Recently saved",
+        body: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              const HiBrunoSection(),
+              const YourInfoSection(),
+              const RecentPurchasesSection(),
+              Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Recently saved",
+                        style: TextStyle(
+                          fontFamily: "Poppins",
+                          fontWeight: FontWeight.bold,
+                          fontSize: getResponsiveSize(context, fontSize: 20),
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          print("show all");
+                        },
+                        style: const ButtonStyle(
+                          backgroundColor: WidgetStatePropertyAll(AppColors.greyish),
+                        ),
+                        child: Text(
+                          "Show all",
                           style: TextStyle(
                             fontFamily: "Poppins",
-                            fontWeight: FontWeight.bold,
-                            fontSize: getResponsiveSize(context, fontSize: 20),
+                            fontWeight: FontWeight.w300,
+                            fontSize: getResponsiveSize(context, fontSize: 15),
+                            color: Colors.black,
                           ),
                         ),
-                        TextButton(
-                          onPressed: () {
-                            print("show all");
-                          },
-                          style: const ButtonStyle(
-                            backgroundColor:
-                            WidgetStatePropertyAll(AppColors.greyish),
-                          ),
-                          child: Text(
-                            "Show all",
-                            style: TextStyle(
-                              fontFamily: "Poppins",
-                              fontWeight: FontWeight.w300,
-                              fontSize: getResponsiveSize(context, fontSize: 15),
-                              color: Colors.black,
-                            ),
-                          ),
-                        )
-                      ],
+                      )
+                    ],
+                  ),
+                  SizedBox(
+                    height: 100,  // Set a fixed height for the ListView
+                    child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      physics: const BouncingScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        return IntrinsicWidth(child: SavedItem(index: index + 1));
+                      },
+                      separatorBuilder: (context, index) => const SizedBox(width: 10),
+                      itemCount: 6,
                     ),
-                    SizedBox(
-                      height: 100,  // Set a fixed height for the ListView
-                      child: ListView.separated(
-                        scrollDirection: Axis.horizontal,
-                        physics: const BouncingScrollPhysics(),
-                        itemBuilder: (context, index) {
-                          return IntrinsicWidth(child: SavedItem(index: index+1));
-                        },
-                        separatorBuilder: (context, index) =>
-                        const SizedBox(width: 10),
-                        itemCount: 6,
-                      ),
-                    ),
-
-
-
-                  ],
-                )
-              ],
-            ),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 }
-
-
-

@@ -39,10 +39,6 @@ abstract class ImagesCust{
   static const String googleLogo = "assets/images/googleLogo.png";
 }
 abstract class IconsCust{
-  static const String cartIcon = "assets/icons/cart_icon.svg";
-  static const String favIcon = "assets/icons/fav_icon.svg";
-  static const String homeIcon = "assets/icons/home_icon.svg";
-  static const String profileIcon = "assets/icons/profile_icon.svg";
   static const String likedIcon = "assets/icons/liked_icon.svg";
 }
 final List<Widget> pages = [
