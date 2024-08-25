@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:plant_it/constants/constants.dart';
-import 'package:plant_it/features/cust_nav_bar/presentation/views/cust_nav_bar_selection_view.dart';
+import 'package:plant_it/features/auth/presentation/views/log_in_view.dart';
 
 class SplashView extends StatelessWidget {
   const SplashView({super.key});
@@ -35,10 +35,12 @@ class SplashView extends StatelessWidget {
             child: Center(
               child: ElevatedButton(
                 onPressed: () {
-               //   Navigator.push(context, MaterialPageRoute(builder: (context) => const SignUpView(),));
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => CustNavBarSelectionView(
-                    currentIndex: 0,
-                  ),));
+                  //   Navigator.push(context, MaterialPageRoute(builder: (context) => const SignUpView(),));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const LoginView()
+                      ));
                 },
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(
@@ -50,7 +52,7 @@ class SplashView extends StatelessWidget {
                     borderRadius: BorderRadius.circular(30),
                   ),
                 ),
-                child:  Text(
+                child: Text(
                   "Get Started",
                   style: TextStyle(
                     fontSize: getResponsiveSize(context, fontSize: 18),
@@ -65,13 +67,19 @@ class SplashView extends StatelessWidget {
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset(ImagesCust.logo,height: 97,width: 100,),
-              Text("Plant-it",style: TextStyle(
-                fontSize: getResponsiveSize(context, fontSize: 32),
-                fontWeight: FontWeight.w700,
-                fontFamily: "Poppins",
-                color: Colors.white
-              ),),
+              Image.asset(
+                ImagesCust.logo,
+                height: 97,
+                width: 100,
+              ),
+              Text(
+                "Plant-it",
+                style: TextStyle(
+                    fontSize: getResponsiveSize(context, fontSize: 32),
+                    fontWeight: FontWeight.w700,
+                    fontFamily: "Poppins",
+                    color: Colors.white),
+              ),
             ],
           ),
         ],
