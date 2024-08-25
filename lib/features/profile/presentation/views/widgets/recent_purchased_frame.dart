@@ -34,76 +34,160 @@ class RecentPurchasedFrame extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 10),
-          // Middle Section (Plant Details)
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const SizedBox(height: 10),
-                Row(
+          // Expanded(
+          //   child: Column(
+          //     crossAxisAlignment: CrossAxisAlignment.start,
+          //     mainAxisAlignment: MainAxisAlignment.center,
+          //     children: [
+          //       const SizedBox(height: 10),
+          //       Row(
+          //         children: [
+          //           const SizedBox(width: 3,),
+          //           Text(
+          //             "Monstera plant",
+          //             style: TextStyle(
+          //               fontFamily: "Poppins",
+          //               fontWeight: FontWeight.bold,
+          //               fontSize: getResponsiveSize(context, fontSize: 13),
+          //               color: Colors.black,
+          //             ),
+          //             overflow: TextOverflow.ellipsis,
+          //           ),
+          //           Spacer(),
+          //           Expanded(
+          //             child: Text(
+          //               "Ordered:\n 12th May ",
+          //               style: TextStyle(
+          //                 fontFamily: "Raleway",
+          //                 fontWeight: FontWeight.w400,
+          //                 fontSize: getResponsiveSize(context, fontSize: 12),
+          //                 color: Colors.black54,
+          //               ),
+          //             ),
+          //           ),
+          //
+          //         ],
+          //       ),
+          //       const SizedBox(height: 5),
+          //       Row(
+          //         children: [
+          //           const SizedBox(width: 3,),
+          //           Expanded(
+          //             child: Text(
+          //               "222 EGP",
+          //               style: TextStyle(
+          //                 fontFamily: "Raleway",
+          //                 fontWeight: FontWeight.w300,
+          //                 fontSize: getResponsiveSize(context, fontSize: 13),
+          //                 color: Colors.black54,
+          //
+          //               ),
+          //               softWrap: true,
+          //               overflow: TextOverflow.visible,
+          //             ),
+          //           ),
+          //           const Spacer(),
+          //           Expanded(
+          //             child: Text(
+          //               "State: Arrived",
+          //               style: TextStyle(
+          //                 fontFamily: "Raleway",
+          //                 fontWeight: FontWeight.w300,
+          //                 fontSize: getResponsiveSize(context, fontSize: 12),
+          //                 color: Colors.black,
+          //               ),
+          //               softWrap: true,
+          //               overflow: TextOverflow.visible,
+          //             ),
+          //           ),
+          //         ],
+          //       ),
+          //       const SizedBox(height: 5),
+          //       const Row(
+          //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //         children: [
+          //           FixedRatingStars(),
+          //         ],
+          //       ),
+          //     ],
+          //   ),
+          // ),
+          Expanded(child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Flexible(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(width: 3,),
-                    Text(
-                      "Monstera plant",
-                      style: TextStyle(
-                        fontFamily: "Poppins",
-                        fontWeight: FontWeight.bold,
-                        fontSize: getResponsiveSize(context, fontSize: 13),
-                        color: Colors.black,
+                    SizedBox(height: 20,),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 3.0),
+                      child: Text(
+                        "Monstera plant",
+                        style: TextStyle(
+                          fontFamily: "Poppins",
+                          fontWeight: FontWeight.bold,
+                          fontSize: getResponsiveSize(context, fontSize: 13),
+                          color: Colors.black,
+                        ),
+                        softWrap: true,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    const Spacer(),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 3.0),
+                      child: Text(
+                        "2222 EGP",
+                        style: TextStyle(
+                          fontFamily: "Raleway",
+                          fontWeight: FontWeight.w300,
+                          fontSize: getResponsiveSize(context, fontSize: 13),
+                          color: Colors.black54,
+                
+                        ),
+                        softWrap: true,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    FixedRatingStars(),
+                
+                
+                  ],
+                ),
+              ),
+              Flexible(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
                     Text(
-                      "Ordered: 12th May 2024",
+                      "Orders: 12th May 2024",
                       style: TextStyle(
                         fontFamily: "Raleway",
                         fontWeight: FontWeight.w400,
-                        fontSize: getResponsiveSize(context, fontSize: 10),
-                        color: Colors.black54,
-                      ),
-                    ),
-
-                  ],
-                ),
-                const SizedBox(height: 5),
-                Row(
-                  children: [
-                    const SizedBox(width: 3,),
-                    Text(
-                      "222 EGP",
-                      style: TextStyle(
-                        fontFamily: "Raleway",
-                        fontWeight: FontWeight.w300,
                         fontSize: getResponsiveSize(context, fontSize: 12),
                         color: Colors.black54,
                       ),
+                      softWrap: true,
+                      overflow: TextOverflow.visible,
                     ),
-                    const Spacer(),
                     Text(
                       "State: Arrived",
                       style: TextStyle(
                         fontFamily: "Raleway",
                         fontWeight: FontWeight.w300,
-                        fontSize: getResponsiveSize(context, fontSize: 11),
+                        fontSize: getResponsiveSize(context, fontSize: 12),
                         color: Colors.black,
                       ),
+                      softWrap: true,
+                      overflow: TextOverflow.visible,
                     ),
                   ],
                 ),
-                const SizedBox(height: 5),
-                const Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    FixedRatingStars(),
-                  ],
-                ),
-              ],
-            ),
-          ),
+              )
+            ],
+          ))
         ],
       ),
     );
   }
 }
-

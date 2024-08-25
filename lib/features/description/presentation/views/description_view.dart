@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:plant_it/constants/constants.dart';
-import 'package:plant_it/features/cart/presentation/views/cart_view.dart';
 import 'package:plant_it/features/checkout/presentation/widgets/cust_app_bar.dart';
 import 'package:plant_it/features/cust_nav_bar/presentation/views/cust_nav_bar_selection_view.dart';
 import 'package:plant_it/features/cust_nav_bar/presentation/views/cust_nav_bar_view.dart';
@@ -193,7 +192,7 @@ class _DescriptionViewState extends State<DescriptionView> {
                       child: ElevatedButton(
                         onPressed: () {
                           print("add to cart");
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => const CartView(),));
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => CustNavBarSelectionView(currentIndex: 3),));
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFFDCDCDC),

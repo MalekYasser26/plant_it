@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:plant_it/constants/constants.dart';
 import 'package:plant_it/features/profile/presentation/views/widgets/recent_purchased_frame.dart';
+import 'package:plant_it/features/profile/presentation/views/widgets/recent_purchases_view.dart';
 
 class RecentPurchasesSection extends StatelessWidget {
   const RecentPurchasesSection({
@@ -27,10 +28,14 @@ class RecentPurchasesSection extends StatelessWidget {
               TextButton(
                 onPressed: () {
                   print("show all");
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const RecentPurchasesView(),
+                      ));
                 },
                 style: const ButtonStyle(
-                  backgroundColor:
-                  WidgetStatePropertyAll(AppColors.greyish),
+                  backgroundColor: WidgetStatePropertyAll(AppColors.greyish),
                 ),
                 child: Text(
                   "Show all",
@@ -48,9 +53,11 @@ class RecentPurchasesSection extends StatelessWidget {
             child: ListView.separated(
               physics: const BouncingScrollPhysics(),
               itemBuilder: (context, index) => RecentPurchasedFrame(
-                imagePath: 'assets/images/plant${index+1}.png',
+                imagePath: 'assets/images/plant${index + 1}.png',
               ),
-              separatorBuilder: (context, index) => const SizedBox(height: 12,),
+              separatorBuilder: (context, index) => const SizedBox(
+                height: 12,
+              ),
               itemCount: 3,
             ),
           )
