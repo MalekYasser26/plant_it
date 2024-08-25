@@ -27,8 +27,8 @@ class _CheckoutViewBodyState extends State<CheckoutViewBody> {
         body: Center(
           child: Padding(
             padding: const EdgeInsets.all(15.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: ListView(
+              physics: const BouncingScrollPhysics(),
               children: [
                 const AddressInfoSection(),
                 const SizedBox(height: 10),
