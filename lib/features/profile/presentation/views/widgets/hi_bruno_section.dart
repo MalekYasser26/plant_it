@@ -48,14 +48,6 @@ class HiBrunoSection extends StatelessWidget {
                     ),
                   ],
                 ),
-                Text(
-                  "100 followers    76 following",
-                  style: TextStyle(
-                      fontFamily: "Raleway",
-                      fontWeight: FontWeight.w400,
-                      fontSize: getResponsiveSize(context, fontSize: 15),
-                      color: const Color(0xFF545454)),
-                ),
               ],
             ),
           ),
