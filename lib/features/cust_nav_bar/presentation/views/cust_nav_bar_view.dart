@@ -35,31 +35,21 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
   Widget _buildNavItem({required IconData icon, required int index}) {
     bool isSelected = widget.currentIndex == index;
 
-    return GestureDetector(
-      onTap: () {
-        widget.onTap(index);
-      },
-      child: Container(
-        decoration: isSelected
-            ? BoxDecoration(
-          shape: BoxShape.circle,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.4), // Shadow color
-              spreadRadius: 1,
-              blurRadius: 15,
-              offset: const Offset(0, 4), // Shadow position
-            ),
-          ],
-        )
-            : null, // No shadow when the icon is not selected
-        child: Icon(
-          icon,
-          color: isSelected ? Colors.white : Colors.white70,
-          size: isSelected
-              ? getResponsiveSize(context, fontSize: 30)
-              : getResponsiveSize(context, fontSize: 24),
-        ),
+    return Container(
+      decoration: isSelected
+          ? const BoxDecoration(
+        shape: BoxShape.circle,
+      )
+          : null, // No shadow when the icon is not selected
+      child: IconButton(
+        icon: Icon(icon), // Update here with IconButton and Icon widget
+        color: isSelected ? Colors.white : Colors.white70,
+        iconSize: isSelected
+            ? getResponsiveSize(context, fontSize: 32)
+            : getResponsiveSize(context, fontSize: 26),
+        onPressed: () {
+          widget.onTap(index); // Same tap logic
+        },
       ),
     );
   }
