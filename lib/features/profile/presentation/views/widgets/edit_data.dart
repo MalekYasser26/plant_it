@@ -1,27 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:plant_it/constants/constants.dart';
+import 'package:plant_it/features/auth/presentation/view_model/auth_cubit.dart';
+import 'package:plant_it/features/profile/presentation/view_model/profile_cubit.dart';
 
 class EditData extends StatefulWidget {
+  const EditData({super.key,}); // Add controller
+
   @override
   _EditDataState createState() => _EditDataState();
 }
 
 class _EditDataState extends State<EditData> {
   final _formKey = GlobalKey<FormState>();
-  String _name = "Bruno";
-  String _phone = "+20 1076927763";
-  String _address = "13, Al-Doha st, Mansoura";
+
 
   @override
   Widget build(BuildContext context) {
-
+  var pCubit = context.read<ProfileCubit>();
+  var sCubit = context.read<AuthCubit>();
     return Form(
       key: _formKey,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           TextFormField(
-            initialValue: _name,
+            initialValue: sCubit.name,
             decoration:  InputDecoration(labelText: 'Name', labelStyle:
              TextStyle(
               fontFamily: "Poppins",
@@ -39,11 +43,11 @@ class _EditDataState extends State<EditData> {
               return null;
             },
             onSaved: (value) {
-              _name = value ?? _name;
+              sCubit.name = value ?? sCubit.name;
             },
           ),
           TextFormField(
-            initialValue: _phone,
+            initialValue: sCubit.phoneNum,
             keyboardType: TextInputType.phone,
 
             decoration:  InputDecoration(labelText: 'Phone Number',labelStyle :TextStyle(
@@ -60,11 +64,11 @@ class _EditDataState extends State<EditData> {
               return null;
             },
             onSaved: (value) {
-              _phone = value ?? _phone;
+              sCubit.phoneNum = value ?? sCubit.phoneNum;
             },
           ),
           TextFormField(
-            initialValue: _address,
+            initialValue: sCubit.address,
             keyboardType: TextInputType.emailAddress,
             decoration:  InputDecoration(labelText: 'Address',labelStyle: TextStyle(
               fontFamily: "Poppins",
@@ -80,7 +84,7 @@ class _EditDataState extends State<EditData> {
               return null;
             },
             onSaved: (value) {
-              _address = value ?? _address;
+              sCubit.address = value ?? sCubit.address;
             },
           ),
           const SizedBox(height: 20),

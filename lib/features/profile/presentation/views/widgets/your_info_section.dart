@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:plant_it/constants/constants.dart';
+import 'package:plant_it/features/auth/presentation/view_model/auth_cubit.dart';
 
 class YourInfoSection extends StatelessWidget {
   const YourInfoSection({
@@ -8,6 +10,8 @@ class YourInfoSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var sCubit = context.read<AuthCubit>();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -18,13 +22,13 @@ class YourInfoSection extends StatelessWidget {
         ),),
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: Text("Phone number: +20 1076927763",style: TextStyle(
+          child: Text("Phone number: ${sCubit.phoneNum}",style: TextStyle(
             fontFamily: "Raleway",
             fontWeight: FontWeight.w300,
             fontSize: getResponsiveSize(context, fontSize: 15),
           ),),
         ),
-        Text("Address: 13, Al-Doha st, Mansoura",style: TextStyle(
+        Text("Address: ${sCubit.address}",style: TextStyle(
           fontFamily: "Raleway",
           fontWeight: FontWeight.w300,
           fontSize: getResponsiveSize(context, fontSize: 15),

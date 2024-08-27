@@ -3,8 +3,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:plant_it/blocObserever.dart';
-import 'package:plant_it/features/auth/presentation/view_model/signin/signin_cubit.dart';
-import 'package:plant_it/features/auth/presentation/view_model/signup/signup_cubit.dart';
+import 'package:plant_it/features/auth/presentation/view_model/auth_cubit.dart';
+import 'package:plant_it/features/profile/presentation/view_model/profile_cubit.dart';
 import 'package:plant_it/features/splash/presentation/views/splash_view.dart';
 
 void main() {
@@ -25,8 +25,8 @@ class MyApp extends StatelessWidget {
 
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (context) => SigninCubit(),),
-        BlocProvider(create: (context) => SignupCubit(),),
+        BlocProvider(create: (context) => ProfileCubit(),),
+        BlocProvider(create: (context) => AuthCubit(),),
       ],
       child: const MaterialApp(
         home: SplashView(),

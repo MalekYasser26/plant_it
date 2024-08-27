@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:plant_it/constants/constants.dart';
+import 'package:plant_it/features/auth/presentation/view_model/auth_cubit.dart';
 import 'package:plant_it/features/profile/presentation/views/widgets/edit_data.dart';
 
 class HiBrunoSection extends StatelessWidget {
@@ -7,6 +9,7 @@ class HiBrunoSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var sCubit = context.read<AuthCubit>();
     return Row(
       children: [
         CircleAvatar(
@@ -29,7 +32,7 @@ class HiBrunoSection extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      "Hi Bruno! ",
+                      "Hi ${sCubit.name}! ",
                       style: TextStyle(
                         fontFamily: "Poppins",
                         fontWeight: FontWeight.w500,
@@ -68,7 +71,7 @@ class HiBrunoSection extends StatelessWidget {
             right: 20,
             top: 20,
           ),
-          child: EditData(),
+          child: const EditData(),
         );
       },
     );
