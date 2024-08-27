@@ -48,5 +48,5 @@ final List<Widget> pages = [
   const CartView(),
 ];
 String? accesstoken;
-const String baseUrl = 'https://e078-197-43-97-29.ngrok-free.app/api';
+const String baseUrl = 'https://plantitapi.runasp.net/api';
 

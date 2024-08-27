@@ -8,6 +8,7 @@ part 'signin_state.dart';
 
 class SigninCubit extends Cubit<SigninState> {
   SigninCubit() : super(SigninInitialState());
+  String errorMsg ='' ;
   Future<void> signIn(String email, String password) async {
     emit(SigninLoadingState());
     try {
@@ -19,20 +20,16 @@ class SigninCubit extends Cubit<SigninState> {
           'password': password,
         }),
       );
-
+      final responseBody = json.decode(response.body);
       if (response.statusCode == 200) {
-        final responseBody = json.decode(response.body);
-        if (responseBody['succeeded'] == true) {
           print(responseBody);
           emit(SigninSuccessState());
-          // You can store token and user data here if needed
           String token = responseBody['token'];
           var userData = responseBody['userData'];
-          // Store token and user data in secure storage or manage state
-        } else {
-          emit(SigninFailureState());
-        }
+          print(userData);
       } else {
+        errorMsg =responseBody['message'];
+        print("Error is ${responseBody['message']}");
         emit(SigninFailureState());
       }
     } catch (e) {

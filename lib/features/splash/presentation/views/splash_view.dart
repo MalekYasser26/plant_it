@@ -35,8 +35,7 @@ class SplashView extends StatelessWidget {
             child: Center(
               child: ElevatedButton(
                 onPressed: () {
-                  //   Navigator.push(context, MaterialPageRoute(builder: (context) => const SignUpView(),));
-                  Navigator.push(
+                  Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
                         builder: (context) => const LoginView()

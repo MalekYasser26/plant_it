@@ -6,11 +6,8 @@ import 'package:plant_it/features/auth/presentation/view_model/signup/signup_cub
 import 'package:plant_it/features/auth/presentation/views/log_in_view.dart';
 import 'package:plant_it/features/auth/presentation/views/widgets/confirm_password_field.dart';
 import 'package:plant_it/features/auth/presentation/views/widgets/cust_text_field.dart';
-import 'package:plant_it/features/auth/presentation/views/widgets/email_widget.dart';
 import 'package:plant_it/features/auth/presentation/views/widgets/join_through_widget.dart';
 import 'package:plant_it/features/auth/presentation/views/widgets/login_button.dart';
-import 'package:plant_it/features/auth/presentation/views/widgets/password_widget.dart';
-import 'package:plant_it/features/home/presentation/views/home_view.dart';
 
 class SignUpBody extends StatelessWidget {
   const SignUpBody({super.key});
@@ -49,13 +46,13 @@ class SignUpBody extends StatelessWidget {
                     aboveText: "Your name",
                   ),
                   const SizedBox(height: 20),
-                  const EmailField(
-                    aboveText: "Email",
-                  ),
+                  // const EmailField(
+                  //   aboveText: "Email",
+                  // ),
                   const SizedBox(height: 20),
-                  const PasswordField(
-                    aboveText: "Password",
-                  ),
+                  // const PasswordField(
+                  //   aboveText: "Password",
+                  // ),
                   const SizedBox(height: 20),
                   const ConfirmPasswordField(),
                   const SizedBox(height: 20),
