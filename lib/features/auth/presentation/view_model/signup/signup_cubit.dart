@@ -8,15 +8,16 @@ part 'signup_state.dart';
 
 class SignupCubit extends Cubit<SignupState> {
   SignupCubit() : super(SignupInitialState());
+  String errorMsg ='' ;
 
-  Future<void> signUp(String email, String password, String username, String displayedName, String phoneNum, String address) async {
+  Future<void> signUp(String email, String password, String displayedName, String phoneNum, String address) async {
     emit(SignupLoadingState());
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/Authentication/Register'),
         headers: {'Content-Type': 'application/json'},
         body: json.encode({
-          'username': username,
+          'username': email,
           'displayedName': displayedName,
           'email': email,
           'password': password,
@@ -25,22 +26,16 @@ class SignupCubit extends Cubit<SignupState> {
         }),
       );
       final responseBody = json.decode(response.body);
-      if (response.statusCode == 200) {
-        if (responseBody['succeeded'] == true) {
+      var userData = responseBody['data'];
+      if (response.statusCode == 200 &&responseBody['succeeded'] == true) {
           print(responseBody);
           emit(SignupSuccessState());
-
-          // Correct access to the token and user data
           String token = responseBody['token'];
-          var userData = responseBody['data'];  // Updated this line
-
-          // Store token and user data in secure storage or manage state
-        } else {
-          print(responseBody);
-          emit(SignupFailureState());
-        }
+          print("_____________");
+          print(userData);
       } else {
-        print(responseBody);
+        errorMsg =responseBody['message'];
+        print("Error is ${responseBody['message']}");
         emit(SignupFailureState());
       }
     } catch (e) {

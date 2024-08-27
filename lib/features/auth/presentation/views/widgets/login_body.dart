@@ -31,6 +31,7 @@ class LoginBody extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
                 child: BlocConsumer<SigninCubit, SigninState>(
                   listener: (context, state) {
                     if (state is SigninSuccessState) {

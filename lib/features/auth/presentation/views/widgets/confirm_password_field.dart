@@ -2,7 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:plant_it/constants/constants.dart';
 
 class ConfirmPasswordField extends StatefulWidget {
-  const ConfirmPasswordField({super.key});
+  final TextEditingController controller;
+  final FormFieldValidator<String>? validator;
+
+  const ConfirmPasswordField({
+    super.key,
+    required this.controller,
+    required this.validator,
+  });
 
   @override
   _ConfirmPasswordFieldState createState() => _ConfirmPasswordFieldState();
@@ -30,6 +37,8 @@ class _ConfirmPasswordFieldState extends State<ConfirmPasswordField> {
         ),
         const SizedBox(height: 10,),
         TextFormField(
+          controller: widget.controller,
+          validator: widget.validator,
           keyboardType: TextInputType.visiblePassword,
           onTapOutside: (event) =>
               FocusManager.instance.primaryFocus?.unfocus(),
@@ -37,13 +46,13 @@ class _ConfirmPasswordFieldState extends State<ConfirmPasswordField> {
           decoration: InputDecoration(
             labelText: 'Confirm password',
             labelStyle: TextStyle(
-              fontFamily: "Poppins",
-              fontSize: getResponsiveSize(context, fontSize: 16),
-              color: AppColors.darkGreen
+                fontFamily: "Poppins",
+                fontSize: getResponsiveSize(context, fontSize: 16),
+                color: AppColors.darkGreen
             ),
             focusedBorder: const OutlineInputBorder(
               borderSide: BorderSide(
-                color: AppColors.darkGreen
+                  color: AppColors.darkGreen
               ),
             ),
             prefixIcon: const Icon(Icons.lock),
