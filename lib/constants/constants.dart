@@ -47,6 +47,6 @@ final List<Widget> pages = [
   const FavouritesView(),
   const CartView(),
 ];
-String? accesstoken;
-const String baseUrl = 'https://plantitapi.runasp.net/api';
+String? accessToken;
+const String baseUrlHasoon = 'https://plantitapi.runasp.net/api';
 

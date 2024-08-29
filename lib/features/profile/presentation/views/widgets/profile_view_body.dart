@@ -42,4 +42,3 @@ class _ProfileViewBodyState extends State<ProfileViewBody> {
     );
   }
 }
-

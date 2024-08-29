@@ -2,11 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:plant_it/constants/constants.dart';
 import 'package:plant_it/features/auth/presentation/view_model/auth_cubit.dart';
+import 'package:plant_it/features/profile/presentation/view_model/profile_cubit.dart';
 import 'package:plant_it/features/profile/presentation/views/widgets/edit_data.dart';
 
-class HiBrunoSection extends StatelessWidget {
+class HiBrunoSection extends StatefulWidget {
   const HiBrunoSection({super.key});
 
+  @override
+  State<HiBrunoSection> createState() => _HiBrunoSectionState();
+}
+
+class _HiBrunoSectionState extends State<HiBrunoSection> {
   @override
   Widget build(BuildContext context) {
     var sCubit = context.read<AuthCubit>();
@@ -64,14 +70,20 @@ class HiBrunoSection extends StatelessWidget {
       context: context,
       isScrollControlled: true,
       builder: (BuildContext context) {
-        return Padding(
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom, // Adjust for keyboard
-            left: 20,
-            right: 20,
-            top: 20,
+        return BlocListener<ProfileCubit, ProfileState>(
+          listener: (context, state) {
+            if (state is ProfileSuccessfulState) {
+              setState(() {}); // Trigger UI refresh after a successful update
+            }
+          },
+          child: Padding(
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewInsets.bottom, // Adjust for keyboard
+              left: 20,
+              right: 20,
+              top: 20,
+            ),            child: const EditData(),
           ),
-          child: const EditData(),
         );
       },
     );
