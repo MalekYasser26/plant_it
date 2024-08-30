@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:plant_it/blocObserever.dart';
 import 'package:plant_it/features/auth/presentation/view_model/auth_cubit.dart';
+import 'package:plant_it/features/home/presentation/view_model/products_cubit.dart';
 import 'package:plant_it/features/profile/presentation/view_model/profile_cubit.dart';
 import 'package:plant_it/features/splash/presentation/views/splash_view.dart';
 
@@ -27,6 +28,7 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(create: (context) => ProfileCubit(),),
         BlocProvider(create: (context) => AuthCubit(),),
+        BlocProvider(create: (context) => ProductsCubit(),),
       ],
       child: const MaterialApp(
         home: SplashView(),

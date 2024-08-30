@@ -15,7 +15,9 @@ class LikedOrSavedItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => const DescriptionView(),));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const DescriptionView(
+          productId: 1,
+        ),));
       },
       child: Container(
         decoration: BoxDecoration(

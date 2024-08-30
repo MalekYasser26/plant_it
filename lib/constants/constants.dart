@@ -49,4 +49,5 @@ final List<Widget> pages = [
 ];
 String? accessToken;
 const String baseUrlHasoon = 'https://plantitapi.runasp.net/api';
+const String baseUrlArsoon = 'https://plantitnode.azurewebsites.net/api';
 

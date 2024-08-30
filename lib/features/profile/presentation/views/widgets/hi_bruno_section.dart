@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart'; // Add this import
+import 'dart:io'; // For working with file system paths
 import 'package:plant_it/constants/constants.dart';
 import 'package:plant_it/features/auth/presentation/view_model/auth_cubit.dart';
 import 'package:plant_it/features/profile/presentation/view_model/profile_cubit.dart';
@@ -13,18 +15,42 @@ class HiBrunoSection extends StatefulWidget {
 }
 
 class _HiBrunoSectionState extends State<HiBrunoSection> {
+  File? _image; // Store the selected image here
+  final ImagePicker _picker = ImagePicker();
+
   @override
   Widget build(BuildContext context) {
     var sCubit = context.read<AuthCubit>();
+
     return Row(
       children: [
-        CircleAvatar(
-          minRadius: 30,
-          maxRadius: 40,
-          child: ClipRRect(
-              clipBehavior: Clip.antiAlias,
-              borderRadius: BorderRadius.circular(50),
-              child: Image.asset('assets/images/bruno.png')),
+        InkWell(
+          onTap: () {
+            _pickImage(); // Open image picker
+          },
+          child: Stack(
+            children: [
+              CircleAvatar(
+                minRadius: 30,
+                maxRadius: 40,
+                child: ClipRRect(
+                  clipBehavior: Clip.antiAlias,
+                  borderRadius: BorderRadius.circular(50),
+                  child: _image != null
+                      ? Image.file(_image!, fit: BoxFit.cover)
+                      : Image.asset('assets/images/bruno.png'), // Default image if no image is selected
+                ),
+              ),
+              const Positioned(
+                right: 0,
+                bottom: 0,
+                child: Icon(
+                  Icons.camera_alt_outlined,
+                  color: Colors.black,
+                ),
+              ),
+            ],
+          ),
         ),
         const SizedBox(width: 10),
         Expanded(
@@ -65,6 +91,17 @@ class _HiBrunoSectionState extends State<HiBrunoSection> {
     );
   }
 
+  // Function to pick image from the gallery
+  Future<void> _pickImage() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path); // Save the selected image
+      });
+    }
+  }
+
   void _showEditInfoModal(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -82,7 +119,8 @@ class _HiBrunoSectionState extends State<HiBrunoSection> {
               left: 20,
               right: 20,
               top: 20,
-            ),            child: const EditData(),
+            ),
+            child: const EditData(),
           ),
         );
       },

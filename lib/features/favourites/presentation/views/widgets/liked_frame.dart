@@ -27,7 +27,9 @@ class _LikedFrameState extends State<LikedFrame> {
               onTap: () => Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const DescriptionView(),
+                  builder: (context) => const DescriptionView(
+                    productId: 1,
+                  ),
                 ),
               ),
               child: Padding(

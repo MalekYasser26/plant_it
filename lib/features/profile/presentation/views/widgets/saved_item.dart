@@ -27,7 +27,9 @@ class SavedItem extends StatelessWidget {
             ),
             child: InkWell(
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => const DescriptionView(),));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const DescriptionView(
+                  productId: 1,
+                ),));
               },
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(15),

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:plant_it/constants/constants.dart';
 import 'package:plant_it/features/description/presentation/views/description_view.dart';
+import 'package:plant_it/features/home/presentation/view_model/product_model.dart';
 
 class CustomFrame extends StatefulWidget {
-  final int index;
-  const CustomFrame({super.key, required this.index});
+  final Product product;
+  final int index ;
+  const CustomFrame({super.key, required this.product, required this.index});
 
   @override
   State<CustomFrame> createState() => _CustomFrameState();
@@ -24,7 +26,14 @@ class _CustomFrameState extends State<CustomFrame> {
         mainAxisSize: MainAxisSize.min, // This will minimize the column size
         children: [
           InkWell(
-            onTap: () => Navigator.push(context,MaterialPageRoute(builder: (context) => const DescriptionView(),)),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>  DescriptionView(
+                  productId: widget.index+1,
+                ),
+              ),
+            ),
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Container(
@@ -39,8 +48,8 @@ class _CustomFrameState extends State<CustomFrame> {
                   clipBehavior: Clip.antiAlias,
                   borderRadius: BorderRadius.circular(10),
                   child: Image.asset(
-                    "assets/images/plant${widget.index}.png",
-                    fit: BoxFit.fitHeight, // Ensure image fits within the container
+                    "assets/images/plant1.png", // Placeholder for image
+                    fit: BoxFit.fitHeight,
                   ),
                 ),
               ),
@@ -54,7 +63,7 @@ class _CustomFrameState extends State<CustomFrame> {
               children: [
                 Flexible(
                   child: Text(
-                    "Monstera",
+                    widget.product.productName,
                     style: TextStyle(
                       fontFamily: "Poppins",
                       fontWeight: FontWeight.bold,
@@ -77,7 +86,7 @@ class _CustomFrameState extends State<CustomFrame> {
                     Icons.favorite_border,
                     size: getResponsiveSize(context, fontSize: 20),
                   ),
-                )
+                ),
               ],
             ),
           ),
@@ -88,7 +97,7 @@ class _CustomFrameState extends State<CustomFrame> {
               children: [
                 Flexible(
                   child: Text(
-                    "222 EGP",
+                    "${widget.product.price} EGP",
                     style: TextStyle(
                       fontFamily: "Raleway",
                       fontWeight: FontWeight.bold,
@@ -97,7 +106,7 @@ class _CustomFrameState extends State<CustomFrame> {
                   ),
                 ),
                 Text(
-                  "1.4 K",
+                  "${widget.product.likesCounter} likes",
                   style: TextStyle(
                     fontFamily: "Raleway",
                     fontWeight: FontWeight.bold,
