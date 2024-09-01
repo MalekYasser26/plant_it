@@ -68,18 +68,22 @@ class _HomeViewState extends State<HomeView> {
                     child: BlocBuilder<ProductsCubit, ProductsState>(
                       builder: (context, state) {
                         if (state is ProductsLoadingState) {
-                          return const Center(child: CircularProgressIndicator(
-                            color: AppColors.darkGreen,
-                          ));
+                          return const Center(
+                            child: CircularProgressIndicator(
+                              color: AppColors.darkGreen,
+                            ),
+                          );
                         } else if (state is ProductsSuccessfulState) {
-                          // Pass the fetched products to the CustomGridView
-                          return CustomGridView(products: state.products);
+                          return CustomGridView(products: state.products); // Show products
                         } else if (state is ProductsFailureState) {
-                          return const Center(child: Text('Failed to load products'));
+                          return const Center(
+                            child: Text('Failed to load products'),
+                          );
                         }
                         return const SizedBox.shrink();
                       },
                     ),
+
                   ),
                 ],
               ),

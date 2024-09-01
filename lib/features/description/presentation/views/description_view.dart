@@ -62,16 +62,16 @@ class DescriptionView extends StatelessWidget {
                               ],
                             ),
                             const SizedBox(height: 10),
-                            DescriptionSection(
+                            const DescriptionSection(
                               title: "Product Bio",
                               subfields: [
                                 {
                                   "header": "Bio: ",
-                                  "description": product.bio.toString(),
+                                  // "description": product.bio.toString(),
                                 },
                                 {
                                   "header": "Available Stock: ",
-                                  "description": product.availableStock.toString(),
+                                  // "description": product.availableStock.toString(),
                                 },
                               ],
                             ),
