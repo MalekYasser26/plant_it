@@ -8,6 +8,7 @@ import 'package:plant_it/features/home/presentation/view_model/product_model.dar
 class CustomFrame extends StatefulWidget {
   final HomeProduct product;
   final int index;
+
   const CustomFrame({super.key, required this.product, required this.index});
 
   @override
@@ -28,14 +29,15 @@ class _CustomFrameState extends State<CustomFrame> {
         mainAxisSize: MainAxisSize.min,
         children: [
           InkWell(
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => DescriptionView(
-                  productId: widget.index + 1,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      DescriptionView(productId: widget.product.id), // Pass product ID
                 ),
-              ),
-            ),
+              );
+            },
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Container(
@@ -54,18 +56,22 @@ class _CustomFrameState extends State<CustomFrame> {
                     fit: BoxFit.cover,
                     height: 150,
                     width: double.infinity,
-                    errorWidget: (context, url,error) {
+                    errorWidget: (context, url, error) {
                       return Shimmer.fromColors(
-                      baseColor: AppColors.lighterGreen,
-                      highlightColor: AppColors.barelyGreen,
-                      child: Container(
-                        color: Colors.white,
-                        height: 150,
-                        width: double.infinity,
-                      ),
-                    );
+                        baseColor: AppColors.lighterGreen,
+                        highlightColor: AppColors.barelyGreen,
+                        child: Container(
+                          color: Colors.white,
+                          height: 150,
+                          width: double.infinity,
+                        ),
+                      );
                     },
-                    placeholder: (context, url,) => Shimmer.fromColors(
+                    placeholder: (
+                      context,
+                      url,
+                    ) =>
+                        Shimmer.fromColors(
                       baseColor: AppColors.lighterGreen,
                       highlightColor: AppColors.barelyGreen,
                       child: Container(
@@ -104,14 +110,14 @@ class _CustomFrameState extends State<CustomFrame> {
                   },
                   icon: isPressed
                       ? Icon(
-                    Icons.favorite,
-                    color: Colors.red,
-                    size: getResponsiveSize(context, fontSize: 20),
-                  )
+                          Icons.favorite,
+                          color: Colors.red,
+                          size: getResponsiveSize(context, fontSize: 20),
+                        )
                       : Icon(
-                    Icons.favorite_border,
-                    size: getResponsiveSize(context, fontSize: 20),
-                  ),
+                          Icons.favorite_border,
+                          size: getResponsiveSize(context, fontSize: 20),
+                        ),
                 ),
               ],
             ),

@@ -8,14 +8,11 @@ part 'products_state.dart';
 
 class ProductsCubit extends Cubit<ProductsState> {
   ProductsCubit() : super(ProductsInitial());
-
   // Fetch Products from API
   Future<void> fetchProducts() async {
     emit(ProductsLoadingState());
 
-    // First, try to load cached data
     List<HomeProduct> cachedProducts = await getCachedProducts();
-
     if (cachedProducts.isNotEmpty) {
       emit(ProductsSuccessfulState(cachedProducts)); // Use cached data while loading fresh data
     }

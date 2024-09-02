@@ -19,8 +19,8 @@ class HomeProduct {
     // Safely handle the images field
     final imagesList = json['images'] as List<dynamic>?;
     final String imageUrl = (imagesList != null && imagesList.isNotEmpty)
-        ? imagesList[0]['img_url'] ?? "assets/images/plant2.png"
-        : "assets/images/plant1.png"; // Fallback if images are null or empty
+        ? imagesList[0]['img_url'] ?? "assets/images/plant6.png"
+        : "assets/images/plant6.png"; // Fallback if images are null or empty
 
     return HomeProduct(
       id: json['id'],
