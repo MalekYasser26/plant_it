@@ -1,4 +1,4 @@
-class Product {
+class HomeProduct {
   final int id;
   final String productName;
   final String price;
@@ -6,7 +6,7 @@ class Product {
   final int imagesCounter;
   final String image;
 
-  Product({
+  HomeProduct({
     required this.id,
     required this.productName,
     required this.price,
@@ -15,14 +15,14 @@ class Product {
     required this.image,
   });
 
-  factory Product.fromJson(Map<String, dynamic> json) {
+  factory HomeProduct.fromJson(Map<String, dynamic> json) {
     // Safely handle the images field
     final imagesList = json['images'] as List<dynamic>?;
     final String imageUrl = (imagesList != null && imagesList.isNotEmpty)
-        ? imagesList[0]['img_url'] ?? "assets/images/plant1.png"
+        ? imagesList[0]['img_url'] ?? "assets/images/plant2.png"
         : "assets/images/plant1.png"; // Fallback if images are null or empty
 
-    return Product(
+    return HomeProduct(
       id: json['id'],
       productName: json['product_name'],
       price: json['price'],

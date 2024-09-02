@@ -6,7 +6,7 @@ import 'package:plant_it/features/description/presentation/views/description_vie
 import 'package:plant_it/features/home/presentation/view_model/product_model.dart';
 
 class CustomFrame extends StatefulWidget {
-  final Product product;
+  final HomeProduct product;
   final int index;
   const CustomFrame({super.key, required this.product, required this.index});
 
@@ -54,8 +54,8 @@ class _CustomFrameState extends State<CustomFrame> {
                     fit: BoxFit.cover,
                     height: 150,
                     width: double.infinity,
-                    // Shimmer loading effect
-                    errorWidget: (context, url,error) => Shimmer.fromColors(
+                    errorWidget: (context, url,error) {
+                      return Shimmer.fromColors(
                       baseColor: AppColors.lighterGreen,
                       highlightColor: AppColors.barelyGreen,
                       child: Container(
@@ -63,8 +63,8 @@ class _CustomFrameState extends State<CustomFrame> {
                         height: 150,
                         width: double.infinity,
                       ),
-                    ),
-                    // Fallback for error loading
+                    );
+                    },
                     placeholder: (context, url,) => Shimmer.fromColors(
                       baseColor: AppColors.lighterGreen,
                       highlightColor: AppColors.barelyGreen,

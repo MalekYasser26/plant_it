@@ -60,18 +60,22 @@ class _HiBrunoSectionState extends State<HiBrunoSection> {
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Row(
                   children: [
-                    Text(
-                      "Hi ${sCubit.name}! ",
-                      style: TextStyle(
-                        fontFamily: "Poppins",
-                        fontWeight: FontWeight.w500,
-                        fontSize: getResponsiveSize(context, fontSize: 18),
+                    Expanded(
+                      child: Text(
+                        "Hi ${sCubit.name}! ",
+                        style: TextStyle(
+                          fontFamily: "Poppins",
+                          fontWeight: FontWeight.w500,
+                          fontSize: getResponsiveSize(context, fontSize: 18),
+                        ),
+                        softWrap: true,
+
                       ),
                     ),
-                    const Spacer(),
                     IconButton(
                       onPressed: () {
                         _showEditInfoModal(context);

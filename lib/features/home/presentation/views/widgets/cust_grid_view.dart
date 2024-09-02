@@ -4,7 +4,7 @@ import 'package:plant_it/features/home/presentation/view_model/product_model.dar
 import 'package:plant_it/features/home/presentation/views/widgets/custom_frame.dart';
 
 class CustomGridView extends StatelessWidget {
-  final List<Product> products;
+  final List<HomeProduct> products;
 
   const CustomGridView({super.key, required this.products});
 
@@ -28,7 +28,7 @@ class CustomGridView extends StatelessWidget {
 }
 
 class GridViewItem extends StatelessWidget {
-  final Product product;
+  final HomeProduct product;
   final int index ;
   const GridViewItem({super.key, required this.product, required this.index});
 

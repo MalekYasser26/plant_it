@@ -14,7 +14,7 @@ class ProductsCubit extends Cubit<ProductsState> {
     emit(ProductsLoadingState());
 
     // First, try to load cached data
-    List<Product> cachedProducts = await getCachedProducts();
+    List<HomeProduct> cachedProducts = await getCachedProducts();
 
     if (cachedProducts.isNotEmpty) {
       emit(ProductsSuccessfulState(cachedProducts)); // Use cached data while loading fresh data
@@ -28,7 +28,7 @@ class ProductsCubit extends Cubit<ProductsState> {
 
       if (response.statusCode == 200) {
         final List<dynamic> productJson = json.decode(response.body);
-        final List<Product> products = productJson.map((json) => Product.fromJson(json)).toList();
+        final List<HomeProduct> products = productJson.map((json) => HomeProduct.fromJson(json)).toList();
 
         // Cache products locally
         await cacheProducts(products);
@@ -46,30 +46,9 @@ class ProductsCubit extends Cubit<ProductsState> {
   }
 
   // Fetch Product by ID from API
-  Future<void> fetchProductById(int productId) async {
-    emit(SingleProductLoadingState());
-
-    try {
-      final response = await http.get(
-        Uri.parse('https://plantitnode.azurewebsites.net/api/Product/$productId'),
-        headers: {'accept': 'application/json'},
-      );
-
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> productJson = json.decode(response.body)['product'];
-        final Product product = Product.fromJson(productJson);
-
-        emit(SingleProductSuccessfulState(product));
-      } else {
-        throw Exception('Failed to load product');
-      }
-    } catch (e) {
-      emit(SingleProductFailureState());
-    }
-  }
 
   // Cache Products using SharedPreferences
-  Future<void> cacheProducts(List<Product> products) async {
+  Future<void> cacheProducts(List<HomeProduct> products) async {
     final prefs = await SharedPreferences.getInstance();
     final String productsJson = json.encode(products.map((product) => product.toJson()).toList());
     await prefs.setString('cached_products', productsJson);
@@ -77,7 +56,7 @@ class ProductsCubit extends Cubit<ProductsState> {
   }
 
   // Retrieve Cached Products from SharedPreferences
-  Future<List<Product>> getCachedProducts() async {
+  Future<List<HomeProduct>> getCachedProducts() async {
     final prefs = await SharedPreferences.getInstance();
     final String? productsJson = prefs.getString('cached_products');
     final int? cacheTime = prefs.getInt('cache_time');
@@ -89,7 +68,7 @@ class ProductsCubit extends Cubit<ProductsState> {
 
       if (currentTime - cacheTime < cacheDuration) {
         final List<dynamic> productList = json.decode(productsJson);
-        return productList.map((json) => Product.fromJson(json)).toList();
+        return productList.map((json) => HomeProduct.fromJson(json)).toList();
       } else {
         return []; // Cache expired
       }
