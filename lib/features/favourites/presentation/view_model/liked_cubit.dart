@@ -12,7 +12,7 @@ class LikedCubit extends Cubit<LikedState> {
   LikedCubit() : super(LikedInitial());
 
   Future<void> getLikedProducts(int userID) async {
-    emit(LikeLoadingState());
+    emit(LoadLikeLoadingState());
     try {
       final response = await http.get(
         Uri.parse('$baseUrlHasoon/Likes/userId?userId=$userID'),
@@ -29,29 +29,43 @@ class LikedCubit extends Cubit<LikedState> {
         // Cache the liked products
         await cacheLikedProducts(likedProductIds);
         print((likedProductIds));
-        emit(LikeSuccessState());
+        emit(LoadLikeSuccessState());
       } else {
         throw Exception('Failed to load liked products');
       }
     } catch (e) {
       // If an error occurs
       print(e.toString());
-      emit(LikeFailureState());
+      emit(LoadLikeFailureState());
+    }
+  }
+  Future<void> addLikedProducts(int productID) async {
+    emit(AddLikeLoadingState());
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrlHasoon/Likes?productId=$productID'),
+        headers: {
+          'accept': '*/*',
+          'Authorization': 'Bearer $accessToken',
+        },
+      );
+      if (response.statusCode == 200) {
+        print(response.body);
+        likedProductIds.add(productID);
+        await cacheLikedProducts(likedProductIds);
+        print((likedProductIds));
+        emit(AddLikeSuccessState());
+      } else {
+        print(response.body);
+        throw Exception('Failed to add liked products');
+      }
+    } catch (e) {
+      // If an error occurs
+      print(e.toString());
+      emit(AddLikeFailureState());
     }
   }
 
-  Future<void> toggleLike(int productId) async {
-    if (likedProductIds.contains(productId)) {
-      likedProductIds.remove(productId);
-    } else {
-      likedProductIds.add(productId);
-    }
-
-    // Cache the updated liked products
-    await cacheLikedProducts(likedProductIds);
-
-    emit(LikeSuccessState());
-  }
 
   Future<void> cacheLikedProducts(List<int> likedProductIds) async {
     final prefs = await SharedPreferences.getInstance();

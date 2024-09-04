@@ -18,12 +18,12 @@ class CustomFrame extends StatefulWidget {
 }
 
 class _CustomFrameState extends State<CustomFrame> {
-  bool isPressed = false;
 
   @override
   Widget build(BuildContext context) {
     bool isNetworkImage = widget.product.image.startsWith('http'); // Check if the image is a URL or a local asset
     var lCubit = context.read<LikedCubit>();
+
     return Container(
       decoration: BoxDecoration(
         color: AppColors.offWhite,
@@ -106,21 +106,24 @@ class _CustomFrameState extends State<CustomFrame> {
                     ),
                   ),
                 ),
-                IconButton(
-                  onPressed: () {
-                    isPressed = !isPressed;
-                    setState(() {});
+                BlocBuilder<LikedCubit, LikedState>(
+                  builder: (context, state) {
+                    bool isLiked = lCubit.likedProductIds.contains(widget.product.id);
+                    return IconButton(
+                      onPressed: () {
+                        if (!isLiked) {
+                          lCubit.addLikedProducts(widget.product.id);
+                        } else {
+                          // You can add a remove like function here if needed.
+                        }
+                      },
+                      icon: Icon(
+                        isLiked ? Icons.favorite : Icons.favorite_border,
+                        color: isLiked ? Colors.red : Colors.black,
+                        size: getResponsiveSize(context, fontSize: 20),
+                      ),
+                    );
                   },
-                  icon: lCubit.likedProductIds.contains(widget.product.id)
-                      ? Icon(
-                    Icons.favorite,
-                    color: Colors.red,
-                    size: getResponsiveSize(context, fontSize: 20),
-                  )
-                      : Icon(
-                    Icons.favorite_border,
-                    size: getResponsiveSize(context, fontSize: 20),
-                  ),
                 ),
               ],
             ),
@@ -156,6 +159,7 @@ class _CustomFrameState extends State<CustomFrame> {
     );
   }
 }
+
 
 
 
