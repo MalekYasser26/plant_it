@@ -69,7 +69,7 @@ class _CustomFrameState extends State<CustomFrame> {
                     ),
                     errorWidget: (context, url, error) {
                       return Image.asset(
-                        'assets/images/placeholder.png',
+                        'assets/images/plant6.png',
                         fit: BoxFit.cover,
                         height: 150,
                         width: double.infinity,

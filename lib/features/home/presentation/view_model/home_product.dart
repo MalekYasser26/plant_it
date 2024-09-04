@@ -14,16 +14,10 @@ class HomeProduct {
   });
 
   factory HomeProduct.fromJson(Map<String, dynamic> json) {
-    // Safely handle the images field and validate the image URL
     final imagesList = json['images'] as List<dynamic>?;
-    String imageUrl = "assets/images/placeholder.png"; // Fallback image path
-
-    if (imagesList != null && imagesList.isNotEmpty) {
-      String? fetchedImageUrl = imagesList[0]['img_url'];
-      if (fetchedImageUrl != null && fetchedImageUrl.isNotEmpty) {
-        imageUrl = fetchedImageUrl;
-      }
-    }
+    final String imageUrl = (imagesList != null && imagesList.isNotEmpty)
+        ? imagesList[0]['img_url'] ?? "assets/images/placeholder.png"
+        : "assets/images/placeholder.png"; // Ensure valid image URL after search
 
     return HomeProduct(
       id: json['id'],

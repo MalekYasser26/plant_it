@@ -1,6 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:plant_it/constants/constants.dart';
-
+import 'package:plant_it/features/home/presentation/view_model/home_product_cubit.dart';
+final kInnerDecoration = BoxDecoration(
+  color: Colors.white,
+  border: Border.all(color: Colors.white),
+  borderRadius: BorderRadius.circular(50),
+);
+final kGradientBoxDecoration = BoxDecoration(
+  gradient: const LinearGradient(
+    colors: [
+      AppColors.darkGreen,
+      AppColors.darkGreenL,
+      AppColors.normGreen,
+      AppColors.lightGreen,
+      AppColors.lighterGreen,
+      AppColors.barelyGreen,
+    ],
+  ),
+  borderRadius: BorderRadius.circular(50),
+);
 class SearchWidget extends StatefulWidget {
   const SearchWidget({super.key});
 
@@ -9,28 +28,11 @@ class SearchWidget extends StatefulWidget {
 }
 
 class _SearchWidgetState extends State<SearchWidget> {
-  final kInnerDecoration = BoxDecoration(
-    color: Colors.white,
-    border: Border.all(color: Colors.white),
-    borderRadius: BorderRadius.circular(50),
-  );
 
-  final kGradientBoxDecoration = BoxDecoration(
-    gradient: const LinearGradient(
-      colors: [
-        AppColors.darkGreen,
-        AppColors.darkGreenL,
-        AppColors.normGreen,
-        AppColors.lightGreen,
-        AppColors.lighterGreen,
-        AppColors.barelyGreen,
-      ],
-    ),
-    borderRadius: BorderRadius.circular(50),
-  );
+  final TextEditingController searchController = TextEditingController();
   @override
   Widget build(BuildContext context) {
-
+    var pCubit = context.read<HomeProductsCubit>();
     return Container(
       height: 50.0,
       decoration: kGradientBoxDecoration,
@@ -39,7 +41,17 @@ class _SearchWidgetState extends State<SearchWidget> {
         child: Container(
           decoration: kInnerDecoration,
           child: TextFormField(
+            controller: searchController,
             keyboardType: TextInputType.emailAddress,
+            onEditingComplete: () {
+              pCubit.searchProducts(searchController.text);
+              FocusScope.of(context).unfocus(); // Close the keyboard after search
+            },
+            onChanged: (value) {
+              if (value==""){
+                pCubit.fetchProducts();
+              }
+            },
             onTapOutside: (event) => FocusManager.instance.primaryFocus?.unfocus(),
             decoration: InputDecoration(
               labelText: "Search for your plant here...",
@@ -48,23 +60,9 @@ class _SearchWidgetState extends State<SearchWidget> {
                   fontSize: getResponsiveSize(context, fontSize: 13),
                 color: Colors.blueGrey
                   ),
-              // enabledBorder: const OutlineInputBorder(
-              //   borderRadius: BorderRadius.all(Radius.circular(50)),
-              //   borderSide: BorderSide(
-              //     color: AppColors.darkGreen,
-              //   ),
-              // ),
-              // focusedBorder: const OutlineInputBorder(
-              //   borderRadius: BorderRadius.all(Radius.circular(50)),
-              //   borderSide: BorderSide(
-              //     color: AppColors.darkGreen,
-              //   ),
-              // ),
-              prefixIcon: Icon(Icons.search,color: Colors.blueGrey,),
+              prefixIcon: const Icon(Icons.search,color: Colors.blueGrey,),
               border: InputBorder.none
-              // border: OutlineInputBorder(
-              //   borderRadius: BorderRadius.circular(10),
-              // ),
+
             ),
           ),
         ),

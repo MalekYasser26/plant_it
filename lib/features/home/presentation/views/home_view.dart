@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:plant_it/constants/constants.dart';
-import 'package:plant_it/features/home/presentation/view_model/products_cubit.dart';
+import 'package:plant_it/features/home/presentation/view_model/home_product_cubit.dart';
 import 'package:plant_it/features/home/presentation/views/widgets/cust_grid_view.dart';
 import 'package:plant_it/features/home/presentation/views/widgets/search_widget.dart';
 
@@ -17,7 +17,7 @@ class _HomeViewState extends State<HomeView> {
   void initState() {
     super.initState();
     // Fetch products when the widget initializes
-    BlocProvider.of<ProductsCubit>(context).fetchProducts();
+    BlocProvider.of<HomeProductsCubit>(context).fetchProducts();
   }
 
   @override
@@ -65,17 +65,23 @@ class _HomeViewState extends State<HomeView> {
                   const SizedBox(height: 40),
                   // Listen to ProductsCubit state and display products accordingly
                   Expanded(
-                    child: BlocBuilder<ProductsCubit, ProductsState>(
+                    child: BlocBuilder<HomeProductsCubit, HomeProductState>(
                       builder: (context, state) {
-                        if (state is ProductsLoadingState) {
+                        if (state is ProductsLoadingState || state is SearchLoadingState) {
                           return const Center(
                             child: CircularProgressIndicator(
                               color: AppColors.darkGreen,
                             ),
                           );
                         } else if (state is ProductsSuccessfulState) {
-                          return CustomGridView(products: state.products); // Show products
-                        } else if (state is ProductsFailureState) {
+                          return CustomGridView(products: state.products); // Show default products
+                        } else if (state is SearchSuccessfulState) {
+                          return CustomGridView(products: state.products); // Show search results
+                        } else if (state is SearchEmptyState) {
+                          return const Center(
+                            child: Text('No products found'),
+                          );
+                        } else if (state is ProductsFailureState || state is SearchFailureState) {
                           return const Center(
                             child: Text('Failed to load products'),
                           );
@@ -83,7 +89,6 @@ class _HomeViewState extends State<HomeView> {
                         return const SizedBox.shrink();
                       },
                     ),
-
                   ),
                 ],
               ),
