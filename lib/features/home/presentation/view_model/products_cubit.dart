@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
-import 'package:plant_it/features/home/presentation/view_model/product_model.dart';
+import 'package:plant_it/features/home/presentation/view_model/home_product.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 part 'products_state.dart';
@@ -37,6 +37,7 @@ class ProductsCubit extends Cubit<ProductsState> {
     } catch (e) {
       // If an error occurs, and no cached products are available
       if (cachedProducts.isEmpty) {
+        print(e.toString());
         emit(ProductsFailureState()); // If no cache, show failure state
       }
     }

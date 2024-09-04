@@ -5,7 +5,6 @@ class SingleProduct {
   final String bio;
   final int availableStock;
   final int likesCounter;
-  final int imagesCounter;
   final List<ProductImage> images;
   final List<ProductCategory> productCategories;
 
@@ -16,7 +15,6 @@ class SingleProduct {
     required this.bio,
     required this.availableStock,
     required this.likesCounter,
-    required this.imagesCounter,
     required this.images,
     required this.productCategories,
   });
@@ -34,12 +32,11 @@ class SingleProduct {
 
     return SingleProduct(
       id: json['id'],
-      productName: json['product_name'],
-      price: json['price'],
-      bio: json['bio'],
-      availableStock: json['available_stock'],
-      likesCounter: json['likes_counter'],
-      imagesCounter: json['images_counter'],
+      productName: json['product_name'] ??"",
+      price: json['price'] ?? 0,
+      bio: json['bio'] ?? "" ,
+      availableStock: json['available_stock']??"",
+      likesCounter: json['likes_counter']??"",
       images: imagesList,
       productCategories: categoriesList,
     );
@@ -53,7 +50,6 @@ class SingleProduct {
       'bio': bio,
       'available_stock': availableStock,
       'likes_counter': likesCounter,
-      'images_counter': imagesCounter,
       'images': images.map((image) => image.toJson()).toList(),
       'productcategory': productCategories.map((category) => category.toJson()).toList(),
     };

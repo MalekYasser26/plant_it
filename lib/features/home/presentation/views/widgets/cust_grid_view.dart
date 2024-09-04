@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:plant_it/features/home/presentation/view_model/product_model.dart';
+import 'package:plant_it/features/home/presentation/view_model/home_product.dart';
 import 'package:plant_it/features/home/presentation/views/widgets/custom_frame.dart';
 
 class CustomGridView extends StatelessWidget {

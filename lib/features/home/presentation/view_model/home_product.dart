@@ -3,7 +3,6 @@ class HomeProduct {
   final String productName;
   final String price;
   final int likesCounter;
-  final int imagesCounter;
   final String image;
 
   HomeProduct({
@@ -11,23 +10,26 @@ class HomeProduct {
     required this.productName,
     required this.price,
     required this.likesCounter,
-    required this.imagesCounter,
     required this.image,
   });
 
   factory HomeProduct.fromJson(Map<String, dynamic> json) {
-    // Safely handle the images field
+    // Safely handle the images field and validate the image URL
     final imagesList = json['images'] as List<dynamic>?;
-    final String imageUrl = (imagesList != null && imagesList.isNotEmpty)
-        ? imagesList[0]['img_url'] ?? "assets/images/plant6.png"
-        : "assets/images/plant6.png"; // Fallback if images are null or empty
+    String imageUrl = "assets/images/placeholder.png"; // Fallback image path
+
+    if (imagesList != null && imagesList.isNotEmpty) {
+      String? fetchedImageUrl = imagesList[0]['img_url'];
+      if (fetchedImageUrl != null && fetchedImageUrl.isNotEmpty) {
+        imageUrl = fetchedImageUrl;
+      }
+    }
 
     return HomeProduct(
       id: json['id'],
       productName: json['product_name'],
       price: json['price'],
       likesCounter: json['likes_counter'],
-      imagesCounter: json['images_counter'],
       image: imageUrl,
     );
   }
@@ -38,7 +40,6 @@ class HomeProduct {
       'product_name': productName,
       'price': price,
       'likes_counter': likesCounter,
-      'images_counter': imagesCounter,
       'image': image,
     };
   }

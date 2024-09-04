@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:plant_it/constants/constants.dart';
 import 'package:plant_it/features/description/presentation/views/description_view.dart';
-import 'package:plant_it/features/home/presentation/view_model/product_model.dart';
+import 'package:plant_it/features/home/presentation/view_model/home_product.dart';
 
 class CustomFrame extends StatefulWidget {
   final HomeProduct product;
@@ -20,6 +20,8 @@ class _CustomFrameState extends State<CustomFrame> {
 
   @override
   Widget build(BuildContext context) {
+    bool isNetworkImage = widget.product.image.startsWith('http'); // Check if the image is a URL or a local asset
+
     return Container(
       decoration: BoxDecoration(
         color: AppColors.offWhite,
@@ -33,8 +35,7 @@ class _CustomFrameState extends State<CustomFrame> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) =>
-                      DescriptionView(productId: widget.product.id), // Pass product ID
+                  builder: (context) => DescriptionView(productId: widget.product.id),
                 ),
               );
             },
@@ -51,27 +52,13 @@ class _CustomFrameState extends State<CustomFrame> {
                 child: ClipRRect(
                   clipBehavior: Clip.antiAlias,
                   borderRadius: BorderRadius.circular(10),
-                  child: CachedNetworkImage(
+                  child: isNetworkImage
+                      ? CachedNetworkImage(
                     imageUrl: widget.product.image,
                     fit: BoxFit.cover,
                     height: 150,
                     width: double.infinity,
-                    errorWidget: (context, url, error) {
-                      return Shimmer.fromColors(
-                        baseColor: AppColors.lighterGreen,
-                        highlightColor: AppColors.barelyGreen,
-                        child: Container(
-                          color: Colors.white,
-                          height: 150,
-                          width: double.infinity,
-                        ),
-                      );
-                    },
-                    placeholder: (
-                      context,
-                      url,
-                    ) =>
-                        Shimmer.fromColors(
+                    placeholder: (context, url) => Shimmer.fromColors(
                       baseColor: AppColors.lighterGreen,
                       highlightColor: AppColors.barelyGreen,
                       child: Container(
@@ -80,8 +67,22 @@ class _CustomFrameState extends State<CustomFrame> {
                         width: double.infinity,
                       ),
                     ),
+                    errorWidget: (context, url, error) {
+                      return Image.asset(
+                        'assets/images/placeholder.png',
+                        fit: BoxFit.cover,
+                        height: 150,
+                        width: double.infinity,
+                      );
+                    },
                     fadeInDuration: const Duration(milliseconds: 500),
                     fadeOutDuration: const Duration(milliseconds: 500),
+                  )
+                      : Image.asset(
+                    widget.product.image, // Load the local image if it's an asset
+                    fit: BoxFit.cover,
+                    height: 150,
+                    width: double.infinity,
                   ),
                 ),
               ),
@@ -110,14 +111,14 @@ class _CustomFrameState extends State<CustomFrame> {
                   },
                   icon: isPressed
                       ? Icon(
-                          Icons.favorite,
-                          color: Colors.red,
-                          size: getResponsiveSize(context, fontSize: 20),
-                        )
+                    Icons.favorite,
+                    color: Colors.red,
+                    size: getResponsiveSize(context, fontSize: 20),
+                  )
                       : Icon(
-                          Icons.favorite_border,
-                          size: getResponsiveSize(context, fontSize: 20),
-                        ),
+                    Icons.favorite_border,
+                    size: getResponsiveSize(context, fontSize: 20),
+                  ),
                 ),
               ],
             ),
@@ -153,3 +154,6 @@ class _CustomFrameState extends State<CustomFrame> {
     );
   }
 }
+
+
+
