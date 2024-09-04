@@ -1,5 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:plant_it/features/favourites/presentation/view_model/liked_cubit.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:plant_it/constants/constants.dart';
 import 'package:plant_it/features/description/presentation/views/description_view.dart';
@@ -21,7 +23,7 @@ class _CustomFrameState extends State<CustomFrame> {
   @override
   Widget build(BuildContext context) {
     bool isNetworkImage = widget.product.image.startsWith('http'); // Check if the image is a URL or a local asset
-
+    var lCubit = context.read<LikedCubit>();
     return Container(
       decoration: BoxDecoration(
         color: AppColors.offWhite,
@@ -109,7 +111,7 @@ class _CustomFrameState extends State<CustomFrame> {
                     isPressed = !isPressed;
                     setState(() {});
                   },
-                  icon: isPressed
+                  icon: lCubit.likedProductIds.contains(widget.product.id)
                       ? Icon(
                     Icons.favorite,
                     color: Colors.red,

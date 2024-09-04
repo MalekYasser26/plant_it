@@ -12,6 +12,7 @@ class AuthCubit extends Cubit<AuthState> {
   String address = '';
   String name = '';
   String phoneNum = '';
+  int userID =-1;
 
   Future<void> signIn(String email, String password) async {
     emit(SigninLoadingState());
@@ -32,11 +33,13 @@ class AuthCubit extends Cubit<AuthState> {
         name = userData['displayedName'];
         phoneNum = userData['phoneNumber'];
         address = userData['address'];
+        userID = userData['id'];
       } else {
         errorMsg = responseBody['message'];
         emit(SigninFailureState());
       }
     } catch (e) {
+      print(e.toString());
       emit(SigninFailureState());
     }
   }

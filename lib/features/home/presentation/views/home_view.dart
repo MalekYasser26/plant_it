@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:plant_it/constants/constants.dart';
+import 'package:plant_it/features/auth/presentation/view_model/auth_cubit.dart';
+import 'package:plant_it/features/favourites/presentation/view_model/liked_cubit.dart';
 import 'package:plant_it/features/home/presentation/view_model/home_product_cubit.dart';
 import 'package:plant_it/features/home/presentation/views/widgets/cust_grid_view.dart';
 import 'package:plant_it/features/home/presentation/views/widgets/search_widget.dart';
@@ -17,7 +19,11 @@ class _HomeViewState extends State<HomeView> {
   void initState() {
     super.initState();
     // Fetch products when the widget initializes
-    BlocProvider.of<HomeProductsCubit>(context).fetchProducts();
+    BlocProvider.of<HomeProductsCubit>(context).fetchProducts(
+        BlocProvider.of<LikedCubit>(context).getLikedProducts(
+            BlocProvider.of<AuthCubit>(context).userID
+        )
+    );
   }
 
   @override

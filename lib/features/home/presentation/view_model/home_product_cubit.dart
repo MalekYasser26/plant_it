@@ -11,7 +11,8 @@ class HomeProductsCubit extends Cubit<HomeProductState> {
   HomeProductsCubit() : super(ProductsInitial());
 
   // Fetch Products from API
-  Future<void> fetchProducts() async {
+  Future<void> fetchProducts(Future<void> getLikes ) async {
+    await getLikes;
     emit(ProductsLoadingState());
 
     List<HomeProduct> cachedProducts = await getCachedProducts();
@@ -79,9 +80,11 @@ class HomeProductsCubit extends Cubit<HomeProductState> {
     return [];
   }
 
-  Future<void> searchProducts(String searchedText) async {
+  Future<void> searchProducts(String searchedText, Future<void> getLikes) async {
     if (searchedText.isEmpty) {
-      fetchProducts();
+      fetchProducts(
+        getLikes
+      );
       return;
     }
     emit(SearchLoadingState());
