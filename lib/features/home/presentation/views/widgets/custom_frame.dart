@@ -21,7 +21,7 @@ class _CustomFrameState extends State<CustomFrame> {
 
   @override
   Widget build(BuildContext context) {
-    bool isNetworkImage = widget.product.image.startsWith('http'); // Check if the image is a URL or a local asset
+    bool isNetworkImage = widget.product.image.startsWith('http');
     var lCubit = context.read<LikedCubit>();
 
     return Container(
@@ -81,7 +81,7 @@ class _CustomFrameState extends State<CustomFrame> {
                     fadeOutDuration: const Duration(milliseconds: 500),
                   )
                       : Image.asset(
-                    widget.product.image, // Load the local image if it's an asset
+                    widget.product.image,
                     fit: BoxFit.cover,
                     height: 150,
                     width: double.infinity,
@@ -108,13 +108,14 @@ class _CustomFrameState extends State<CustomFrame> {
                 ),
                 BlocBuilder<LikedCubit, LikedState>(
                   builder: (context, state) {
-                    bool isLiked = lCubit.likedProductIds.contains(widget.product.id);
+                    // Check if the product ID exists in the likedProducts map
+                    bool isLiked = lCubit.likedProducts.containsKey(widget.product.id);
                     return IconButton(
                       onPressed: () {
                         if (!isLiked) {
                           lCubit.addLikedProducts(widget.product.id);
                         } else {
-                          // You can add a remove like function here if needed.
+                          lCubit.removeLikedProducts(widget.product.id);
                         }
                       },
                       icon: Icon(
@@ -159,6 +160,7 @@ class _CustomFrameState extends State<CustomFrame> {
     );
   }
 }
+
 
 
 
