@@ -11,3 +11,6 @@ final class SingleProductSuccessfulState extends SingleProductState {
 
 }
 final class SingleProductFailureState extends SingleProductState {}
+final class ProductImagesLoadingState extends SingleProductState {}
+final class ProductImagesSuccessfulState extends SingleProductState {}
+final class ProductImagesFailureState extends SingleProductState {}

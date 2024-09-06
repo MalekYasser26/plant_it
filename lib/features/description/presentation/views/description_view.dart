@@ -28,7 +28,9 @@ class _DescriptionViewState extends State<DescriptionView> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => SingleProductCubit()..fetchProductById(widget.productId),
+      create: (_) {
+        return SingleProductCubit()..fetchProductById(widget.productId);
+      },
       child: BlocBuilder<SingleProductCubit, SingleProductState>(
         builder: (context, state) {
           if (state is SingleProductLoadingState) {
@@ -50,6 +52,9 @@ class _DescriptionViewState extends State<DescriptionView> {
 
           if (state is SingleProductSuccessfulState) {
             final SingleProduct product = state.product;
+
+            // Extract image URLs from the product's images
+            final List<String> productImages = product.images.map((image) => image.imgUrl).toList();
             return SafeArea(
               child: Scaffold(
                 backgroundColor: AppColors.basicallyWhite,
@@ -66,7 +71,9 @@ class _DescriptionViewState extends State<DescriptionView> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const PlantImagesDescriptionWidget(),
+                             PlantImagesDescriptionWidget(
+                              imageLinks: productImages,
+                            ),
                             const SizedBox(height: 15),
                             Row(
                               children: [
