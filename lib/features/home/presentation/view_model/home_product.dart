@@ -2,7 +2,7 @@ class HomeProduct {
   final int id;
   final String productName;
   final String price;
-  final int likesCounter;
+  int likesCounter;
   final String image;
 
   HomeProduct({

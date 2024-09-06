@@ -18,99 +18,114 @@ class CustomFrame extends StatefulWidget {
 }
 
 class _CustomFrameState extends State<CustomFrame> {
-
   @override
   Widget build(BuildContext context) {
     bool isNetworkImage = widget.product.image.startsWith('http');
     var lCubit = context.read<LikedCubit>();
 
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.offWhite,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          InkWell(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => DescriptionView(productId: widget.product.id),
-                ),
-              );
-            },
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(
-                    color: const Color(0xFFE3DDDD),
-                    width: 2,
-                  ),
-                ),
-                child: ClipRRect(
-                  clipBehavior: Clip.antiAlias,
-                  borderRadius: BorderRadius.circular(10),
-                  child: isNetworkImage
-                      ? CachedNetworkImage(
-                    imageUrl: widget.product.image,
-                    fit: BoxFit.cover,
-                    height: 150,
-                    width: double.infinity,
-                    placeholder: (context, url) => Shimmer.fromColors(
-                      baseColor: AppColors.lighterGreen,
-                      highlightColor: AppColors.barelyGreen,
-                      child: Container(
-                        color: Colors.white,
+    // We need to make sure only the frame related to this product is updated
+    return BlocBuilder<LikedCubit, LikedState>(
+      buildWhen: (previousState, currentState) {
+        if (currentState is AddLikeSuccessState || currentState is RemoveLikeSuccessState) {
+          // Only rebuild if the product in the state matches this product's ID
+          return currentState.productID == widget.product.id;
+        }
+        return false; // No rebuild otherwise
+      },
+      builder: (context, state) {
+        int currentLikeCounter = widget.product.likesCounter;
+        if (state is AddLikeSuccessState && state.productID == widget.product.id) {
+          currentLikeCounter = state.likeCounter;
+        } else if (state is RemoveLikeSuccessState && state.productID == widget.product.id) {
+          currentLikeCounter = state.likeCounter;
+        }
+
+        bool isLiked = lCubit.likedProducts.containsKey(widget.product.id);
+
+        return Container(
+          decoration: BoxDecoration(
+            color: AppColors.offWhite,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          DescriptionView(productId: widget.product.id),
+                    ),
+                  );
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: const Color(0xFFE3DDDD),
+                        width: 2,
+                      ),
+                    ),
+                    child: ClipRRect(
+                      clipBehavior: Clip.antiAlias,
+                      borderRadius: BorderRadius.circular(10),
+                      child: isNetworkImage
+                          ? CachedNetworkImage(
+                        imageUrl: widget.product.image,
+                        fit: BoxFit.cover,
+                        height: 150,
+                        width: double.infinity,
+                        placeholder: (context, url) => Shimmer.fromColors(
+                          baseColor: AppColors.lighterGreen,
+                          highlightColor: AppColors.barelyGreen,
+                          child: Container(
+                            color: Colors.white,
+                            height: 150,
+                            width: double.infinity,
+                          ),
+                        ),
+                        errorWidget: (context, url, error) {
+                          return Image.asset(
+                            'assets/images/plant6.png',
+                            fit: BoxFit.cover,
+                            height: 150,
+                            width: double.infinity,
+                          );
+                        },
+                        fadeInDuration: const Duration(milliseconds: 500),
+                        fadeOutDuration: const Duration(milliseconds: 500),
+                      )
+                          : Image.asset(
+                        widget.product.image,
+                        fit: BoxFit.cover,
                         height: 150,
                         width: double.infinity,
                       ),
                     ),
-                    errorWidget: (context, url, error) {
-                      return Image.asset(
-                        'assets/images/plant6.png',
-                        fit: BoxFit.cover,
-                        height: 150,
-                        width: double.infinity,
-                      );
-                    },
-                    fadeInDuration: const Duration(milliseconds: 500),
-                    fadeOutDuration: const Duration(milliseconds: 500),
-                  )
-                      : Image.asset(
-                    widget.product.image,
-                    fit: BoxFit.cover,
-                    height: 150,
-                    width: double.infinity,
                   ),
                 ),
               ),
-            ),
-          ),
-          const SizedBox(height: 5),
-          Padding(
-            padding: const EdgeInsets.only(top: 8.0, left: 8, right: 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Flexible(
-                  child: Text(
-                    widget.product.productName,
-                    style: TextStyle(
-                      fontFamily: "Poppins",
-                      fontWeight: FontWeight.bold,
-                      fontSize: getResponsiveSize(context, fontSize: 15),
+              const SizedBox(height: 5),
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0, left: 8, right: 8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Flexible(
+                      child: Text(
+                        widget.product.productName,
+                        style: TextStyle(
+                          fontFamily: "Poppins",
+                          fontWeight: FontWeight.bold,
+                          fontSize: getResponsiveSize(context, fontSize: 15),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-                BlocBuilder<LikedCubit, LikedState>(
-                  builder: (context, state) {
-                    // Check if the product ID exists in the likedProducts map
-                    bool isLiked = lCubit.likedProducts.containsKey(widget.product.id);
-                    return IconButton(
+                    IconButton(
                       onPressed: () {
                         if (!isLiked) {
                           lCubit.addLikedProducts(widget.product.id);
@@ -123,40 +138,40 @@ class _CustomFrameState extends State<CustomFrame> {
                         color: isLiked ? Colors.red : Colors.black,
                         size: getResponsiveSize(context, fontSize: 20),
                       ),
-                    );
-                  },
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 8.0, left: 8, right: 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Flexible(
-                  child: Text(
-                    "${widget.product.price} EGP",
-                    style: TextStyle(
-                      fontFamily: "Raleway",
-                      fontWeight: FontWeight.bold,
-                      fontSize: getResponsiveSize(context, fontSize: 15),
                     ),
-                  ),
+                  ],
                 ),
-                Text(
-                  "${widget.product.likesCounter} likes",
-                  style: TextStyle(
-                    fontFamily: "Raleway",
-                    fontWeight: FontWeight.bold,
-                    fontSize: getResponsiveSize(context, fontSize: 15),
-                  ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8.0, left: 8, right: 8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Flexible(
+                      child: Text(
+                        "${widget.product.price} EGP",
+                        style: TextStyle(
+                          fontFamily: "Raleway",
+                          fontWeight: FontWeight.bold,
+                          fontSize: getResponsiveSize(context, fontSize: 15),
+                        ),
+                      ),
+                    ),
+                    Text(
+                      "$currentLikeCounter likes",
+                      style: TextStyle(
+                        fontFamily: "Raleway",
+                        fontWeight: FontWeight.bold,
+                        fontSize: getResponsiveSize(context, fontSize: 15),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

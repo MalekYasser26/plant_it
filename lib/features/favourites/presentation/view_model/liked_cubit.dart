@@ -10,41 +10,8 @@ class LikedCubit extends Cubit<LikedState> {
   Map<int, int> likedProducts = {};
   LikedCubit() : super(LikedInitial());
 
-  Future<void> getLikedProducts(int userID) async {
-    emit(LoadLikeLoadingState());
-    try {
-      final response = await http.get(
-        Uri.parse('$baseUrlHasoon/Likes/userId?userId=$userID'),
-        headers: {
-          'accept': '*/*',
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $accessToken',
-        },
-      );
-
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body) as List<dynamic>;
-
-        // Store the productId and likeId in the map
-        likedProducts = {
-          for (var item in data)
-            item['productId']: item['id']
-        };
-
-        // Cache the liked products
-        await cacheLikedProducts(likedProducts);
-        emit(LoadLikeSuccessState());
-      } else {
-        throw Exception('Failed to load liked products');
-      }
-    } catch (e) {
-      print(e.toString());
-      emit(LoadLikeFailureState());
-    }
-  }
-
   Future<void> addLikedProducts(int productID) async {
-    emit(AddLikeLoadingState());
+    emit(AddLikeLoadingState(likeCounter: 0, productID: -1));
     try {
       final response = await http.post(
         Uri.parse('$baseUrlHasoon/Likes?productId=$productID'),
@@ -56,31 +23,25 @@ class LikedCubit extends Cubit<LikedState> {
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = json.decode(response.body);
-        final int likeId = responseData['data']['id'];
-
-        // Add the productId and corresponding likeId to the map
+        final int likeId = responseData['data']['addedLike']['id'];
         likedProducts[productID] = likeId;
-
+        int likeCounter = responseData['data']['addedLike']['product']['likesCounter'];
         await cacheLikedProducts(likedProducts);
-        emit(AddLikeSuccessState());
+        emit(RemoveLikeSuccessState(likeCounter: likeCounter, productID: productID));
       } else {
         throw Exception('Failed to add liked products');
       }
     } catch (e) {
-      print(e.toString());
-      emit(AddLikeFailureState());
+      emit(AddLikeFailureState(likeCounter: 0, productID: -1));
     }
   }
 
   Future<void> removeLikedProducts(int productID) async {
-    emit(RemoveLikeLoadingState());
-
+    emit(RemoveLikeLoadingState(likeCounter: 0, productID: -1));
     final likeID = likedProducts[productID];
-    print('Removing like for productID: $productID, likeID: $likeID'); // Debugging
 
     if (likeID == null) {
-      emit(RemoveLikeFailureState());
-      print('Like ID not found for the given product ID');
+      emit(RemoveLikeFailureState(likeCounter: 0, productID: -1));
       return;
     }
 
@@ -94,27 +55,50 @@ class LikedCubit extends Cubit<LikedState> {
       );
 
       if (response.statusCode == 200) {
-        // Remove the productID from likedProducts map
-        print('Successfully removed like, response: ${response.body}');
         likedProducts.remove(productID);
-
-        try {
-          await cacheLikedProducts(likedProducts); // Check if there's an issue here
-          emit(RemoveLikeSuccessState());
-        } catch (e) {
-          print('Error caching liked products: ${e.toString()}');
-          emit(RemoveLikeFailureState());
-        }
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        int likeCounter = responseData['data'];
+        await cacheLikedProducts(likedProducts);
+        emit(RemoveLikeSuccessState(likeCounter: likeCounter, productID: productID));
       } else {
-        print('Failed to remove like, response: ${response.body}');
         throw Exception('Failed to remove liked product');
       }
     } catch (e) {
-      print('Error in removeLikedProducts: ${e.toString()}');
-      emit(RemoveLikeFailureState());
+      emit(RemoveLikeFailureState(likeCounter: 0, productID: -1));
     }
   }
+  Future<void> getLikedProducts(int userID) async {
+    emit(LoadLikeLoadingState(likeCounter: 0, productID: -1));
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrlHasoon/Likes/userId?userId=$userID'),
+        headers: {
+          'accept': '*/*',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $accessToken',
+        },
+      );
 
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body)['data'];
+
+        // Store the productId and likeId in the map
+        likedProducts = {
+          for (var item in data)
+            item['productId']: item['id']
+        };
+
+        // Cache the liked products
+        await cacheLikedProducts(likedProducts);
+        emit(LoadLikeSuccessState(likeCounter: 0, productID: -1));
+      } else {
+        throw Exception('Failed to load liked products');
+      }
+    } catch (e) {
+      print(e.toString());
+      emit(LoadLikeFailureState(likeCounter: 0, productID: -1));
+    }
+  }
 
   Future<void> cacheLikedProducts(Map<int, int> likedProducts) async {
     final prefs = await SharedPreferences.getInstance();
