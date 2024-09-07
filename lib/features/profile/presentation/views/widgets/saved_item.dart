@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:plant_it/constants/constants.dart';
 import 'package:plant_it/features/description/presentation/views/description_view.dart';
+import 'package:plant_it/features/home/presentation/view_model/home_product.dart';
 import 'package:plant_it/features/profile/presentation/views/widgets/fixed_rating_stars.dart';
 
 class SavedItem extends StatelessWidget {
@@ -11,6 +12,7 @@ class SavedItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    HomeProduct p = HomeProduct(id: 1, productName: "w", price: '10', likesCounter: 1, image: 's') ;
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),
@@ -27,8 +29,8 @@ class SavedItem extends StatelessWidget {
             ),
             child: InkWell(
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => const DescriptionView(
-                  productId: 1,
+                Navigator.push(context, MaterialPageRoute(builder: (context) =>  DescriptionView(
+                  product: p,
                 ),));
               },
               child: ClipRRect(

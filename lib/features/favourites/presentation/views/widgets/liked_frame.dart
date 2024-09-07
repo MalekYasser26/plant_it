@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:plant_it/constants/constants.dart';
 import 'package:plant_it/features/description/presentation/views/description_view.dart';
+import 'package:plant_it/features/home/presentation/view_model/home_product.dart';
 
 class LikedFrame extends StatefulWidget {
   final String imagePath ;
@@ -15,6 +16,8 @@ class _LikedFrameState extends State<LikedFrame> {
 
   @override
   Widget build(BuildContext context) {
+    HomeProduct p = HomeProduct(id: 1, productName: "w", price: '10', likesCounter: 1, image: 's') ;
+
     return Container(
       decoration: BoxDecoration(
         color: AppColors.offWhite,
@@ -27,8 +30,8 @@ class _LikedFrameState extends State<LikedFrame> {
               onTap: () => Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const DescriptionView(
-                    productId: 1,
+                  builder: (context) =>  DescriptionView(
+                    product: p,
                   ),
                 ),
               ),

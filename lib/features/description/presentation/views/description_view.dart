@@ -10,11 +10,13 @@ import 'package:plant_it/features/description/presentation/views/widgets/descrip
 import 'package:plant_it/features/description/presentation/views/widgets/plant_images_description.dart';
 import 'package:plant_it/features/description/presentation/view_model/single_product_cubit.dart';
 import 'package:plant_it/features/description/presentation/view_model/single_product.dart';
+import 'package:plant_it/features/favourites/presentation/view_model/liked_cubit.dart';
+import 'package:plant_it/features/home/presentation/view_model/home_product.dart';
 
 class DescriptionView extends StatefulWidget {
-  final int productId;
+  final HomeProduct product;
 
-  const DescriptionView({super.key, required this.productId});
+  const DescriptionView({super.key, required this.product});
 
   @override
   State<DescriptionView> createState() => _DescriptionViewState();
@@ -27,9 +29,11 @@ class _DescriptionViewState extends State<DescriptionView> {
 
   @override
   Widget build(BuildContext context) {
+    var lCubit = context.read<LikedCubit>();
+
     return BlocProvider(
       create: (_) {
-        return SingleProductCubit()..fetchProductById(widget.productId);
+        return SingleProductCubit()..fetchProductById(widget.product.id);
       },
       child: BlocBuilder<SingleProductCubit, SingleProductState>(
         builder: (context, state) {
@@ -49,12 +53,12 @@ class _DescriptionViewState extends State<DescriptionView> {
               ),
             );
           }
-
           if (state is SingleProductSuccessfulState) {
             final SingleProduct product = state.product;
 
             // Extract image URLs from the product's images
-            final List<String> productImages = product.images.map((image) => image.imgUrl).toList();
+            final List<String> productImages =
+                product.images.map((image) => image.imgUrl).toList();
             return SafeArea(
               child: Scaffold(
                 backgroundColor: AppColors.basicallyWhite,
@@ -71,7 +75,7 @@ class _DescriptionViewState extends State<DescriptionView> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                             PlantImagesDescriptionWidget(
+                            PlantImagesDescriptionWidget(
                               imageLinks: productImages,
                             ),
                             const SizedBox(height: 15),
@@ -94,6 +98,40 @@ class _DescriptionViewState extends State<DescriptionView> {
                                   ),
                                 ),
                                 const Spacer(),
+                                BlocBuilder<LikedCubit, LikedState>(
+                                  buildWhen: (previousState, currentState) {
+                                    if (currentState is AddLikeSuccessState || currentState is RemoveLikeSuccessState) {
+                                      // Only rebuild if the product in the state matches this product's ID
+                                      return currentState.productID == widget.product.id;
+                                    }
+                                    return false; // No rebuild otherwise
+                                  },
+
+                                  builder: (context, state) {
+                                    bool isLiked = lCubit.likedProducts.containsKey(widget.product.id);
+
+                                    return IconButton(
+                                      onPressed: () {
+                                        if (!isLiked) {
+                                          lCubit.addLikedProducts(
+                                              widget.product.id);
+                                        } else {
+                                          lCubit.removeLikedProducts(
+                                              widget.product.id);
+                                        }
+                                      },
+                                      icon: Icon(
+                                        isLiked
+                                            ? Icons.favorite
+                                            : Icons.favorite_border,
+                                        color:
+                                            isLiked ? Colors.red : Colors.black,
+                                        size: getResponsiveSize(context,
+                                            fontSize: 20),
+                                      ),
+                                    );
+                                  },
+                                ),
                                 IconButton(
                                   onPressed: () {
                                     setState(() {
@@ -102,14 +140,14 @@ class _DescriptionViewState extends State<DescriptionView> {
                                   },
                                   icon: isPressed
                                       ? const Icon(
-                                    Icons.favorite,
-                                    color: Colors.red,
-                                    size: 25,
-                                  )
+                                          Icons.bookmark_added,
+                                          color: Colors.green,
+                                          size: 25,
+                                        )
                                       : const Icon(
-                                    Icons.favorite_border,
-                                    size: 25,
-                                  ),
+                                          Icons.bookmark_border,
+                                          size: 25,
+                                        ),
                                 ),
                               ],
                             ),
@@ -120,7 +158,7 @@ class _DescriptionViewState extends State<DescriptionView> {
                               child: ListView.separated(
                                 physics: const BouncingScrollPhysics(),
                                 separatorBuilder: (context, index) =>
-                                const SizedBox(width: 5),
+                                    const SizedBox(width: 5),
                                 scrollDirection: Axis.horizontal,
                                 shrinkWrap: true,
                                 itemBuilder: (context, index) =>
@@ -137,17 +175,17 @@ class _DescriptionViewState extends State<DescriptionView> {
                                 {
                                   "header": "Appearance: ",
                                   "description":
-                                  "Monstera deliciosa is known for its large, heart-shaped leaves that develop splits and perforations as they mature."
+                                      "Monstera deliciosa is known for its large, heart-shaped leaves that develop splits and perforations as they mature."
                                 },
                                 {
                                   "header": "Soil: ",
                                   "description":
-                                  "Use a well-draining potting mix, such as a peat-based mix with added perlite or orchid bark."
+                                      "Use a well-draining potting mix, such as a peat-based mix with added perlite or orchid bark."
                                 },
                                 {
                                   "header": "Growth Habit: ",
                                   "description":
-                                  "This plant is a climbing vine in its natural habitat, using aerial roots to anchor itself to trees."
+                                      "This plant is a climbing vine in its natural habitat, using aerial roots to anchor itself to trees."
                                 },
                               ],
                             ),
@@ -171,8 +209,8 @@ class _DescriptionViewState extends State<DescriptionView> {
                                 InkWell(
                                   child: Icon(
                                     Icons.remove,
-                                    size: getResponsiveSize(
-                                        context, fontSize: 15),
+                                    size: getResponsiveSize(context,
+                                        fontSize: 15),
                                   ),
                                   onTap: () {
                                     setState(() {
@@ -186,8 +224,8 @@ class _DescriptionViewState extends State<DescriptionView> {
                                   child: Text(
                                     quantity.toString(),
                                     style: TextStyle(
-                                      fontSize: getResponsiveSize(
-                                          context, fontSize: 20),
+                                      fontSize: getResponsiveSize(context,
+                                          fontSize: 20),
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -195,8 +233,8 @@ class _DescriptionViewState extends State<DescriptionView> {
                                 InkWell(
                                   child: Icon(
                                     Icons.add,
-                                    size: getResponsiveSize(
-                                        context, fontSize: 15),
+                                    size: getResponsiveSize(context,
+                                        fontSize: 15),
                                   ),
                                   onTap: () {
                                     setState(() {
@@ -210,8 +248,7 @@ class _DescriptionViewState extends State<DescriptionView> {
                           const SizedBox(width: 20),
                           Flexible(
                             child: SizedBox(
-                              width: getResponsiveSize(
-                                  context, fontSize: 350),
+                              width: getResponsiveSize(context, fontSize: 350),
                               child: ElevatedButton(
                                 onPressed: () {
                                   print("add to cart");
@@ -236,8 +273,8 @@ class _DescriptionViewState extends State<DescriptionView> {
                                   "Add to cart",
                                   style: TextStyle(
                                     fontFamily: "Poppins",
-                                    fontSize: getResponsiveSize(
-                                        context, fontSize: 18),
+                                    fontSize: getResponsiveSize(context,
+                                        fontSize: 18),
                                     color: Colors.black,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -258,10 +295,9 @@ class _DescriptionViewState extends State<DescriptionView> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) =>
-                                    CustNavBarSelectionView(
-                                      currentIndex: _currentIndex,
-                                    ),
+                                builder: (context) => CustNavBarSelectionView(
+                                  currentIndex: _currentIndex,
+                                ),
                               ),
                             );
                           });
@@ -282,7 +318,6 @@ class _DescriptionViewState extends State<DescriptionView> {
                   text: "", // Loaded product data
                   implyLeading: true,
                 ),
-
                 body: Center(
                   child: Text(
                     'Failed to load product',
@@ -299,7 +334,6 @@ class _DescriptionViewState extends State<DescriptionView> {
                 text: "", // Loaded product data
                 implyLeading: true,
               ),
-
               body: Center(
                 child: CircularProgressIndicator(
                   color: AppColors.darkGreen,

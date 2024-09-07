@@ -3,6 +3,7 @@ import 'package:flutter_rating_stars/flutter_rating_stars.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:plant_it/constants/constants.dart';
 import 'package:plant_it/features/description/presentation/views/description_view.dart';
+import 'package:plant_it/features/home/presentation/view_model/home_product.dart';
 
 class LikedOrSavedItem extends StatelessWidget {
   final int index ;
@@ -13,10 +14,11 @@ class LikedOrSavedItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    HomeProduct p = HomeProduct(id: 1, productName: "w", price: '10', likesCounter: 1, image: 's') ;
     return InkWell(
       onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => const DescriptionView(
-          productId: 1,
+        Navigator.push(context, MaterialPageRoute(builder: (context) =>  DescriptionView(
+          product: p,
         ),));
       },
       child: Container(

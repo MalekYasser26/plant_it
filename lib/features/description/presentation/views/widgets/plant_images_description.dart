@@ -29,18 +29,18 @@ class PlantImagesDescriptionWidget extends StatelessWidget {
       crossAxisSpacing: 8,
       children: [
         StaggeredGridTile.count(
-          crossAxisCellCount: 6,
-          mainAxisCellCount: 4,
+          crossAxisCellCount: 3,
+          mainAxisCellCount: 5,
           child: _buildImage(images[0]),
         ),
         StaggeredGridTile.count(
           crossAxisCellCount: 3,
-          mainAxisCellCount: 4,
+          mainAxisCellCount: 3,
           child: _buildImage(images[1]),
         ),
         StaggeredGridTile.count(
           crossAxisCellCount: 3,
-          mainAxisCellCount: 4,
+          mainAxisCellCount: 2,
           child: _buildImage(images[2]),
         ),
       ],

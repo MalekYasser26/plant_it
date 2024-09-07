@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:plant_it/constants/constants.dart';
 import 'package:plant_it/features/description/presentation/views/description_view.dart';
+import 'package:plant_it/features/home/presentation/view_model/home_product.dart';
 import 'package:plant_it/features/profile/presentation/views/widgets/fixed_rating_stars.dart';
 
 class RecentPurchasedFrame extends StatelessWidget {
@@ -9,6 +10,8 @@ class RecentPurchasedFrame extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    HomeProduct p = HomeProduct(id: 1, productName: "w", price: '10', likesCounter: 1, image: 's') ;
+
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
@@ -21,8 +24,8 @@ class RecentPurchasedFrame extends StatelessWidget {
           // Image Section
           InkWell(
             onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => const DescriptionView(
-                productId: 1,
+              Navigator.push(context, MaterialPageRoute(builder: (context) =>  DescriptionView(
+                product: p,
               ),));
             },
             child: ClipRRect(

@@ -27,7 +27,7 @@ class LikedCubit extends Cubit<LikedState> {
         likedProducts[productID] = likeId;
         int likeCounter = responseData['data']['addedLike']['product']['likesCounter'];
         await cacheLikedProducts(likedProducts);
-        emit(RemoveLikeSuccessState(likeCounter: likeCounter, productID: productID));
+        emit(AddLikeSuccessState(likeCounter: likeCounter, productID: productID));
       } else {
         throw Exception('Failed to add liked products');
       }

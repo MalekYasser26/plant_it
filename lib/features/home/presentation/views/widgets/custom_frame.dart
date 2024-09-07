@@ -64,7 +64,7 @@ class _CustomFrameState extends State<CustomFrame> {
                       context,
                       MaterialPageRoute(
                         builder: (context) =>
-                            DescriptionView(productId: widget.product.id),
+                            DescriptionView(product: widget.product,),
                       ),
                     );
                   },

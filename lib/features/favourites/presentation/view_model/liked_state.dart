@@ -27,7 +27,7 @@ class AddLikeSuccessState extends LikedState {
   final int likeCounter;
   @override
   final int productID;
-  AddLikeSuccessState(this.productID, {required this.likeCounter}) : super(likeCounter: 0, productID: -1);
+  AddLikeSuccessState({required this.productID,required this.likeCounter}) : super(likeCounter: 0, productID: -1);
 }
 final class AddLikeFailureState extends LikedState {
   AddLikeFailureState({required super.likeCounter, required super.productID});
