@@ -28,13 +28,14 @@ class SingleProductCubit extends Cubit<SingleProductState> {
       if (response.statusCode == 200) {
         final productJson = json.decode(response.body)['product'];
         final SingleProduct product = SingleProduct.fromJson(productJson);
-
         await getProductsBookmarks(userID, product);  // Get bookmarks
         emit(SingleProductSuccessfulState(product));
       } else {
+        print(response.body);
         emit(SingleProductFailureState(product));
       }
     } catch (e) {
+      print(e.toString());
       emit(SingleProductFailureState(product));
     }
   }

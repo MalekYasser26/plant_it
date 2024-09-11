@@ -4,25 +4,26 @@ import 'package:flutter_rating_stars/flutter_rating_stars.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:plant_it/constants/constants.dart';
 import 'package:plant_it/features/description/presentation/views/description_view.dart';
+import 'package:plant_it/features/home/presentation/view_model/home_product.dart';
 import 'package:shimmer/shimmer.dart';
 
 class LikedOrSavedItem extends StatelessWidget {
-  final int index ;
+  final int index,id ;
   final bool isLiked;
   final String name , image ;
   final double price ;
   const LikedOrSavedItem({
-    super.key, required this.index, required this.isLiked, required this.name, required this.image, required this.price,
+    super.key, required this.index, required this.isLiked, required this.name, required this.image, required this.price, required this.id,
   });
 
   @override
   Widget build(BuildContext context) {
-   // HomeProduct p = HomeProduct(id: 1, productName: "w", price: '10', likesCounter: 1, image: 's') ;
+    HomeProduct p = HomeProduct(id: id, productName: "w", price: '10', likesCounter: 1, image: 's') ;
     return InkWell(
       onTap: () {
-        // Navigator.push(context, MaterialPageRoute(builder: (context) =>  DescriptionView(
-        //   product: p,
-        // ),));
+        Navigator.push(context, MaterialPageRoute(builder: (context) =>  DescriptionView(
+          product: p,
+        ),));
 
       },
       child: Container(
@@ -49,19 +50,12 @@ class LikedOrSavedItem extends StatelessWidget {
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(15),
-                  child: CachedNetworkImage(
+                  child:
+                  image.startsWith('http') ?
+                  CachedNetworkImage(
                     imageUrl: image,
                     fit: BoxFit.cover,
                     width: double.infinity,
-                    placeholder: (context, url) => Shimmer.fromColors(
-                      baseColor: AppColors.lighterGreen,
-                      highlightColor: AppColors.barelyGreen,
-                      child: Container(
-                        color: Colors.white,
-                        height: 150,
-                        width: double.infinity,
-                      ),
-                    ),
                     errorWidget: (context, url, error) {
                       return Image.asset(
                         'assets/images/placeholder.png',
@@ -72,6 +66,10 @@ class LikedOrSavedItem extends StatelessWidget {
                     },
                     fadeInDuration: const Duration(milliseconds: 500),
                     fadeOutDuration: const Duration(milliseconds: 500),
+                  ) : Image.asset(
+                    image,
+                    fit: BoxFit.cover,
+                    width: double.infinity,
                   ),
                 ),
               ),

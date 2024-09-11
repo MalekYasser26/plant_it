@@ -47,6 +47,7 @@ class RecentlyLikedSection extends StatelessWidget {
                     name: state.products[reversedIndex].productName,
                     image: state.products[reversedIndex].image,
                     price: state.products[reversedIndex].price,
+                    id:state.products[reversedIndex].id ,
                   );
                 },
                 shrinkWrap: true,

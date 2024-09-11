@@ -29,6 +29,7 @@ class RecentlySavedView extends StatelessWidget {
                       image: "",
                       name: "mONSTERA",
                       isLiked: false,
+                      id: 1,
                     ),
                     separatorBuilder: (context, index) =>
                     const SizedBox(height: 30),
