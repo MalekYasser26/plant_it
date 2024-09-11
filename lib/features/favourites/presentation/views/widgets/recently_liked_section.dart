@@ -37,35 +37,12 @@ class RecentlyLikedSection extends StatelessWidget {
               );
             }
             if (state is RecentlyLikedSuccessfulState) {
-              int totalItems = state.products.length;
-              if (totalItems <= 2) {
-                // If there are fewer than two items, show all available items
-                return ListView.separated(
-                  itemBuilder: (context, index) {
-                    return LikedOrSavedItem(
-                      index: index + 1,
-                      isLiked: true,
-                      name: state.products[index].productName,
-                      image: state.products[index].image,
-                      price: state.products[index].price,
-                    );
-                  },
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  separatorBuilder: (context, index) {
-                    return const SizedBox(height: 10);
-                  },
-                  itemCount: totalItems, // Show all available items
-                );
-              }
-
-              // Otherwise, show the last two items
               return ListView.separated(
+                reverse: true,
                 itemBuilder: (context, index) {
-                  // Get the last two items
-                  int reversedIndex = totalItems - 2 + index; // Get last two elements
+                  int reversedIndex = state.totalItems - 2 + index;
                   return LikedOrSavedItem(
-                    index: reversedIndex + 1,
+                    index: index ,
                     isLiked: true,
                     name: state.products[reversedIndex].productName,
                     image: state.products[reversedIndex].image,
@@ -77,7 +54,7 @@ class RecentlyLikedSection extends StatelessWidget {
                 separatorBuilder: (context, index) {
                   return const SizedBox(height: 10);
                 },
-                itemCount: 2, // Only show two items
+                itemCount: state.products.length.clamp(0, 2),
               );
             }
             return const SizedBox.shrink();

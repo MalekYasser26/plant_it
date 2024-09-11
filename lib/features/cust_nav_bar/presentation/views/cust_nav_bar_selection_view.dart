@@ -27,9 +27,9 @@ class _CustNavBarSelectionViewState extends State<CustNavBarSelectionView> {
       bottomNavigationBar: CustomBottomNavBar(
         currentIndex: widget.currentIndex,
         onTap: (index) {
-          // if (index ==2){
-          //   lCubit.getRecentlyLikedProducts(sCubit.userID);
-          // }
+          if (index ==2){
+            lCubit.getRecentlyLikedProducts(sCubit.userID);
+          }
           setState(() {
             widget.currentIndex = index;
           });

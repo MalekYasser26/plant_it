@@ -7,6 +7,7 @@ final class LikedPlantsInitial extends LikedPlantsState {}
 final class RecentlyLikedLoadingState extends LikedPlantsState {}
 final class RecentlyLikedSuccessfulState extends LikedPlantsState {
   final List<RecentlyLikedProductModel> products;
-  RecentlyLikedSuccessfulState(this.products);
+  final int totalItems ;
+  RecentlyLikedSuccessfulState(this.totalItems,this.products);
 }
 final class RecentlyLikedFailureState extends LikedPlantsState {}

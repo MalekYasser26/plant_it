@@ -11,7 +11,7 @@ part 'liked_plants_state.dart';
 
 class LikedPlantsCubit extends Cubit<LikedPlantsState> {
   LikedPlantsCubit() : super(LikedPlantsInitial());
-
+  int totalItems =0;
   Future<void> getRecentlyLikedProducts(int userID) async {
     emit(RecentlyLikedLoadingState());
     try {
@@ -32,10 +32,10 @@ class LikedPlantsCubit extends Cubit<LikedPlantsState> {
         final List<RecentlyLikedProductModel> products = productJson
             .map((json) => RecentlyLikedProductModel.fromJson(json))
             .toList();
-
+        final List<RecentlyLikedProductModel> lastTwoProducts = [];
         await cacheProducts(products);
-
-        emit(RecentlyLikedSuccessfulState(products));
+        totalItems = products.length;
+        emit(RecentlyLikedSuccessfulState(totalItems,products));
       } else {
         // Handle non-200 status codes
         emit(RecentlyLikedFailureState());
