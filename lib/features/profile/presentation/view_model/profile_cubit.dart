@@ -1,8 +1,11 @@
 import 'dart:convert';
 import 'package:bloc/bloc.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:meta/meta.dart';
 import 'package:http/http.dart' as http;
 import 'package:plant_it/constants/constants.dart';
+import 'package:plant_it/features/profile/presentation/view_model/recently_saved_product_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 part 'profile_state.dart';
 
 class ProfileCubit extends Cubit<ProfileState> {
@@ -12,7 +15,6 @@ class ProfileCubit extends Cubit<ProfileState> {
     required String address,
     required String phoneNumber,
     required String displayedName,
-    //required String profilePic,
   }) async {
     emit(ProfileLoadingState()); // Emit loading state
 
@@ -48,5 +50,71 @@ class ProfileCubit extends Cubit<ProfileState> {
       emit(ProfileFailureState()); // Emit failure state in case of error
       print("An error occurred: $error");
     }
+  }
+
+  Future<void> getRecentlySavedProducts(int userID) async {
+    emit(RecentlySavedLoadingState());
+    try {
+      final response = await http.get(
+        Uri.parse("$baseUrlHasoon/Likes/userId?userId=$userID"),
+        headers: {
+          'accept': '*/*',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $accessToken',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final responseBody = json.decode(response.body);
+        final List<dynamic> productJson = responseBody['data']; // Access the 'data' field
+
+        // Map each item in the 'data' list to a RecentlySavedProductModel
+        final List<RecentlySavedProductModel> products = productJson
+            .map((json) => RecentlySavedProductModel.fromJson(json))
+            .toList();
+        await cacheProducts(products);
+
+        emit(RecentlySavedSuccessfulState(products));
+      } else {
+        // Handle non-200 status codes
+        emit(RecentlySavedFailureState());
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+      emit(RecentlySavedFailureState());
+    }
+  }
+
+  Future<void> cacheProducts(List<RecentlySavedProductModel> products) async {
+    final prefs = await SharedPreferences.getInstance();
+    final String productsJson =
+    json.encode(products.map((product) => product.toJson()).toList());
+    await prefs.setString('cached_saved_products', productsJson);
+    await prefs.setInt('cache_time',
+        DateTime.now().millisecondsSinceEpoch); // Store cache time
+  }
+
+  // Retrieve Cached Products from SharedPreferences
+  Future<List<RecentlySavedProductModel>> getCachedProducts() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? productsJson = prefs.getString('cached_saved_products');
+    final int? cacheTime = prefs.getInt('cache_time');
+
+    // If cache is available and valid
+    if (productsJson != null && cacheTime != null) {
+      final int currentTime = DateTime.now().millisecondsSinceEpoch;
+      const int cacheDuration = 60 * 60 * 1000; // Cache valid for 1 hour
+
+      if (currentTime - cacheTime < cacheDuration) {
+        // Parse the JSON and map it to List<RecentlySavedProductModel>
+        final List<dynamic> productList = json.decode(productsJson);
+
+        // Ensure the list is not null and return mapped product models
+        return productList.map((json) => RecentlySavedProductModel.fromJson(json)).toList();
+      }
+    }
+
+    // If no cache is available or it's expired, return an empty list
+    return [];
   }
 }

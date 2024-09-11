@@ -3,7 +3,9 @@ import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:plant_it/features/auth/presentation/view_model/auth_cubit.dart';
 import 'package:plant_it/features/favourites/presentation/view_model/liked_cubit.dart';
+import 'package:plant_it/features/favourites/presentation/view_model/liked_plants_cubit.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:plant_it/constants/constants.dart';
 import 'package:plant_it/features/description/presentation/views/description_view.dart';
@@ -25,6 +27,8 @@ class _CustomFrameState extends State<CustomFrame> {
   Widget build(BuildContext context) {
     bool isNetworkImage = widget.product.image.startsWith('http');
     var lCubit = context.read<LikedCubit>();
+    var lpCubit = context.read<LikedPlantsCubit>();
+    var sCubit = context.read<AuthCubit>();
 
     // We need to make sure only the frame related to this product is updated
     return BlocBuilder<LikedCubit, LikedState>(
@@ -137,8 +141,11 @@ class _CustomFrameState extends State<CustomFrame> {
                         onPressed: () {
                           if (!isLiked) {
                             lCubit.addLikedProducts(widget.product.id);
+                            lpCubit.getRecentlyLikedProducts(sCubit.userID);
+
                           } else {
                             lCubit.removeLikedProducts(widget.product.id);
+                            lpCubit.getRecentlyLikedProducts(sCubit.userID);
                           }
                         },
                         icon: Icon(

@@ -14,13 +14,11 @@ class HomeProductsCubit extends Cubit<HomeProductState> {
   Future<void> fetchProducts(Future<void> getLikes ) async {
     await getLikes;
     emit(ProductsLoadingState());
-
     List<HomeProduct> cachedProducts = await getCachedProducts();
     if (cachedProducts.isNotEmpty) {
       emit(ProductsSuccessfulState(
           cachedProducts)); // Use cached data while loading fresh data
     }
-
     try {
       final response = await http.get(
         Uri.parse('$baseUrlArsoon/Product/GetAll'),
@@ -34,7 +32,6 @@ class HomeProductsCubit extends Cubit<HomeProductState> {
 
         // Cache products locally
         await cacheProducts(products);
-
         emit(ProductsSuccessfulState(products));
       } else {
         throw Exception('Failed to load products');

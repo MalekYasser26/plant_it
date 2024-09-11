@@ -21,7 +21,6 @@ class _HiBrunoSectionState extends State<HiBrunoSection> {
   @override
   Widget build(BuildContext context) {
     var sCubit = context.read<AuthCubit>();
-
     return Row(
       children: [
         InkWell(

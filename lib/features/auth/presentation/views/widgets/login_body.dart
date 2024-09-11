@@ -9,6 +9,8 @@ import 'package:plant_it/features/auth/presentation/views/widgets/join_through_w
 import 'package:plant_it/features/auth/presentation/views/widgets/login_button.dart';
 import 'package:plant_it/features/auth/presentation/views/widgets/password_widget.dart';
 import 'package:plant_it/features/cust_nav_bar/presentation/views/cust_nav_bar_selection_view.dart';
+import 'package:plant_it/features/favourites/presentation/view_model/liked_plants_cubit.dart';
+import 'package:plant_it/features/profile/presentation/view_model/profile_cubit.dart';
 
 class LoginBody extends StatelessWidget {
   LoginBody({super.key});
@@ -23,6 +25,9 @@ class LoginBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var sCubit = context.read<AuthCubit>();
+    var pCubit = context.read<ProfileCubit>();
+    var lCubit = context.read<LikedPlantsCubit>();
+
     return SafeArea(
       child: Scaffold(
         backgroundColor: AppColors.basicallyWhite,
@@ -34,7 +39,8 @@ class LoginBody extends StatelessWidget {
               child: BlocConsumer<AuthCubit, AuthState>(
                 listener: (context, state) {
                   if (state is SigninSuccessState) {
-                    // Navigate on successful login
+                    pCubit.getRecentlySavedProducts(sCubit.userID);
+                    lCubit.getRecentlyLikedProducts(sCubit.userID);
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(

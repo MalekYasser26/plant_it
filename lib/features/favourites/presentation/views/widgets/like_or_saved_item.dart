@@ -1,25 +1,29 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_stars/flutter_rating_stars.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:plant_it/constants/constants.dart';
 import 'package:plant_it/features/description/presentation/views/description_view.dart';
-import 'package:plant_it/features/home/presentation/view_model/home_product.dart';
+import 'package:shimmer/shimmer.dart';
 
 class LikedOrSavedItem extends StatelessWidget {
   final int index ;
   final bool isLiked;
+  final String name , image ;
+  final double price ;
   const LikedOrSavedItem({
-    super.key, required this.index, required this.isLiked,
+    super.key, required this.index, required this.isLiked, required this.name, required this.image, required this.price,
   });
 
   @override
   Widget build(BuildContext context) {
-    HomeProduct p = HomeProduct(id: 1, productName: "w", price: '10', likesCounter: 1, image: 's') ;
+   // HomeProduct p = HomeProduct(id: 1, productName: "w", price: '10', likesCounter: 1, image: 's') ;
     return InkWell(
       onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) =>  DescriptionView(
-          product: p,
-        ),));
+        // Navigator.push(context, MaterialPageRoute(builder: (context) =>  DescriptionView(
+        //   product: p,
+        // ),));
+
       },
       child: Container(
         decoration: BoxDecoration(
@@ -45,9 +49,29 @@ class LikedOrSavedItem extends StatelessWidget {
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(15),
-                  child: Image.asset(
-                    'assets/images/plant$index.png',
+                  child: CachedNetworkImage(
+                    imageUrl: image,
                     fit: BoxFit.cover,
+                    width: double.infinity,
+                    placeholder: (context, url) => Shimmer.fromColors(
+                      baseColor: AppColors.lighterGreen,
+                      highlightColor: AppColors.barelyGreen,
+                      child: Container(
+                        color: Colors.white,
+                        height: 150,
+                        width: double.infinity,
+                      ),
+                    ),
+                    errorWidget: (context, url, error) {
+                      return Image.asset(
+                        'assets/images/placeholder.png',
+                        fit: BoxFit.cover,
+                        height: 150,
+                        width: double.infinity,
+                      );
+                    },
+                    fadeInDuration: const Duration(milliseconds: 500),
+                    fadeOutDuration: const Duration(milliseconds: 500),
                   ),
                 ),
               ),
@@ -60,7 +84,7 @@ class LikedOrSavedItem extends StatelessWidget {
                   Row(
                     children: [
                       Text(
-                        "Monstera Plant",
+                        name,
                         style: TextStyle(
                           fontFamily: "Poppins",
                           fontWeight: FontWeight.bold,
@@ -99,7 +123,7 @@ class LikedOrSavedItem extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            "222 ",
+                            "$price ",
                             style: TextStyle(
                               fontFamily: "Raleway",
                               fontSize: getResponsiveSize(context,
