@@ -8,11 +8,10 @@ import 'package:plant_it/features/profile/presentation/views/widgets/fixed_ratin
 import 'package:shimmer/shimmer.dart';
 
 class SavedItem extends StatelessWidget {
-  final int index;
-  final double price ;
-  final String name,image ;
+  final int index,id;
+  final String name,image,price ;
   const SavedItem({
-    super.key, required this.index, required this.price, required this.name, required this.image,
+    super.key, required this.index, required this.price, required this.name, required this.image, required this.id,
   });
 
   @override
@@ -38,7 +37,6 @@ class SavedItem extends StatelessWidget {
                 // Navigator.push(context, MaterialPageRoute(builder: (context) =>  DescriptionView(
                 //   product: p,
                 // ),));
-                pCubit.getRecentlySavedProducts(11);
               },
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(15),

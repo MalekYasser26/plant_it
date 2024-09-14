@@ -6,11 +6,13 @@ import 'package:http/http.dart' as http;
 import 'package:plant_it/constants/constants.dart';
 import 'package:plant_it/features/profile/presentation/view_model/recently_saved_product_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 part 'profile_state.dart';
 
 class ProfileCubit extends Cubit<ProfileState> {
   ProfileCubit() : super(ProfileInitial());
 
+  // Method to update user profile
   Future<void> updateUser({
     required String address,
     required String phoneNumber,
@@ -24,7 +26,6 @@ class ProfileCubit extends Cubit<ProfileState> {
         "address": address,
         "phoneNumber": phoneNumber,
         "displayedName": displayedName,
-        //  "profilePic": profilePic,
       };
 
       // Sending the PUT request
@@ -52,11 +53,12 @@ class ProfileCubit extends Cubit<ProfileState> {
     }
   }
 
-  Future<void> getRecentlySavedProducts(int userID) async {
+  Future<void> getRecentlySavedProducts() async {
     emit(RecentlySavedLoadingState());
+
     try {
       final response = await http.get(
-        Uri.parse("$baseUrlHasoon/Likes/userId?userId=$userID"),
+        Uri.parse("$baseUrlHasoon/Bookmark/userBookMarks"),
         headers: {
           'accept': '*/*',
           'Content-Type': 'application/json',
@@ -65,36 +67,35 @@ class ProfileCubit extends Cubit<ProfileState> {
       );
 
       if (response.statusCode == 200) {
-        final responseBody = json.decode(response.body);
-        final List<dynamic> productJson = responseBody['data']; // Access the 'data' field
+        final responseBody = json.decode(response.body) as List<dynamic>;
 
-        // Map each item in the 'data' list to a RecentlySavedProductModel
-        final List<RecentlySavedProductModel> products = productJson
+        // Parse the response and map each product to RecentlySavedProductModel
+        final List<RecentlySavedProductModel> savedProducts = responseBody
             .map((json) => RecentlySavedProductModel.fromJson(json))
             .toList();
-        await cacheProducts(products);
 
-        emit(RecentlySavedSuccessfulState(products));
+        emit(RecentlySavedSuccessfulState(savedProducts));
       } else {
-        // Handle non-200 status codes
         emit(RecentlySavedFailureState());
+        print("Failed to load saved products: ${response.statusCode}");
       }
-    } catch (e) {
-      debugPrint(e.toString());
+    } catch (error) {
       emit(RecentlySavedFailureState());
+      print("An error occurred: $error");
     }
   }
+
 
   Future<void> cacheProducts(List<RecentlySavedProductModel> products) async {
     final prefs = await SharedPreferences.getInstance();
     final String productsJson =
     json.encode(products.map((product) => product.toJson()).toList());
     await prefs.setString('cached_saved_products', productsJson);
-    await prefs.setInt('cache_time',
-        DateTime.now().millisecondsSinceEpoch); // Store cache time
+    await prefs.setInt(
+        'cache_time', DateTime.now().millisecondsSinceEpoch); // Store cache time
   }
 
-  // Retrieve Cached Products from SharedPreferences
+  // Retrieve cached products from SharedPreferences
   Future<List<RecentlySavedProductModel>> getCachedProducts() async {
     final prefs = await SharedPreferences.getInstance();
     final String? productsJson = prefs.getString('cached_saved_products');
@@ -110,7 +111,9 @@ class ProfileCubit extends Cubit<ProfileState> {
         final List<dynamic> productList = json.decode(productsJson);
 
         // Ensure the list is not null and return mapped product models
-        return productList.map((json) => RecentlySavedProductModel.fromJson(json)).toList();
+        return productList
+            .map((json) => RecentlySavedProductModel.fromJson(json))
+            .toList();
       }
     }
 

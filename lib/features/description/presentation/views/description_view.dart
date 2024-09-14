@@ -13,6 +13,7 @@ import 'package:plant_it/features/description/presentation/view_model/single_pro
 import 'package:plant_it/features/description/presentation/view_model/single_product.dart';
 import 'package:plant_it/features/favourites/presentation/view_model/liked_cubit.dart';
 import 'package:plant_it/features/home/presentation/view_model/home_product.dart';
+import 'package:plant_it/features/profile/presentation/view_model/profile_cubit.dart';
 
 class DescriptionView extends StatefulWidget {
   final HomeProduct product;
@@ -33,15 +34,16 @@ class _DescriptionViewState extends State<DescriptionView> {
     super.initState();
     // Fetch bookmarks and product data
     BlocProvider.of<SingleProductCubit>(context).fetchProductById(
-      context.read<AuthCubit>().userID,
-      SingleProduct(id: widget.product.id, productName:'',
-          price: '0', bio: '', availableStock: 0, likesCounter: 0, images: [], productCategories: [])
+        context.read<AuthCubit>().userID,
+        SingleProduct(id: widget.product.id, productName:'',
+            price: '0', bio: '', availableStock: 0, likesCounter: 0, images: [], productCategories: [])
     );
   }
 
   Widget build(BuildContext context) {
     var lCubit = context.read<LikedCubit>();
     var sCubit = context.read<SingleProductCubit>();
+    var pCubit = context.read<ProfileCubit>();
     return BlocBuilder<SingleProductCubit, SingleProductState>(
       buildWhen: (previousState, currentState) {
         // Rebuild when the product is successfully loaded
@@ -69,11 +71,11 @@ class _DescriptionViewState extends State<DescriptionView> {
         ) {
           final SingleProduct product = state.product;
           bool isBookmarked =
-              sCubit.bookmarkedProducts.containsKey(widget.product.id);
+          sCubit.bookmarkedProducts.containsKey(widget.product.id);
 
           // Extract image URLs from the product's images
           final List<String> productImages =
-              product.images.map((image) => image.imgUrl).toList();
+          product.images.map((image) => image.imgUrl).toList();
           return SafeArea(
             child: Scaffold(
               backgroundColor: AppColors.basicallyWhite,
@@ -142,7 +144,7 @@ class _DescriptionViewState extends State<DescriptionView> {
                                           ? Icons.favorite
                                           : Icons.favorite_border,
                                       color:
-                                          isLiked ? Colors.red : Colors.black,
+                                      isLiked ? Colors.red : Colors.black,
                                       size: getResponsiveSize(context,
                                           fontSize: 20),
                                     ),
@@ -151,22 +153,27 @@ class _DescriptionViewState extends State<DescriptionView> {
                               ),
                               IconButton(
                                 onPressed: () {
+                                  print(sCubit.bookmarkedProducts);
                                   if (!isBookmarked) {
                                     sCubit.addBookmarkedProducts(product);
+                                    pCubit.getRecentlySavedProducts();
+
                                   } else {
                                     sCubit.removeBookmarkedProducts(product);
+                                    pCubit.getRecentlySavedProducts();
+
                                   }
                                 },
                                 icon: sCubit.isBookmarked(widget.product.id)
                                     ? const Icon(
-                                        Icons.bookmark_added,
-                                        color: Colors.green,
-                                        size: 25,
-                                      )
+                                  Icons.bookmark_added,
+                                  color: Colors.green,
+                                  size: 25,
+                                )
                                     : const Icon(
-                                        Icons.bookmark_border,
-                                        size: 25,
-                                      ),
+                                  Icons.bookmark_border,
+                                  size: 25,
+                                ),
                               ),
                             ],
                           ),
@@ -177,7 +184,7 @@ class _DescriptionViewState extends State<DescriptionView> {
                             child: ListView.separated(
                               physics: const BouncingScrollPhysics(),
                               separatorBuilder: (context, index) =>
-                                  const SizedBox(width: 5),
+                              const SizedBox(width: 5),
                               scrollDirection: Axis.horizontal,
                               shrinkWrap: true,
                               itemBuilder: (context, index) =>
@@ -194,17 +201,17 @@ class _DescriptionViewState extends State<DescriptionView> {
                               {
                                 "header": "Appearance: ",
                                 "description":
-                                    "Monstera deliciosa is known for its large, heart-shaped leaves that develop splits and perforations as they mature."
+                                "Monstera deliciosa is known for its large, heart-shaped leaves that develop splits and perforations as they mature."
                               },
                               {
                                 "header": "Soil: ",
                                 "description":
-                                    "Use a well-draining potting mix, such as a peat-based mix with added perlite or orchid bark."
+                                "Use a well-draining potting mix, such as a peat-based mix with added perlite or orchid bark."
                               },
                               {
                                 "header": "Growth Habit: ",
                                 "description":
-                                    "This plant is a climbing vine in its natural habitat, using aerial roots to anchor itself to trees."
+                                "This plant is a climbing vine in its natural habitat, using aerial roots to anchor itself to trees."
                               },
                             ],
                           ),
@@ -229,7 +236,7 @@ class _DescriptionViewState extends State<DescriptionView> {
                                 child: Icon(
                                   Icons.remove,
                                   size:
-                                      getResponsiveSize(context, fontSize: 15),
+                                  getResponsiveSize(context, fontSize: 15),
                                 ),
                                 onTap: () {
                                   setState(() {
@@ -239,7 +246,7 @@ class _DescriptionViewState extends State<DescriptionView> {
                               ),
                               Padding(
                                 padding:
-                                    const EdgeInsets.symmetric(horizontal: 5.0),
+                                const EdgeInsets.symmetric(horizontal: 5.0),
                                 child: Text(
                                   quantity.toString(),
                                   style: TextStyle(
@@ -253,7 +260,7 @@ class _DescriptionViewState extends State<DescriptionView> {
                                 child: Icon(
                                   Icons.add,
                                   size:
-                                      getResponsiveSize(context, fontSize: 15),
+                                  getResponsiveSize(context, fontSize: 15),
                                 ),
                                 onTap: () {
                                   setState(() {
@@ -293,7 +300,7 @@ class _DescriptionViewState extends State<DescriptionView> {
                                 style: TextStyle(
                                   fontFamily: "Poppins",
                                   fontSize:
-                                      getResponsiveSize(context, fontSize: 18),
+                                  getResponsiveSize(context, fontSize: 18),
                                   color: Colors.black,
                                   fontWeight: FontWeight.bold,
                                 ),

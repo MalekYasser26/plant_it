@@ -28,7 +28,7 @@ class SingleProductCubit extends Cubit<SingleProductState> {
       if (response.statusCode == 200) {
         final productJson = json.decode(response.body)['product'];
         final SingleProduct product = SingleProduct.fromJson(productJson);
-        await getProductsBookmarks(userID, product);  // Get bookmarks
+        await getProductsBookmarks(state.productID, product);  // Get bookmarks
         emit(SingleProductSuccessfulState(product));
       } else {
         print(response.body);
@@ -59,11 +59,11 @@ class SingleProductCubit extends Cubit<SingleProductState> {
     }
   }
 
-  Future<void> getProductsBookmarks(int userID,SingleProduct product) async {
+  Future<void> getProductsBookmarks(int productID,SingleProduct product) async {
     emit(BookmarkLoadingState(product));
     try {
       final response = await http.get(
-        Uri.parse('$baseUrlHasoon/Bookmark/userId?userId=$userID'),
+        Uri.parse('$baseUrlHasoon/Bookmark/productId?productId=$productID'),
         headers: {
           'accept': 'application/json',
           'Authorization': 'Bearer $accessToken',
@@ -77,6 +77,7 @@ class SingleProductCubit extends Cubit<SingleProductState> {
         await cacheBookmarkedProducts(bookmarkedProducts); // Cache the bookmarks
         emit(BookmarkSuccessfulState(product));
       } else {
+        print(response.body);
         throw Exception('Failed to load bookmark');
       }
     } catch (e) {
@@ -115,7 +116,6 @@ class SingleProductCubit extends Cubit<SingleProductState> {
   Future<void> removeBookmarkedProducts(SingleProduct product) async {
     emit(RemoveBookmarkLoadingState(product));
     final bookmarkID = bookmarkedProducts[product.id];
-
     if (bookmarkID == null) {
       debugPrint("null");
       emit(RemoveBookmarkFailureState(product));
@@ -130,7 +130,6 @@ class SingleProductCubit extends Cubit<SingleProductState> {
           'Authorization': 'Bearer $accessToken',
         },
       );
-
       if (response.statusCode == 200) {
         bookmarkedProducts.remove(product.id);
         await cacheBookmarkedProducts(bookmarkedProducts);

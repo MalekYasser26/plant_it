@@ -1,35 +1,33 @@
 class RecentlySavedProductModel {
   final int id;
-  final String productName;
+  final String name;
   final double price;
-  final String image;
+  final String? imgUrl;
 
   RecentlySavedProductModel({
     required this.id,
-    required this.productName,
+    required this.name,
     required this.price,
-    required this.image,
+    this.imgUrl,
   });
 
+  // Factory method to create an instance from JSON
   factory RecentlySavedProductModel.fromJson(Map<String, dynamic> json) {
-    // Extract product details from the nested "product" object
-    final product = json['product'] as Map<String, dynamic>;
-    final String productImage = product['productImage'] ?? "assets/images/placeholder.png";
-
     return RecentlySavedProductModel(
-      id: json['id'],
-      productName: product['productName'] ?? 'Unknown',
-      price: product['price'],
-      image: productImage,
+      id: json['product']['id'],
+      name: json['product']['productName'],
+      price: (json['product']['price'] as num).toDouble(),
+      imgUrl: json['product']['image'] != null ? json['product']['image']['imgUrl'] : null,
     );
   }
 
+  // Method to convert instance to JSON (if needed)
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'productName': productName,
+      'name': name,
       'price': price,
-      'image': image,
+      'imgUrl': imgUrl,
     };
   }
 }
