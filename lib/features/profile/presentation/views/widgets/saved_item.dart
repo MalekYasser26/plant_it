@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:plant_it/constants/constants.dart';
+import 'package:plant_it/features/description/presentation/views/description_view.dart';
 import 'package:plant_it/features/home/presentation/view_model/home_product.dart';
 import 'package:plant_it/features/profile/presentation/view_model/profile_cubit.dart';
 import 'package:plant_it/features/profile/presentation/views/widgets/fixed_rating_stars.dart';
@@ -16,7 +17,7 @@ class SavedItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    HomeProduct p = HomeProduct(id: 1, productName: "w", price: '10', likesCounter: 1, image: 's') ;
+    HomeProduct p = HomeProduct(id: id, productName: "w", price: '10', likesCounter: 1, image: 's') ;
     var pCubit = context.read<ProfileCubit>();
     return Container(
       decoration: BoxDecoration(
@@ -34,9 +35,9 @@ class SavedItem extends StatelessWidget {
             ),
             child: InkWell(
               onTap: () {
-                // Navigator.push(context, MaterialPageRoute(builder: (context) =>  DescriptionView(
-                //   product: p,
-                // ),));
+                Navigator.push(context, MaterialPageRoute(builder: (context) =>  DescriptionView(
+                  product: p,
+                ),));
               },
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(15),
