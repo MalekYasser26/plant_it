@@ -11,7 +11,7 @@ part 'profile_state.dart';
 
 class ProfileCubit extends Cubit<ProfileState> {
   ProfileCubit() : super(ProfileInitial());
-
+   List<RecentlySavedProductModel> savedProducts = [];
   // Method to update user profile
   Future<void> updateUser({
     required String address,
@@ -70,7 +70,7 @@ class ProfileCubit extends Cubit<ProfileState> {
         final responseBody = json.decode(response.body) as List<dynamic>;
 
         // Parse the response and map each product to RecentlySavedProductModel
-        final List<RecentlySavedProductModel> savedProducts = responseBody
+         savedProducts = responseBody
             .map((json) => RecentlySavedProductModel.fromJson(json))
             .toList();
 

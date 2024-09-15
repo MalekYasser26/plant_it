@@ -82,6 +82,9 @@ class _DescriptionViewState extends State<DescriptionView> {
               appBar: CustAppBar(
                 text: product.productName, // Loaded product data
                 implyLeading: true,
+                methodNeededtoCall: () {
+                  pCubit.getRecentlySavedProducts();
+                },
               ),
               body: Column(
                 children: [
@@ -336,14 +339,14 @@ class _DescriptionViewState extends State<DescriptionView> {
           );
         }
         if (state is SingleProductFailureState) {
-          return const SafeArea(
+          return  SafeArea(
             child: Scaffold(
               backgroundColor: AppColors.basicallyWhite,
               appBar: CustAppBar(
                 text: "", // Loaded product data
                 implyLeading: true,
               ),
-              body: Center(
+              body: const Center(
                 child: Text(
                   'Failed to load product',
                   style: TextStyle(fontSize: 18),
@@ -352,14 +355,14 @@ class _DescriptionViewState extends State<DescriptionView> {
             ),
           );
         }
-        return const SafeArea(
+        return  SafeArea(
           child: Scaffold(
             backgroundColor: AppColors.basicallyWhite,
             appBar: CustAppBar(
               text: "", // Loaded product data
               implyLeading: true,
             ),
-            body: Center(
+            body: const Center(
               child: CircularProgressIndicator(
                 color: AppColors.darkGreen,
               ),

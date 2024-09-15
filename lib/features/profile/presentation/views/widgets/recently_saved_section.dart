@@ -17,8 +17,6 @@ class RecentlySavedSection extends StatefulWidget {
 class _RecentlySavedSectionState extends State<RecentlySavedSection> {
   @override
   Widget build(BuildContext context) {
-    var pCubit = context.read<ProfileCubit>();
-
     return BlocBuilder<ProfileCubit, ProfileState>(
       builder: (context, state) {
         return Column(
@@ -36,15 +34,11 @@ class _RecentlySavedSectionState extends State<RecentlySavedSection> {
                 ),
                 TextButton(
                   onPressed: () {
-                    if (state is RecentlySavedSuccessfulState) {
-                      final savedProducts = state.savedProducts;
-
+                    if (state is RecentlySavedSuccessfulState ) {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => RecentlySavedView(
-                            savedProducts: savedProducts, // Pass the list of saved products
-                          ),
+                          builder: (context) => const RecentlySavedView(),
                         ),
                       );
                     }
@@ -69,13 +63,13 @@ class _RecentlySavedSectionState extends State<RecentlySavedSection> {
               height: 100, // Set a fixed height for the ListView
               child: () {
                 // Show loading spinner when in loading state
-                if (state is RecentlySavedLoadingState) {
-                  return const Center(
-                    child: CircularProgressIndicator(
-                      backgroundColor: AppColors.darkGreenL,
-                    ),
-                  );
-                }
+                // if (state is RecentlySavedLoadingState) {
+                //   return const Center(
+                //     child: CircularProgressIndicator(
+                //       backgroundColor: AppColors.darkGreenL,
+                //     ),
+                //   );
+                // }
 
                 // Show the saved items list if the state is successful
                 if (state is RecentlySavedSuccessfulState) {
@@ -95,7 +89,7 @@ class _RecentlySavedSectionState extends State<RecentlySavedSection> {
                           // Use actual product price
                           name: product.name,
                           // Use actual product name
-                          image: product.imgUrl ?? 'assets/images/placeholder.png',
+                          image: product.imgUrl.toString(),
                           id: product.id, // Pass the product ID
                         ),
                       );

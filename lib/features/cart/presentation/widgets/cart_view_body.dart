@@ -8,13 +8,13 @@ class CartViewBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const SafeArea(
+    return  SafeArea(
       child: Scaffold(
         backgroundColor: AppColors.basicallyWhite,
         appBar: CustAppBar(text: "Your cart",
         implyLeading: false,
         ),
-        body:  Center(
+        body:  const Center(
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 15.0),
             child: CartFilled()

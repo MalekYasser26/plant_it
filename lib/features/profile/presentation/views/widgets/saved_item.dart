@@ -1,24 +1,34 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:plant_it/constants/constants.dart';
 import 'package:plant_it/features/description/presentation/views/description_view.dart';
 import 'package:plant_it/features/home/presentation/view_model/home_product.dart';
-import 'package:plant_it/features/profile/presentation/view_model/profile_cubit.dart';
 import 'package:plant_it/features/profile/presentation/views/widgets/fixed_rating_stars.dart';
 import 'package:shimmer/shimmer.dart';
 
 class SavedItem extends StatelessWidget {
-  final int index,id;
-  final String name,image,price ;
+  final int index, id;
+  final String name, image, price;
+
   const SavedItem({
-    super.key, required this.index, required this.price, required this.name, required this.image, required this.id,
+    super.key,
+    required this.index,
+    required this.price,
+    required this.name,
+    required this.image,
+    required this.id,
   });
 
   @override
   Widget build(BuildContext context) {
-    HomeProduct p = HomeProduct(id: id, productName: "w", price: '10', likesCounter: 1, image: 's') ;
-    var pCubit = context.read<ProfileCubit>();
+    HomeProduct p = HomeProduct(
+        id: id,
+        productName: "w",
+        price: '10',
+        likesCounter: 1,
+        image: 's'
+    );
+
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),
@@ -35,13 +45,17 @@ class SavedItem extends StatelessWidget {
             ),
             child: InkWell(
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) =>  DescriptionView(
-                  product: p,
-                ),));
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => DescriptionView(product: p),
+                  ),
+                );
               },
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(15),
-                child: CachedNetworkImage(
+                child: image.isNotEmpty && image != 'null' // Check for a valid image URL
+                    ? CachedNetworkImage(
                   imageUrl: image,
                   fit: BoxFit.cover,
                   width: double.infinity,
@@ -64,6 +78,12 @@ class SavedItem extends StatelessWidget {
                   },
                   fadeInDuration: const Duration(milliseconds: 500),
                   fadeOutDuration: const Duration(milliseconds: 500),
+                )
+                    : Image.asset(
+                  'assets/images/placeholder.png', // Use a placeholder if the image URL is invalid
+                  fit: BoxFit.cover,
+                  height: 150,
+                  width: double.infinity,
                 ),
               ),
             ),
@@ -74,14 +94,13 @@ class SavedItem extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(right: 4.0,left: 3),
+                  padding: const EdgeInsets.only(right: 4.0, left: 3),
                   child: Text(
                     name,
                     style: TextStyle(
                       fontFamily: "Poppins",
                       fontWeight: FontWeight.bold,
                       fontSize: getResponsiveSize(context, fontSize: 16),
-
                     ),
                   ),
                 ),
@@ -115,6 +134,5 @@ class SavedItem extends StatelessWidget {
         ],
       ),
     );
-
   }
 }

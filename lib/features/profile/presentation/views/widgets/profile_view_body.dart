@@ -17,7 +17,7 @@ class ProfileViewBody extends StatefulWidget {
 class _ProfileViewBodyState extends State<ProfileViewBody> {
   @override
   Widget build(BuildContext context) {
-    return const SafeArea(
+    return  SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         backgroundColor: AppColors.basicallyWhite,
@@ -25,7 +25,7 @@ class _ProfileViewBodyState extends State<ProfileViewBody> {
           text: "Your profile",
           implyLeading: false,
         ),
-        body: Padding(
+        body: const Padding(
           padding: EdgeInsets.all(15.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

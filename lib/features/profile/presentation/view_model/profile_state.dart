@@ -6,7 +6,8 @@ sealed class ProfileState {}
 final class ProfileInitial extends ProfileState {}
 final class ProfileLoadingState extends ProfileState {}
 final class ProfileSuccessfulState extends ProfileState {}
-final class ProfileFailureState extends ProfileState {}
+final class ProfileFailureState extends ProfileState {
+}
 final class RecentlySavedLoadingState extends ProfileState {}
 
 // Updated to hold List<RecentlySavedProductModel>

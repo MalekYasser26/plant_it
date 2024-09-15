@@ -5,13 +5,14 @@ import 'package:meta/meta.dart';
 import 'package:plant_it/constants/constants.dart';
 import 'package:plant_it/features/description/presentation/view_model/single_product.dart';
 import 'package:http/http.dart' as http;
+import 'package:plant_it/features/profile/presentation/view_model/recently_saved_product_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 part 'single_product_state.dart';
 
 class SingleProductCubit extends Cubit<SingleProductState> {
   late Map<int, int> bookmarkedProducts = {};
-
+   List<RecentlySavedProductModel>savedProducts =[];
   SingleProductCubit() : super(SingleProductInitial(
       SingleProduct(id: -1, productName: '', price: '0', bio: '', availableStock: 0, likesCounter: 0, images: [], productCategories: [])
 

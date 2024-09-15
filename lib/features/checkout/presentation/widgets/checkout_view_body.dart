@@ -22,7 +22,7 @@ class _CheckoutViewBodyState extends State<CheckoutViewBody> {
     return   SafeArea(
       child: Scaffold(
         backgroundColor: AppColors.basicallyWhite,
-        appBar: const CustAppBar(
+        appBar: CustAppBar(
           text: "Checkout",
           implyLeading: true,
         ),
