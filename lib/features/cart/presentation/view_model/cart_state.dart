@@ -13,3 +13,7 @@ class CartSuccessfulStateFilled extends CartState {
   CartSuccessfulStateFilled({required this.cartItems});
 }
 final class CartFailureState extends CartState {}
+final class UpdateCartLoadingState extends CartState {}
+final class UpdateCartSuccessState extends CartState {}
+final class UpdateCartFailureState extends CartState {}
+

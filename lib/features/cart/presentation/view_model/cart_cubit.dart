@@ -15,7 +15,6 @@ class CartCubit extends Cubit<CartState> {
   Map<int, int> cartIDs = {};
 
   Future<void> getCartItems() async {
-    emit(CartLoadingState());
     try {
       final response = await http.get(
         Uri.parse('$baseUrlHasoon/Cart/userCart'),
@@ -38,6 +37,7 @@ class CartCubit extends Cubit<CartState> {
               name: item['product']['productName'],
               price: item['product']['price'],
               quantity: item['quantity'],
+              productID: item['productId'],
             ),
           );
           cartIDs[item['productId']] =
@@ -51,6 +51,31 @@ class CartCubit extends Cubit<CartState> {
       emit(CartFailureState()); // Handle error state
     }
   }
+  Future<void> updateCartItem(int productId, int quantity) async {
+    try {
+      final response = await http.put(
+        Uri.parse('$baseUrlHasoon/Cart'),
+        headers: {
+          'accept': '*/*',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $accessToken', // Pass your access token here
+        },
+        body: jsonEncode({
+          'productId': productId,
+          'quantity': quantity,
+        }),
+      );
 
+      if (response.statusCode == 200) {
+        emit(UpdateCartSuccessState());
+        getCartItems();
+      } else {
+        emit(UpdateCartFailureState());
+      }
+    } catch (e) {
+      print(e.toString());
+      emit(UpdateCartFailureState());
+    }
+  }
 
 }

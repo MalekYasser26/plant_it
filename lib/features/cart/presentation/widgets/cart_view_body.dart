@@ -34,6 +34,13 @@ class _CartViewBodyState extends State<CartViewBody> {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15.0),
             child: BlocBuilder<CartCubit, CartState>(
+              buildWhen: (previous, current) {
+                if (current is CartSuccessfulStateFilled) {
+                  return true;
+                }else {
+                  return false ;
+                }
+              },
               builder: (context, state) {
                 if (state is CartSuccessfulStateEmpty) {
                   return const CartEmpty();

@@ -15,6 +15,9 @@ class CartFilled extends StatelessWidget {
       children: [
         Expanded(
           child: BlocBuilder<CartCubit, CartState>(
+            buildWhen: (previous, current) {
+              return current is CartSuccessfulStateFilled || current is CartLoadingState;
+            },
             builder: (context, state) {
               if (state is CartSuccessfulStateFilled) {
                 return ListView.separated(
@@ -27,6 +30,7 @@ class CartFilled extends StatelessWidget {
                         name: state.cartItems[index].name,
                         price: state.cartItems[index].price,
                         quantity: state.cartItems[index].quantity,
+                        productID: state.cartItems[index].productID,
                       ),
                   separatorBuilder: (context, index) =>
                   const SizedBox(height: 30),
