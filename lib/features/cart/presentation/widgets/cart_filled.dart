@@ -1,27 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:plant_it/constants/constants.dart';
+import 'package:plant_it/features/cart/presentation/view_model/cart_cubit.dart';
+import 'package:plant_it/features/cart/presentation/widgets/cart_empty.dart';
 import 'package:plant_it/features/cart/presentation/widgets/cart_item.dart';
 import 'package:plant_it/features/checkout/presentation/views/checkout_view.dart';
 
 class CartFilled extends StatelessWidget {
-  const CartFilled({
-    super.key,
-  });
+  const CartFilled({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         Expanded(
-          child: ListView.separated(
-            physics: const BouncingScrollPhysics(),
-            padding: const EdgeInsets.only(top: 20), // Add padding to the top
-            itemBuilder: (context, index) =>  CartItem(
-              index: index+1,
-            ),
-            separatorBuilder: (context, index) =>
-            const SizedBox(height: 30),
-            itemCount: 6,
+          child: BlocBuilder<CartCubit, CartState>(
+            builder: (context, state) {
+              if (state is CartSuccessfulStateFilled) {
+                return ListView.separated(
+                  physics: const BouncingScrollPhysics(),
+                  padding: const EdgeInsets.only(top: 20),
+                  // Add padding to the top
+                  itemBuilder: (context, index) =>
+                      CartItem(
+                        index: index + 1,
+                        name: state.cartItems[index].name,
+                        price: state.cartItems[index].price,
+                        quantity: state.cartItems[index].quantity,
+                      ),
+                  separatorBuilder: (context, index) =>
+                  const SizedBox(height: 30),
+                  itemCount:state.cartItems.length,
+                );
+              }
+              return const CartEmpty();
+            },
           ),
         ),
         Padding(
@@ -86,7 +99,8 @@ class CartFilled extends StatelessWidget {
                   child: ElevatedButton(
                     onPressed: () {
                       print("checkout");
-                      Navigator.push(context, MaterialPageRoute(builder:(context) => const CheckoutView(),));
+                      Navigator.push(context, MaterialPageRoute(
+                        builder: (context) => const CheckoutView(),));
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFDCDCDC),

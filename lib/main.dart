@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:plant_it/blocObserever.dart';
 import 'package:plant_it/features/auth/presentation/view_model/auth_cubit.dart';
+import 'package:plant_it/features/cart/presentation/view_model/cart_cubit.dart';
 import 'package:plant_it/features/description/presentation/view_model/single_product_cubit.dart';
 import 'package:plant_it/features/favourites/presentation/view_model/liked_cubit.dart';
 import 'package:plant_it/features/favourites/presentation/view_model/liked_plants_cubit.dart';
@@ -35,6 +36,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => SingleProductCubit(),),
         BlocProvider(create: (context) => LikedCubit(),),
         BlocProvider(create: (context) => LikedPlantsCubit(),),
+        BlocProvider(create: (context) => CartCubit(),),
       ],
       child: const MaterialApp(
         home: SplashView(),

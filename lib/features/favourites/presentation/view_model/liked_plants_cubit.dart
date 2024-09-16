@@ -32,7 +32,6 @@ class LikedPlantsCubit extends Cubit<LikedPlantsState> {
         final List<RecentlyLikedProductModel> products = productJson
             .map((json) => RecentlyLikedProductModel.fromJson(json))
             .toList();
-        final List<RecentlyLikedProductModel> lastTwoProducts = [];
         await cacheProducts(products);
         totalItems = products.length;
         emit(RecentlyLikedSuccessfulState(totalItems,products));
