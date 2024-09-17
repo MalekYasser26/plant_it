@@ -81,7 +81,35 @@ class CartCubit extends Cubit<CartState> {
       ));
     }
   }
-  void clearError() {
-    emit(UpdateCartSuccessState());  // Reset to a success state after the error
+  Future<void> addCartItem(int productID, int quantity) async {
+    emit(AddCartItemLoadingState());
+
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrlHasoon/Cart'), // Corrected URL
+        headers: {
+          'accept': '*/*',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $accessToken', // Assuming accessToken is already defined
+        },
+        body: json.encode({
+          'productId': productID,
+          'quantity': quantity,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        emit(AddCartItemSuccessfulState()); // Emit success state if request is successful
+      } else {
+        print('Failed to add cart item: ${response.statusCode}');
+        emit(AddCartItemFailureState(
+            json.decode(response.body)['message']
+        )); // Emit failure state if response is not OK
+      }
+    } catch (e) {
+      print('Error occurred: $e');
+      emit(AddCartItemFailureState(e.toString())); // Handle error state for exceptions
+    }
   }
+
 }

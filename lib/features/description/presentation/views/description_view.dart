@@ -1,7 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:plant_it/constants/constants.dart';
 import 'package:plant_it/features/auth/presentation/view_model/auth_cubit.dart';
+import 'package:plant_it/features/cart/presentation/view_model/cart_cubit.dart';
 import 'package:plant_it/features/checkout/presentation/widgets/cust_app_bar.dart';
 import 'package:plant_it/features/cust_nav_bar/presentation/views/cust_nav_bar_selection_view.dart';
 import 'package:plant_it/features/cust_nav_bar/presentation/views/cust_nav_bar_view.dart';
@@ -35,15 +38,22 @@ class _DescriptionViewState extends State<DescriptionView> {
     // Fetch bookmarks and product data
     BlocProvider.of<SingleProductCubit>(context).fetchProductById(
         context.read<AuthCubit>().userID,
-        SingleProduct(id: widget.product.id, productName:'',
-            price: '0', bio: '', availableStock: 0, likesCounter: 0, images: [], productCategories: [])
-    );
+        SingleProduct(
+            id: widget.product.id,
+            productName: '',
+            price: '0',
+            bio: '',
+            availableStock: 0,
+            likesCounter: 0,
+            images: [],
+            productCategories: []));
   }
 
   Widget build(BuildContext context) {
     var lCubit = context.read<LikedCubit>();
     var sCubit = context.read<SingleProductCubit>();
     var pCubit = context.read<ProfileCubit>();
+    var cCubit = context.read<CartCubit>();
     return BlocBuilder<SingleProductCubit, SingleProductState>(
       buildWhen: (previousState, currentState) {
         // Rebuild when the product is successfully loaded
@@ -52,30 +62,28 @@ class _DescriptionViewState extends State<DescriptionView> {
         }
 
         // Rebuild when bookmark is added or removed for this product
-        if (currentState is AddBookmarkSuccessfulState || currentState is RemoveBookmarkSuccessfulState) {
+        if (currentState is AddBookmarkSuccessfulState ||
+            currentState is RemoveBookmarkSuccessfulState) {
           return currentState.productID == widget.product.id;
         }
 
         // Rebuild when like is added or removed for this product
-        if (currentState is AddLikeSuccessState || currentState is RemoveLikeSuccessState) {
+        if (currentState is AddLikeSuccessState ||
+            currentState is RemoveLikeSuccessState) {
           return currentState.productID == widget.product.id;
         }
 
-        return false; // No rebuild otherwise
+        return false;
       },
-
       builder: (context, state) {
         if (state is SingleProductSuccessfulState ||
             state is AddBookmarkSuccessfulState ||
-            state is RemoveBookmarkSuccessfulState
-        ) {
+            state is RemoveBookmarkSuccessfulState) {
           final SingleProduct product = state.product;
           bool isBookmarked =
-          sCubit.bookmarkedProducts.containsKey(widget.product.id);
-
-          // Extract image URLs from the product's images
+              sCubit.bookmarkedProducts.containsKey(widget.product.id);
           final List<String> productImages =
-          product.images.map((image) => image.imgUrl).toList();
+              product.images.map((image) => image.imgUrl).toList();
           return SafeArea(
             child: Scaffold(
               backgroundColor: AppColors.basicallyWhite,
@@ -122,7 +130,6 @@ class _DescriptionViewState extends State<DescriptionView> {
                                 buildWhen: (previousState, currentState) {
                                   if (currentState is AddLikeSuccessState ||
                                       currentState is RemoveLikeSuccessState) {
-                                    // Only rebuild if the product in the state matches this product's ID
                                     return currentState.productID ==
                                         widget.product.id;
                                   }
@@ -147,7 +154,7 @@ class _DescriptionViewState extends State<DescriptionView> {
                                           ? Icons.favorite
                                           : Icons.favorite_border,
                                       color:
-                                      isLiked ? Colors.red : Colors.black,
+                                          isLiked ? Colors.red : Colors.black,
                                       size: getResponsiveSize(context,
                                           fontSize: 20),
                                     ),
@@ -160,23 +167,21 @@ class _DescriptionViewState extends State<DescriptionView> {
                                   if (!isBookmarked) {
                                     sCubit.addBookmarkedProducts(product);
                                     pCubit.getRecentlySavedProducts();
-
                                   } else {
                                     sCubit.removeBookmarkedProducts(product);
                                     pCubit.getRecentlySavedProducts();
-
                                   }
                                 },
                                 icon: sCubit.isBookmarked(widget.product.id)
                                     ? const Icon(
-                                  Icons.bookmark_added,
-                                  color: Colors.green,
-                                  size: 25,
-                                )
+                                        Icons.bookmark_added,
+                                        color: Colors.green,
+                                        size: 25,
+                                      )
                                     : const Icon(
-                                  Icons.bookmark_border,
-                                  size: 25,
-                                ),
+                                        Icons.bookmark_border,
+                                        size: 25,
+                                      ),
                               ),
                             ],
                           ),
@@ -187,7 +192,7 @@ class _DescriptionViewState extends State<DescriptionView> {
                             child: ListView.separated(
                               physics: const BouncingScrollPhysics(),
                               separatorBuilder: (context, index) =>
-                              const SizedBox(width: 5),
+                                  const SizedBox(width: 5),
                               scrollDirection: Axis.horizontal,
                               shrinkWrap: true,
                               itemBuilder: (context, index) =>
@@ -204,17 +209,17 @@ class _DescriptionViewState extends State<DescriptionView> {
                               {
                                 "header": "Appearance: ",
                                 "description":
-                                "Monstera deliciosa is known for its large, heart-shaped leaves that develop splits and perforations as they mature."
+                                    "Monstera deliciosa is known for its large, heart-shaped leaves that develop splits and perforations as they mature."
                               },
                               {
                                 "header": "Soil: ",
                                 "description":
-                                "Use a well-draining potting mix, such as a peat-based mix with added perlite or orchid bark."
+                                    "Use a well-draining potting mix, such as a peat-based mix with added perlite or orchid bark."
                               },
                               {
                                 "header": "Growth Habit: ",
                                 "description":
-                                "This plant is a climbing vine in its natural habitat, using aerial roots to anchor itself to trees."
+                                    "This plant is a climbing vine in its natural habitat, using aerial roots to anchor itself to trees."
                               },
                             ],
                           ),
@@ -222,97 +227,139 @@ class _DescriptionViewState extends State<DescriptionView> {
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 10),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFDCDCDC),
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          child: Row(
-                            children: [
-                              InkWell(
-                                child: Icon(
-                                  Icons.remove,
-                                  size:
-                                  getResponsiveSize(context, fontSize: 15),
-                                ),
-                                onTap: () {
-                                  setState(() {
-                                    if (quantity > 1) quantity--;
-                                  });
-                                },
-                              ),
-                              Padding(
-                                padding:
-                                const EdgeInsets.symmetric(horizontal: 5.0),
-                                child: Text(
-                                  quantity.toString(),
-                                  style: TextStyle(
-                                    fontSize: getResponsiveSize(context,
-                                        fontSize: 20),
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                              InkWell(
-                                child: Icon(
-                                  Icons.add,
-                                  size:
-                                  getResponsiveSize(context, fontSize: 15),
-                                ),
-                                onTap: () {
-                                  setState(() {
-                                    quantity++;
-                                  });
-                                },
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(width: 20),
-                        Flexible(
-                          child: SizedBox(
-                            width: getResponsiveSize(context, fontSize: 350),
-                            child: ElevatedButton(
-                              onPressed: () {
-                                print("add to cart");
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        CustNavBarSelectionView(
-                                            currentIndex: 3),
-                                  ),
-                                );
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFFDCDCDC),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 20, vertical: 10),
-                              ),
-                              child: Text(
-                                "Add to cart",
+                  BlocBuilder<CartCubit, CartState>(
+                    builder: (context, state) {
+                      if (state is AddCartItemSuccessfulState) {
+                        // Use SchedulerBinding to show the SnackBar after the build is done
+                        SchedulerBinding.instance.addPostFrameCallback((_) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              behavior: SnackBarBehavior.floating,
+                              content: Text(
+                                "Added item Successfully",
                                 style: TextStyle(
                                   fontFamily: "Poppins",
-                                  fontSize:
-                                  getResponsiveSize(context, fontSize: 18),
-                                  color: Colors.black,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
+                              backgroundColor: AppColors.darkGreen,
                             ),
+                          );
+                        });
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                CustNavBarSelectionView(
+                                    currentIndex: 3),
                           ),
+                        );
+
+                      }
+
+                      if (state is AddCartItemFailureState) {
+                        SchedulerBinding.instance.addPostFrameCallback((_) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              behavior: SnackBarBehavior.floating,
+                              content: Text(
+                                state.errorMsg,
+                                style: const TextStyle(
+                                  fontFamily: "Poppins",
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                        });
+                      }
+                      return Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 10),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFDCDCDC),
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              child: Row(
+                                children: [
+                                  InkWell(
+                                    child: Icon(
+                                      Icons.remove,
+                                      size: getResponsiveSize(context,
+                                          fontSize: 15),
+                                    ),
+                                    onTap: () {
+                                      setState(() {
+                                        if (quantity > 1) quantity--;
+                                      });
+                                    },
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 5.0),
+                                    child: Text(
+                                      quantity.toString(),
+                                      style: TextStyle(
+                                        fontSize: getResponsiveSize(context,
+                                            fontSize: 20),
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  InkWell(
+                                    child: Icon(
+                                      Icons.add,
+                                      size: getResponsiveSize(context,
+                                          fontSize: 15),
+                                    ),
+                                    onTap: () {
+                                      setState(() {
+                                        quantity++;
+                                      });
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(width: 20),
+                            Flexible(
+                              child: SizedBox(
+                                width:
+                                    getResponsiveSize(context, fontSize: 350),
+                                child: ElevatedButton(
+                                  onPressed: () async{
+                                    await cCubit.addCartItem(product.id, quantity);
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: const Color(0xFFDCDCDC),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 20, vertical: 10),
+                                  ),
+                                  child: Text(
+                                    "Add to cart",
+                                    style: TextStyle(
+                                      fontFamily: "Poppins",
+                                      fontSize: getResponsiveSize(context,
+                                          fontSize: 18),
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      );
+                    },
                   ),
                   Align(
                     alignment: Alignment.bottomCenter,
@@ -339,7 +386,7 @@ class _DescriptionViewState extends State<DescriptionView> {
           );
         }
         if (state is SingleProductFailureState) {
-          return  SafeArea(
+          return SafeArea(
             child: Scaffold(
               backgroundColor: AppColors.basicallyWhite,
               appBar: CustAppBar(
@@ -355,7 +402,7 @@ class _DescriptionViewState extends State<DescriptionView> {
             ),
           );
         }
-        return  SafeArea(
+        return SafeArea(
           child: Scaffold(
             backgroundColor: AppColors.basicallyWhite,
             appBar: CustAppBar(
