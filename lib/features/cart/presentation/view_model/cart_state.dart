@@ -15,5 +15,10 @@ class CartSuccessfulStateFilled extends CartState {
 final class CartFailureState extends CartState {}
 final class UpdateCartLoadingState extends CartState {}
 final class UpdateCartSuccessState extends CartState {}
-final class UpdateCartFailureState extends CartState {}
+final class UpdateCartFailureState extends CartState {
+  final String errogMsg;
+
+  UpdateCartFailureState(this.errogMsg);
+
+}
 

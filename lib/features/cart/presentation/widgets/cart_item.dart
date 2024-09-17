@@ -4,11 +4,9 @@ import 'package:plant_it/constants/constants.dart';
 import 'package:plant_it/features/cart/presentation/view_model/cart_cubit.dart';
 
 class CartItem extends StatefulWidget {
-  final int index,productID;
+  final int index, productID;
   final String name;
-
   final int quantity;
-
   final double price;
 
   const CartItem({
@@ -16,7 +14,8 @@ class CartItem extends StatefulWidget {
     required this.index,
     required this.name,
     required this.quantity,
-    required this.price, required this.productID,
+    required this.price,
+    required this.productID,
   });
 
   @override
@@ -25,12 +24,13 @@ class CartItem extends StatefulWidget {
 
 class _CartItemState extends State<CartItem> {
   bool isEditPressed = false;
-  late int quantityEdit;  // Make this a member variable to persist across rebuilds
+  late int quantityEdit;
+  bool quantityReverted = false; // To track if quantity has been reverted
 
   @override
   void initState() {
     super.initState();
-    quantityEdit = widget.quantity;  // Initialize it in initState
+    quantityEdit = widget.quantity;  // Initialize with original quantity
   }
 
   @override
@@ -40,6 +40,17 @@ class _CartItemState extends State<CartItem> {
       children: [
         BlocBuilder<CartCubit, CartState>(
           builder: (context, state) {
+            if (state is UpdateCartFailureState && !quantityReverted) {
+              // Revert quantity to original when the update fails, but only once
+                quantityEdit = widget.quantity;
+                quantityReverted = true; // Prevent multiple resets
+            }
+
+            if (state is UpdateCartSuccessState) {
+              // Reset the reverted flag after a successful update
+              quantityReverted = false;
+            }
+
             return Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(15),
@@ -81,7 +92,7 @@ class _CartItemState extends State<CartItem> {
                             Row(
                               children: [
                                 Text(
-                                  "${quantityEdit}x", // Use the updated quantityEdit
+                                  "${quantityEdit}x",
                                   style: TextStyle(
                                     fontFamily: "Raleway",
                                     fontWeight: FontWeight.bold,
@@ -94,52 +105,57 @@ class _CartItemState extends State<CartItem> {
                                     Column(
                                       children: [
                                         IconButton(
-                                            onPressed: () {
-                                              setState(() {
-                                                quantityEdit++; // Update the quantity
-                                              });
-                                            },
-                                            icon: const Icon(
-                                              Icons.keyboard_double_arrow_up,
-                                              color: AppColors.normGreen,
-                                            )),
+                                          onPressed: () {
+                                            setState(() {
+                                              quantityEdit++; // Increment the quantity
+                                            });
+                                          },
+                                          icon: const Icon(
+                                            Icons.keyboard_double_arrow_up,
+                                            color: AppColors.normGreen,
+                                          ),
+                                        ),
                                         IconButton(
-                                            onPressed: () {
-                                              setState(() {
-                                                if (quantityEdit > 1) {
-                                                  quantityEdit--; // Prevent decrement below 1
-                                                }
-                                              });
-                                            },
-                                            icon: const Icon(
-                                              Icons.keyboard_double_arrow_down,
-                                              color: Colors.red,
-                                            )),
+                                          onPressed: () {
+                                            setState(() {
+                                              if (quantityEdit > 1) {
+                                                quantityEdit--; // Decrement but not below 1
+                                              }
+                                            });
+                                          },
+                                          icon: const Icon(
+                                            Icons.keyboard_double_arrow_down,
+                                            color: Colors.red,
+                                          ),
+                                        ),
                                       ],
                                     ),
                                     IconButton(
-                                        onPressed: () {
-                                          context.read<CartCubit>().updateCartItem(widget.productID, quantityEdit);
-                                          setState(() {
-                                            isEditPressed = !isEditPressed;
-                                          });
-                                        },
-                                        icon: const Icon(
-                                          Icons.check,
-                                          color: AppColors.darkGreen,
-                                        )),
+                                      onPressed: () {
+                                        // Submit the quantity change
+                                        context.read<CartCubit>().updateCartItem(widget.productID, quantityEdit);
+                                        setState(() {
+                                          isEditPressed = false; // Exit edit mode after submission
+                                        });
+                                      },
+                                      icon: const Icon(
+                                        Icons.check,
+                                        color: AppColors.darkGreen,
+                                      ),
+                                    ),
                                   ],
                                 )
                                     : IconButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        isEditPressed = !isEditPressed;
-                                      });
-                                    },
-                                    icon: const Icon(
-                                      Icons.edit,
-                                      color: AppColors.greyish,
-                                    )),
+                                  onPressed: () {
+                                    setState(() {
+                                      isEditPressed = true; // Enter edit mode
+                                    });
+                                  },
+                                  icon: const Icon(
+                                    Icons.edit,
+                                    color: AppColors.greyish,
+                                  ),
+                                ),
                               ],
                             ),
                             Row(
@@ -153,7 +169,7 @@ class _CartItemState extends State<CartItem> {
                                   ),
                                 ),
                                 Text(
-                                  "${widget.price} ",
+                                  "${widget.price * quantityEdit} ",
                                   style: const TextStyle(
                                     fontFamily: "Raleway",
                                     fontSize: 22,
@@ -183,9 +199,10 @@ class _CartItemState extends State<CartItem> {
               height: 35,
               width: 35,
               decoration: BoxDecoration(
-                  color: Colors.transparent,
-                  shape: BoxShape.circle,
-                  border: Border.all(color: AppColors.greyish)),
+                color: Colors.transparent,
+                shape: BoxShape.circle,
+                border: Border.all(color: AppColors.greyish),
+              ),
               child: Icon(
                 Icons.close,
                 size: getResponsiveSize(context, fontSize: 25),

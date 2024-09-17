@@ -70,12 +70,18 @@ class CartCubit extends Cubit<CartState> {
         emit(UpdateCartSuccessState());
         getCartItems();
       } else {
-        emit(UpdateCartFailureState());
+        emit(UpdateCartFailureState(
+          json.decode(response.body)['message']
+        ));
       }
     } catch (e) {
       print(e.toString());
-      emit(UpdateCartFailureState());
+      emit(UpdateCartFailureState(
+        e.toString()
+      ));
     }
   }
-
+  void clearError() {
+    emit(UpdateCartSuccessState());  // Reset to a success state after the error
+  }
 }
