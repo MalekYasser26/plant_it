@@ -35,6 +35,7 @@ class _CartItemState extends State<CartItem> {
 
   @override
   Widget build(BuildContext context) {
+    var cCubit = context.read<CartCubit>();
     return Stack(
       clipBehavior: Clip.none,
       children: [
@@ -188,12 +189,14 @@ class _CartItemState extends State<CartItem> {
             );
           },
         ),
-        Positioned(
+        BlocBuilder<CartCubit, CartState>(
+  builder: (context, state) {
+    return Positioned(
           top: -15,
           right: 10,
           child: GestureDetector(
             onTap: () {
-              print("Close button tapped");
+              cCubit.removeCartItem(widget.productID);
             },
             child: Container(
               height: 35,
@@ -210,7 +213,9 @@ class _CartItemState extends State<CartItem> {
               ),
             ),
           ),
-        ),
+        );
+  },
+),
       ],
     );
   }

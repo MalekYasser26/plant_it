@@ -37,3 +37,18 @@ final class AddCartItemFailureState extends CartState {
   AddCartItemFailureState(this.errorMsg);
 
 }
+
+final class RemoveCartItemLoadingState extends CartState {}
+
+final class RemoveCartItemSuccessfulState extends CartState {
+  final int productID ;
+
+  RemoveCartItemSuccessfulState(this.productID);
+}
+
+final class RemoveCartItemFailureState extends CartState {
+  final String errorMsg;
+
+  RemoveCartItemFailureState(this.errorMsg);
+
+}

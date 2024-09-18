@@ -116,6 +116,40 @@ class CartCubit extends Cubit<CartState> {
       emit(AddCartItemFailureState(e.toString())); // Handle error state for exceptions
     }
   }
+  Future<void> removeCartItem(int productID) async {
+    emit(RemoveCartItemLoadingState());
+
+    try {
+      // Get the cartID from the productID
+      int? cartID = cartIDs[productID];
+
+      if (cartID == null) {
+        emit(RemoveCartItemFailureState("Cart ID not found for the given product."));
+        return;
+      }
+
+      final response = await http.delete(
+        Uri.parse('$baseUrlHasoon/Cart?cartId=$cartID'),
+        headers: {
+          'accept': '*/*',
+          'Authorization': 'Bearer $accessToken', // Assuming accessToken is already defined
+        },
+      );
+
+      if (response.statusCode == 200) {
+        if (json.decode(response.body)['succeeded'] == true) {
+          emit(RemoveCartItemSuccessfulState(productID));
+        } else {
+          emit(RemoveCartItemFailureState(json.decode(response.body)['message']));
+        }
+      } else {
+        emit(RemoveCartItemFailureState(json.decode(response.body)['message']));
+      }
+    } catch (e) {
+      emit(RemoveCartItemFailureState(e.toString()));
+    }
+  }
+
   void resetCartState() async {
     emit(CartInitial());
   }
