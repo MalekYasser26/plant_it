@@ -230,7 +230,7 @@ class _DescriptionViewState extends State<DescriptionView> {
                   BlocBuilder<CartCubit, CartState>(
                     builder: (context, state) {
                       if (state is AddCartItemSuccessfulState) {
-                        // Use SchedulerBinding to show the SnackBar after the build is done
+                        // Show success message and navigate to the cart page
                         SchedulerBinding.instance.addPostFrameCallback((_) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
@@ -245,19 +245,20 @@ class _DescriptionViewState extends State<DescriptionView> {
                               backgroundColor: AppColors.darkGreen,
                             ),
                           );
-                        });
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                CustNavBarSelectionView(
-                                    currentIndex: 3),
-                          ),
-                        );
+                          // Reset the state back to initial using the resetCartState method
+                          context.read<CartCubit>().resetCartState();
 
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CustNavBarSelectionView(currentIndex: 3),
+                            ),
+                          );
+                        });
                       }
 
                       if (state is AddCartItemFailureState) {
+                        // Show error message
                         SchedulerBinding.instance.addPostFrameCallback((_) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
@@ -272,6 +273,8 @@ class _DescriptionViewState extends State<DescriptionView> {
                               backgroundColor: Colors.red,
                             ),
                           );
+                          // Reset the state using the resetCartState method
+                          context.read<CartCubit>().resetCartState();
                         });
                       }
                       return Padding(
@@ -279,8 +282,7 @@ class _DescriptionViewState extends State<DescriptionView> {
                         child: Row(
                           children: [
                             Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 10),
+                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                               decoration: BoxDecoration(
                                 color: const Color(0xFFDCDCDC),
                                 borderRadius: BorderRadius.circular(15),
@@ -290,8 +292,7 @@ class _DescriptionViewState extends State<DescriptionView> {
                                   InkWell(
                                     child: Icon(
                                       Icons.remove,
-                                      size: getResponsiveSize(context,
-                                          fontSize: 15),
+                                      size: getResponsiveSize(context, fontSize: 15),
                                     ),
                                     onTap: () {
                                       setState(() {
@@ -300,13 +301,11 @@ class _DescriptionViewState extends State<DescriptionView> {
                                     },
                                   ),
                                   Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 5.0),
+                                    padding: const EdgeInsets.symmetric(horizontal: 5.0),
                                     child: Text(
                                       quantity.toString(),
                                       style: TextStyle(
-                                        fontSize: getResponsiveSize(context,
-                                            fontSize: 20),
+                                        fontSize: getResponsiveSize(context, fontSize: 20),
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
@@ -314,8 +313,7 @@ class _DescriptionViewState extends State<DescriptionView> {
                                   InkWell(
                                     child: Icon(
                                       Icons.add,
-                                      size: getResponsiveSize(context,
-                                          fontSize: 15),
+                                      size: getResponsiveSize(context, fontSize: 15),
                                     ),
                                     onTap: () {
                                       setState(() {
@@ -329,10 +327,9 @@ class _DescriptionViewState extends State<DescriptionView> {
                             const SizedBox(width: 20),
                             Flexible(
                               child: SizedBox(
-                                width:
-                                    getResponsiveSize(context, fontSize: 350),
+                                width: getResponsiveSize(context, fontSize: 350),
                                 child: ElevatedButton(
-                                  onPressed: () async{
+                                  onPressed: () async {
                                     await cCubit.addCartItem(product.id, quantity);
                                   },
                                   style: ElevatedButton.styleFrom(
@@ -340,15 +337,13 @@ class _DescriptionViewState extends State<DescriptionView> {
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(15),
                                     ),
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 20, vertical: 10),
+                                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                                   ),
                                   child: Text(
                                     "Add to cart",
                                     style: TextStyle(
                                       fontFamily: "Poppins",
-                                      fontSize: getResponsiveSize(context,
-                                          fontSize: 18),
+                                      fontSize: getResponsiveSize(context, fontSize: 18),
                                       color: Colors.black,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -366,17 +361,15 @@ class _DescriptionViewState extends State<DescriptionView> {
                     child: CustomBottomNavBar(
                       currentIndex: 1,
                       onTap: (index) {
-                        setState(() {
-                          _currentIndex = index;
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => CustNavBarSelectionView(
-                                currentIndex: _currentIndex,
-                              ),
+                        _currentIndex = index;
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CustNavBarSelectionView(
+                              currentIndex: _currentIndex,
                             ),
-                          );
-                        });
+                          ),
+                        );
                       },
                     ),
                   ),

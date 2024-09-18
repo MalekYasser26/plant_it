@@ -99,7 +99,12 @@ class CartCubit extends Cubit<CartState> {
       );
 
       if (response.statusCode == 200) {
-        emit(AddCartItemSuccessfulState()); // Emit success state if request is successful
+        if (json.decode(response.body)['succeeded']==true) {
+          emit(AddCartItemSuccessfulState());
+        } else {
+          emit(AddCartItemFailureState(
+              json.decode(response.body)['message']
+          ));         }
       } else {
         print('Failed to add cart item: ${response.statusCode}');
         emit(AddCartItemFailureState(
@@ -110,6 +115,9 @@ class CartCubit extends Cubit<CartState> {
       print('Error occurred: $e');
       emit(AddCartItemFailureState(e.toString())); // Handle error state for exceptions
     }
+  }
+  void resetCartState() async {
+    emit(CartInitial());
   }
 
 }
