@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:plant_it/constants/constants.dart';
@@ -5,7 +6,7 @@ import 'package:plant_it/features/cart/presentation/view_model/cart_cubit.dart';
 
 class CartItem extends StatefulWidget {
   final int index, productID;
-  final String name;
+  final String name,image;
   final int quantity;
   final double price;
 
@@ -15,7 +16,7 @@ class CartItem extends StatefulWidget {
     required this.name,
     required this.quantity,
     required this.price,
-    required this.productID,
+    required this.productID, required this.image,
   });
 
   @override
@@ -68,9 +69,25 @@ class _CartItemState extends State<CartItem> {
                     ),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(15),
-                      child: Image.asset(
-                        'assets/images/plant${widget.index}.png',
+                      child: widget.image.startsWith('http') ?
+                      CachedNetworkImage(
+                        imageUrl: widget.image,
                         fit: BoxFit.cover,
+                        width: double.infinity,
+                        errorWidget: (context, url, error) {
+                          return Image.asset(
+                            'assets/images/placeholder.png',
+                            fit: BoxFit.cover,
+                            height: 150,
+                            width: double.infinity,
+                          );
+                        },
+                        fadeInDuration: const Duration(milliseconds: 500),
+                        fadeOutDuration: const Duration(milliseconds: 500),
+                      ) : Image.asset(
+                        widget.image,
+                        fit: BoxFit.cover,
+                        width: double.infinity,
                       ),
                     ),
                   ),

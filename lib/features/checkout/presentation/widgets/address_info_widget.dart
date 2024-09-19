@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:plant_it/constants/constants.dart';
+import 'package:plant_it/features/auth/presentation/view_model/auth_cubit.dart';
 import 'package:plant_it/features/checkout/presentation/widgets/line_text.dart';
 
 class AddressInfoWidget extends StatelessWidget {
@@ -9,6 +11,7 @@ class AddressInfoWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var sCubit = context.read<AuthCubit>();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -30,7 +33,7 @@ class AddressInfoWidget extends StatelessWidget {
             size: getResponsiveSize(context, fontSize: 30),
             color: Colors.grey,
           ),
-          text: "12, Doha st, Mansoura - Egypt",
+          text: sCubit.address,
         ),
         const SizedBox(height: 10,),
         LineText(
@@ -40,7 +43,7 @@ class AddressInfoWidget extends StatelessWidget {
             color: Colors.grey,
 
           ),
-          text: "Phone number: +20 1076927763 ",
+          text: "Phone number: ${sCubit.phoneNum} ",
 
         ),
         const SizedBox(height: 10,),

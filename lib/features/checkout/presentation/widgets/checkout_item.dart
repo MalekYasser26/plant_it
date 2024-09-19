@@ -1,10 +1,13 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:plant_it/constants/constants.dart';
 
 class CheckoutItem extends StatelessWidget {
-  final int index;
+  final int index,quantity;
+  final String name,image ;
+  final double price ;
   const CheckoutItem({
-    super.key, required this.index,
+    super.key, required this.index, required this.quantity, required this.name, required this.price, required this.image,
   });
 
   @override
@@ -25,9 +28,25 @@ class CheckoutItem extends StatelessWidget {
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(15),
-              child: Image.asset(
-                'assets/images/plant$index.png',
+              child: image.startsWith('http') ?
+              CachedNetworkImage(
+                imageUrl: image,
                 fit: BoxFit.cover,
+                width: double.infinity,
+                errorWidget: (context, url, error) {
+                  return Image.asset(
+                    'assets/images/placeholder.png',
+                    fit: BoxFit.cover,
+                    height: 150,
+                    width: double.infinity,
+                  );
+                },
+                fadeInDuration: const Duration(milliseconds: 500),
+                fadeOutDuration: const Duration(milliseconds: 500),
+              ) : Image.asset(
+                image,
+                fit: BoxFit.cover,
+                width: double.infinity,
               ),
             ),
           ),
@@ -39,7 +58,7 @@ class CheckoutItem extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(right: 4.0),
                   child: Text(
-                    "Monstera Plant",
+                    name,
                     style: TextStyle(
                       fontFamily: "Poppins",
                       fontWeight: FontWeight.bold,
@@ -49,16 +68,16 @@ class CheckoutItem extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  "2x",
+                  "${quantity}x",
                   style: TextStyle(
                     fontFamily: "Raleway",
                     fontWeight: FontWeight.bold,
                     fontSize: getResponsiveSize(context, fontSize: 16),
                   ),
                 ),
-                const Row(
+                 Row(
                   children: [
-                    Text(
+                    const Text(
                       "EGP ",
                       style: TextStyle(
                         fontFamily: "Raleway",
@@ -67,8 +86,8 @@ class CheckoutItem extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      "220 ",
-                      style: TextStyle(
+                      "${price*quantity} ",
+                      style: const TextStyle(
                         fontFamily: "Raleway",
                         fontSize: 22,
                         fontWeight: FontWeight.bold,

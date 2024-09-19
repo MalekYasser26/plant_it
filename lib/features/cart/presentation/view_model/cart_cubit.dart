@@ -38,6 +38,7 @@ class CartCubit extends Cubit<CartState> {
               price: item['product']['price'],
               quantity: item['quantity'],
               productID: item['productId'],
+              image : item['product']['productImage'] ?? "assets/images/placeholder.png"
             ),
           );
           cartIDs[item['productId']] =

@@ -77,6 +77,7 @@ class _CartFilledState extends State<CartFilled> {
                       price: cartItems[index].price,
                       quantity: cartItems[index].quantity,
                       productID: cartItems[index].productID,
+                      image: cartItems[index].image,
                     ),
                     separatorBuilder: (context, index) =>
                     const SizedBox(height: 30),
@@ -151,7 +152,9 @@ class _CartFilledState extends State<CartFilled> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const CheckoutView(),
+                          builder: (context) =>  CheckoutView(
+                            cartItems: cartItems,
+                          ),
                         ),
                       );
                     }

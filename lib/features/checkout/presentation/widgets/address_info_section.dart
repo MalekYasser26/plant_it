@@ -22,24 +22,24 @@ class AddressInfoSection extends StatelessWidget {
                 fontSize: getResponsiveSize(context, fontSize: 20),
               ),
             ),
-            TextButton(
-              onPressed: () {
-                print("edit");
-              },
-              style: const ButtonStyle(
-                backgroundColor:
-                WidgetStatePropertyAll(AppColors.greyish),
-              ),
-              child: Text(
-                "Edit",
-                style: TextStyle(
-                  fontFamily: "Poppins",
-                  fontWeight: FontWeight.w300,
-                  fontSize: getResponsiveSize(context, fontSize: 15),
-                  color: Colors.black,
-                ),
-              ),
-            )
+            // TextButton(
+            //   onPressed: () {
+            //     print("edit");
+            //   },
+            //   style: const ButtonStyle(
+            //     backgroundColor:
+            //     WidgetStatePropertyAll(AppColors.greyish),
+            //   ),
+            //   child: Text(
+            //     "Edit",
+            //     style: TextStyle(
+            //       fontFamily: "Poppins",
+            //       fontWeight: FontWeight.w300,
+            //       fontSize: getResponsiveSize(context, fontSize: 15),
+            //       color: Colors.black,
+            //     ),
+            //   ),
+            // )
           ],
         ),
         const SizedBox(height: 5,),
