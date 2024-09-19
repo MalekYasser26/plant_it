@@ -39,6 +39,7 @@ final class AddCartItemFailureState extends CartState {
 }
 
 final class RemoveCartItemLoadingState extends CartState {}
+final class EditItemDone extends CartState {}
 
 final class RemoveCartItemSuccessfulState extends CartState {
   final int productID ;

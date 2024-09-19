@@ -153,5 +153,8 @@ class CartCubit extends Cubit<CartState> {
   void resetCartState() async {
     emit(CartInitial());
   }
+  void editCartState() async {
+    emit(EditItemDone());
+  }
 
 }

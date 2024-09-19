@@ -16,6 +16,15 @@ class CartFilled extends StatefulWidget {
 
 class _CartFilledState extends State<CartFilled> {
   List<CartItemModel> cartItems = [];
+  double totalPrice = 0.0;
+
+  // A method to calculate the total price
+  void calculateTotalPrice() {
+    totalPrice = 0.0; // Reset total price before calculating
+    for (var item in cartItems) {
+      totalPrice += item.price * item.quantity;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,9 +48,14 @@ class _CartFilledState extends State<CartFilled> {
         }
 
         if (state is RemoveCartItemSuccessfulState) {
-          // Remove the item from the local list and update the UI
           setState(() {
             cartItems.removeWhere((item) => item.productID == state.productID);
+            calculateTotalPrice(); // Recalculate total price after removal
+          });
+        }
+        if (state is EditItemDone){
+          setState(() {
+            calculateTotalPrice();
           });
         }
       },
@@ -50,14 +64,13 @@ class _CartFilledState extends State<CartFilled> {
           Expanded(
             child: BlocBuilder<CartCubit, CartState>(
               buildWhen: (previous, current) {
-                return current is CartSuccessfulStateFilled ||
-                    current is CartLoadingState;
+                return current is CartSuccessfulStateFilled || current is CartLoadingState;
               },
               builder: (context, state) {
                 if (state is CartSuccessfulStateFilled) {
                   // Initialize the local list with cart items on successful load
                   cartItems = state.cartItems;
-
+                  calculateTotalPrice(); // Calculate total price after cart items are loaded
                   return ListView.separated(
                     physics: const BouncingScrollPhysics(),
                     padding: const EdgeInsets.only(top: 20),
@@ -68,8 +81,7 @@ class _CartFilledState extends State<CartFilled> {
                       quantity: cartItems[index].quantity,
                       productID: cartItems[index].productID,
                     ),
-                    separatorBuilder: (context, index) =>
-                    const SizedBox(height: 30),
+                    separatorBuilder: (context, index) => const SizedBox(height: 30),
                     itemCount: cartItems.length,
                   );
                 }
@@ -81,60 +93,61 @@ class _CartFilledState extends State<CartFilled> {
             padding: const EdgeInsets.all(10.0),
             child: Row(
               children: [
-                Container(
-                  height: getResponsiveSize(context, fontSize: 55),
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 20, vertical: 10),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFDCDCDC),
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  child: Row(
-                    children: [
-                      RichText(
-                        text: TextSpan(
-                          text: 'Order total\n ',
-                          style: TextStyle(
-                            fontFamily: "Poppins",
-                            fontSize: getResponsiveSize(context, fontSize: 12),
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.darkGreenL,
+                BlocBuilder<CartCubit,CartState>(
+                  buildWhen:  (previous, current) {
+                    return current is CartSuccessfulStateFilled ;
+                  },
+                  builder: (context, setState) => Container(
+                    height: getResponsiveSize(context, fontSize: 55),
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFDCDCDC),
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: Row(
+                      children: [
+                        RichText(
+                          text: TextSpan(
+                            text: 'Order total\n ',
+                            style: TextStyle(
+                              fontFamily: "Poppins",
+                              fontSize: getResponsiveSize(context, fontSize: 12),
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.darkGreenL,
+                            ),
+                            children: [
+                              TextSpan(
+                                text: 'EGP',
+                                style: TextStyle(
+                                  fontFamily: "Raleway",
+                                  fontSize: getResponsiveSize(context, fontSize: 12),
+                                  fontWeight: FontWeight.w300,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              TextSpan(
+                                text: ' $totalPrice',  // Use totalPrice here, after it is calculated
+                                style: TextStyle(
+                                  fontFamily: "Raleway",
+                                  fontSize: getResponsiveSize(context, fontSize: 14),
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ],
                           ),
-                          children: [
-                            TextSpan(
-                              text: 'EGP',
-                              style: TextStyle(
-                                fontFamily: "Raleway",
-                                fontSize: getResponsiveSize(context, fontSize: 12),
-                                fontWeight: FontWeight.w300,
-                                color: Colors.black,
-                              ),
-                            ),
-                            TextSpan(
-                              text: ' 4470',
-                              style: TextStyle(
-                                fontFamily: "Raleway",
-                                fontSize: getResponsiveSize(context, fontSize: 14),
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ],
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-                const SizedBox(
-                  width: 20,
-                ),
+                const SizedBox(width: 20),
                 Flexible(
                   child: SizedBox(
                     width: getResponsiveSize(context, fontSize: 350),
                     height: getResponsiveSize(context, fontSize: 55),
                     child: ElevatedButton(
                       onPressed: () {
-                        print("checkout");
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -147,8 +160,7 @@ class _CartFilledState extends State<CartFilled> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15),
                         ),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 10),
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                       ),
                       child: Text(
                         "Checkout",

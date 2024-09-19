@@ -138,6 +138,8 @@ class _CartItemState extends State<CartItem> {
                                         setState(() {
                                           isEditPressed = false; // Exit edit mode after submission
                                         });
+                                        context.read<CartCubit>().editCartState();
+
                                       },
                                       icon: const Icon(
                                         Icons.check,
