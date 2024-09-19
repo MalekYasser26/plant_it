@@ -51,6 +51,7 @@ class CartCubit extends Cubit<CartState> {
       emit(CartFailureState()); // Handle error state
     }
   }
+
   Future<void> updateCartItem(int productId, int quantity) async {
     try {
       final response = await http.put(
@@ -70,17 +71,14 @@ class CartCubit extends Cubit<CartState> {
         emit(UpdateCartSuccessState());
         getCartItems();
       } else {
-        emit(UpdateCartFailureState(
-          json.decode(response.body)['message']
-        ));
+        emit(UpdateCartFailureState(json.decode(response.body)['message']));
       }
     } catch (e) {
       print(e.toString());
-      emit(UpdateCartFailureState(
-        e.toString()
-      ));
+      emit(UpdateCartFailureState(e.toString()));
     }
   }
+
   Future<void> addCartItem(int productID, int quantity) async {
     emit(AddCartItemLoadingState());
 
@@ -90,7 +88,8 @@ class CartCubit extends Cubit<CartState> {
         headers: {
           'accept': '*/*',
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer $accessToken', // Assuming accessToken is already defined
+          'Authorization': 'Bearer $accessToken',
+          // Assuming accessToken is already defined
         },
         body: json.encode({
           'productId': productID,
@@ -99,23 +98,23 @@ class CartCubit extends Cubit<CartState> {
       );
 
       if (response.statusCode == 200) {
-        if (json.decode(response.body)['succeeded']==true) {
+        if (json.decode(response.body)['succeeded'] == true) {
           emit(AddCartItemSuccessfulState());
         } else {
-          emit(AddCartItemFailureState(
-              json.decode(response.body)['message']
-          ));         }
+          emit(AddCartItemFailureState(json.decode(response.body)['message']));
+        }
       } else {
         print('Failed to add cart item: ${response.statusCode}');
-        emit(AddCartItemFailureState(
-            json.decode(response.body)['message']
-        )); // Emit failure state if response is not OK
+        emit(AddCartItemFailureState(json.decode(response.body)[
+            'message'])); // Emit failure state if response is not OK
       }
     } catch (e) {
       print('Error occurred: $e');
-      emit(AddCartItemFailureState(e.toString())); // Handle error state for exceptions
+      emit(AddCartItemFailureState(
+          e.toString())); // Handle error state for exceptions
     }
   }
+
   Future<void> removeCartItem(int productID) async {
     emit(RemoveCartItemLoadingState());
 
@@ -124,7 +123,8 @@ class CartCubit extends Cubit<CartState> {
       int? cartID = cartIDs[productID];
 
       if (cartID == null) {
-        emit(RemoveCartItemFailureState("Cart ID not found for the given product."));
+        emit(RemoveCartItemFailureState(
+            "Cart ID not found for the given product."));
         return;
       }
 
@@ -132,7 +132,8 @@ class CartCubit extends Cubit<CartState> {
         Uri.parse('$baseUrlHasoon/Cart?cartId=$cartID'),
         headers: {
           'accept': '*/*',
-          'Authorization': 'Bearer $accessToken', // Assuming accessToken is already defined
+          'Authorization': 'Bearer $accessToken',
+          // Assuming accessToken is already defined
         },
       );
 
@@ -140,7 +141,8 @@ class CartCubit extends Cubit<CartState> {
         if (json.decode(response.body)['succeeded'] == true) {
           emit(RemoveCartItemSuccessfulState(productID));
         } else {
-          emit(RemoveCartItemFailureState(json.decode(response.body)['message']));
+          emit(RemoveCartItemFailureState(
+              json.decode(response.body)['message']));
         }
       } else {
         emit(RemoveCartItemFailureState(json.decode(response.body)['message']));
@@ -153,8 +155,30 @@ class CartCubit extends Cubit<CartState> {
   void resetCartState() async {
     emit(CartInitial());
   }
-  void editCartState() async {
-    emit(EditItemDone());
-  }
 
+  Future<void> checkAvailability() async {
+    emit(CheckAvailabilityLoadingState());
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrlHasoon/Cart/CheckAvailable'),
+        headers: {
+          'accept': '*/*',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $accessToken',
+        },
+      );
+      final result = json.decode(response.body);
+      print(result['succeeded']);
+      if (result['succeeded'] == true) {
+        emit(CheckAvailabilitySuccessfulState());
+      } else if (result['succeeded'] == false) {
+        emit(CheckAvailabilityFailureState(
+          result['data']['productName'],
+          result['data']['availableStock'],
+        ));
+      }
+    } catch (e) {
+      emit(CheckAvailabilityFailureState(e.toString(),0)); // Handle error state
+    }
+  }
 }

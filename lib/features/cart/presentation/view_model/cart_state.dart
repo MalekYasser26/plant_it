@@ -51,5 +51,13 @@ final class RemoveCartItemFailureState extends CartState {
   final String errorMsg;
 
   RemoveCartItemFailureState(this.errorMsg);
+}
+final class CheckAvailabilityLoadingState extends CartState {}
+final class CheckAvailabilitySuccessfulState extends CartState {}
+final class CheckAvailabilityFailureState extends CartState {
+  final String name;
+  final int quantity;
+   CheckAvailabilityFailureState( this.name, this.quantity);
 
 }
+

@@ -17,6 +17,7 @@ class CartFilled extends StatefulWidget {
 class _CartFilledState extends State<CartFilled> {
   List<CartItemModel> cartItems = [];
   double totalPrice = 0.0;
+  bool hasShownSnackBar = false; // Flag to ensure SnackBar shows only once
 
   // A method to calculate the total price
   void calculateTotalPrice() {
@@ -53,18 +54,14 @@ class _CartFilledState extends State<CartFilled> {
             calculateTotalPrice(); // Recalculate total price after removal
           });
         }
-        if (state is EditItemDone){
-          setState(() {
-            calculateTotalPrice();
-          });
-        }
       },
       child: Column(
         children: [
           Expanded(
             child: BlocBuilder<CartCubit, CartState>(
               buildWhen: (previous, current) {
-                return current is CartSuccessfulStateFilled || current is CartLoadingState;
+                return current is CartSuccessfulStateFilled ||
+                    current is CartLoadingState;
               },
               builder: (context, state) {
                 if (state is CartSuccessfulStateFilled) {
@@ -81,7 +78,8 @@ class _CartFilledState extends State<CartFilled> {
                       quantity: cartItems[index].quantity,
                       productID: cartItems[index].productID,
                     ),
-                    separatorBuilder: (context, index) => const SizedBox(height: 30),
+                    separatorBuilder: (context, index) =>
+                    const SizedBox(height: 30),
                     itemCount: cartItems.length,
                   );
                 }
@@ -93,13 +91,14 @@ class _CartFilledState extends State<CartFilled> {
             padding: const EdgeInsets.all(10.0),
             child: Row(
               children: [
-                BlocBuilder<CartCubit,CartState>(
-                  buildWhen:  (previous, current) {
-                    return current is CartSuccessfulStateFilled ;
+                BlocBuilder<CartCubit, CartState>(
+                  buildWhen: (previous, current) {
+                    return current is CartSuccessfulStateFilled;
                   },
                   builder: (context, setState) => Container(
                     height: getResponsiveSize(context, fontSize: 55),
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 10),
                     decoration: BoxDecoration(
                       color: const Color(0xFFDCDCDC),
                       borderRadius: BorderRadius.circular(15),
@@ -111,7 +110,8 @@ class _CartFilledState extends State<CartFilled> {
                             text: 'Order total\n ',
                             style: TextStyle(
                               fontFamily: "Poppins",
-                              fontSize: getResponsiveSize(context, fontSize: 12),
+                              fontSize:
+                              getResponsiveSize(context, fontSize: 12),
                               fontWeight: FontWeight.w600,
                               color: AppColors.darkGreenL,
                             ),
@@ -120,16 +120,19 @@ class _CartFilledState extends State<CartFilled> {
                                 text: 'EGP',
                                 style: TextStyle(
                                   fontFamily: "Raleway",
-                                  fontSize: getResponsiveSize(context, fontSize: 12),
+                                  fontSize:
+                                  getResponsiveSize(context, fontSize: 12),
                                   fontWeight: FontWeight.w300,
                                   color: Colors.black,
                                 ),
                               ),
                               TextSpan(
-                                text: ' $totalPrice',  // Use totalPrice here, after it is calculated
+                                text: ' $totalPrice',
+                                // Use totalPrice here, after it is calculated
                                 style: TextStyle(
                                   fontFamily: "Raleway",
-                                  fontSize: getResponsiveSize(context, fontSize: 14),
+                                  fontSize:
+                                  getResponsiveSize(context, fontSize: 14),
                                   fontWeight: FontWeight.bold,
                                   color: Colors.black,
                                 ),
@@ -142,36 +145,69 @@ class _CartFilledState extends State<CartFilled> {
                   ),
                 ),
                 const SizedBox(width: 20),
-                Flexible(
-                  child: SizedBox(
-                    width: getResponsiveSize(context, fontSize: 350),
-                    height: getResponsiveSize(context, fontSize: 55),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const CheckoutView(),
+                BlocListener<CartCubit, CartState>(
+                  listener: (context, state) {
+                    if (state is CheckAvailabilitySuccessfulState) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const CheckoutView(),
+                        ),
+                      );
+                    }
+
+                    if (state is CheckAvailabilityFailureState && !hasShownSnackBar) {
+                      // Show SnackBar once
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          behavior: SnackBarBehavior.floating,
+                          content: Text(
+                            "${state.name} has ${state.quantity} left only",
+                            style: const TextStyle(
+                              fontFamily: "Poppins",
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFDCDCDC),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
+                          backgroundColor: Colors.red,
                         ),
-                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                      ),
-                      child: Text(
-                        "Checkout",
-                        style: TextStyle(
-                          fontFamily: "Poppins",
-                          fontSize: getResponsiveSize(context, fontSize: 18),
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
+                      );
+                      hasShownSnackBar = true; // Set flag to true after showing
+                      context.read<CartCubit>().resetCartState();
+                    }
+                  },
+                  child: BlocBuilder<CartCubit, CartState>(
+                    builder: (context, state) {
+                      return Flexible(
+                        child: SizedBox(
+                          width: getResponsiveSize(context, fontSize: 350),
+                          height: getResponsiveSize(context, fontSize: 55),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              hasShownSnackBar = false; // Reset flag before checking
+                              context.read<CartCubit>().checkAvailability();
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFFDCDCDC),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 10),
+                            ),
+                            child: Text(
+                              "Checkout",
+                              style: TextStyle(
+                                fontFamily: "Poppins",
+                                fontSize:
+                                getResponsiveSize(context, fontSize: 18),
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
+                      );
+                    },
                   ),
                 ),
               ],
