@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:plant_it/constants/constants.dart';
@@ -12,6 +13,8 @@ class YourInfoSection extends StatefulWidget {
 }
 
 class _YourInfoSectionState extends State<YourInfoSection> {
+  StreamSubscription<ProfileState>? _profileSubscription;
+
   @override
   Widget build(BuildContext context) {
     var sCubit = context.read<AuthCubit>();
@@ -55,12 +58,16 @@ class _YourInfoSectionState extends State<YourInfoSection> {
   void initState() {
     super.initState();
 
-    // Listen to changes in the ProfileCubit to update this section
-    context.read<ProfileCubit>().stream.listen((state) {
-      if (state is ProfileSuccessfulState) {
-        setState(() {}); // Trigger UI refresh after a successful update
+    _profileSubscription = context.read<ProfileCubit>().stream.listen((state) {
+      if (state is ProfileSuccessfulState && mounted) {
+        setState(() {}); // Ensure that widget is mounted before calling setState
       }
     });
   }
-}
 
+  @override
+  void dispose() {
+    _profileSubscription?.cancel(); // Cancel the subscription to prevent memory leaks
+    super.dispose();
+  }
+}

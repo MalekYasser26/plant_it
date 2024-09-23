@@ -106,14 +106,17 @@ class _HiBrunoSectionState extends State<HiBrunoSection> {
   }
 
   void _showEditInfoModal(BuildContext context) {
-    showModalBottomSheet(
+    var pCubit = context.read<ProfileCubit>();
+  showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       builder: (BuildContext context) {
         return BlocListener<ProfileCubit, ProfileState>(
           listener: (context, state) {
             if (state is ProfileSuccessfulState) {
-              setState(() {}); // Trigger UI refresh after a successful update
+              setState(() {});
+              // Trigger UI refresh after a successful update
+              pCubit.getRecentlySavedProducts(false);
             }
           },
           child: Padding(
