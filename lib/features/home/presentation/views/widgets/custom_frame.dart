@@ -1,12 +1,10 @@
 import 'dart:math';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:plant_it/features/auth/presentation/view_model/auth_cubit.dart';
 import 'package:plant_it/features/favourites/presentation/view_model/liked_cubit.dart';
 import 'package:plant_it/features/favourites/presentation/view_model/liked_plants_cubit.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:plant_it/constants/constants.dart';
 import 'package:plant_it/features/description/presentation/views/description_view.dart';
 import 'package:plant_it/features/home/presentation/view_model/home_product.dart';
@@ -91,23 +89,6 @@ class _CustomFrameState extends State<CustomFrame> {
                           fit: BoxFit.cover,
                           height: imageHeight,
                           width: double.infinity,
-                          placeholder: (context, url) => Shimmer.fromColors(
-                            baseColor: AppColors.lighterGreen,
-                            highlightColor: AppColors.barelyGreen,
-                            child: Container(
-                              color: Colors.white,
-                              height: 150,
-                              width: double.infinity,
-                            ),
-                          ),
-                          errorWidget: (context, url, error) {
-                            return Image.asset(
-                              'assets/images/plant6.png',
-                              fit: BoxFit.cover,
-                              height: 150,
-                              width: double.infinity,
-                            );
-                          },
                           fadeInDuration: const Duration(milliseconds: 500),
                           fadeOutDuration: const Duration(milliseconds: 500),
                         )

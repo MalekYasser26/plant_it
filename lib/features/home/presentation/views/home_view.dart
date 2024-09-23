@@ -74,6 +74,7 @@ class _HomeViewState extends State<HomeView> {
                     child: BlocBuilder<HomeProductsCubit, HomeProductState>(
                       builder: (context, state) {
                         if (state is ProductsLoadingState || state is SearchLoadingState) {
+
                           return const Center(
                             child: CircularProgressIndicator(
                               color: AppColors.darkGreen,

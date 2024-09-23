@@ -11,36 +11,46 @@ class HomeProductsCubit extends Cubit<HomeProductState> {
   HomeProductsCubit() : super(ProductsInitial());
 
   // Fetch Products from API
-  Future<void> fetchProducts(Future<void> getLikes ) async {
+  Future<void> fetchProducts(Future<void> getLikes) async {
     await getLikes;
+
+    // Try to load cached products first
     emit(ProductsLoadingState());
     List<HomeProduct> cachedProducts = await getCachedProducts();
+
     if (cachedProducts.isNotEmpty) {
-      emit(ProductsSuccessfulState(
-          cachedProducts)); // Use cached data while loading fresh data
-    }
-    try {
-      final response = await http.get(
-        Uri.parse('$baseUrlArsoon/Product/GetAll'),
-        headers: {'accept': 'application/json'},
-      );
+      print("sss");
+      print(cachedProducts[0].image);
+      emit(ProductsSuccessfulState(cachedProducts));
+    } else {
+      // Proceed to fetch fresh data only if cache is empty or expired
+      try {
+        print("ss");
+        final response = await http.get(
+          Uri.parse('$baseUrlArsoon/Product/GetAll'),
+          headers: {'accept': 'application/json'},
+        );
 
-      if (response.statusCode == 200) {
-        final List<dynamic> productJson = json.decode(response.body);
-        final List<HomeProduct> products =
-            productJson.map((json) => HomeProduct.fromJson(json)).toList();
+        if (response.statusCode == 200) {
+          final List<dynamic> productJson = json.decode(response.body);
+         print("productjson : ");
+          print(productJson);
+          final List<HomeProduct> products = productJson.map((json) =>
+              HomeProduct.fromJson(json)).toList();
 
-        // Cache products locally
-        await cacheProducts(products);
-        emit(ProductsSuccessfulState(products));
-      } else {
-        throw Exception('Failed to load products');
-      }
-    } catch (e) {
-      // If an error occurs, and no cached products are available
-      if (cachedProducts.isEmpty) {
-        print(e.toString());
-        emit(ProductsFailureState()); // If no cache, show failure state
+          // Cache products locally for future use
+          await cacheProducts(products);
+
+          // Emit fresh products after caching
+          emit(ProductsSuccessfulState(products));
+        } else {
+          throw Exception('Failed to load products');
+        }
+      } catch (e) {
+        // If an error occurs and no cache is available, emit failure state
+        if (cachedProducts.isEmpty) {
+          emit(ProductsFailureState());
+        }
       }
     }
   }
@@ -61,10 +71,10 @@ class HomeProductsCubit extends Cubit<HomeProductState> {
     final String? productsJson = prefs.getString('cached_products');
     final int? cacheTime = prefs.getInt('cache_time');
 
-    // If cache is available and valid
+    // Check if cache exists and is still valid (1-hour expiration)
     if (productsJson != null && cacheTime != null) {
       final int currentTime = DateTime.now().millisecondsSinceEpoch;
-      const int cacheDuration = 60 * 60 * 1000; // Cache valid for 1 hour
+      const int cacheDuration = 60 * 60 * 1000; // 1 hour in milliseconds
 
       if (currentTime - cacheTime < cacheDuration) {
         final List<dynamic> productList = json.decode(productsJson);
@@ -74,7 +84,7 @@ class HomeProductsCubit extends Cubit<HomeProductState> {
       }
     }
 
-    return [];
+    return []; // No cache available
   }
 
   Future<void> searchProducts(String searchedText, Future<void> getLikes) async {

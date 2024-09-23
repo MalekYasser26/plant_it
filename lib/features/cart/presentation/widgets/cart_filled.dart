@@ -6,6 +6,7 @@ import 'package:plant_it/features/cart/presentation/view_model/cart_item_model.d
 import 'package:plant_it/features/cart/presentation/widgets/cart_empty.dart';
 import 'package:plant_it/features/cart/presentation/widgets/cart_item.dart';
 import 'package:plant_it/features/checkout/presentation/views/checkout_view.dart';
+import 'package:plant_it/features/tracking/views/plants_ordered.dart';
 
 class CartFilled extends StatefulWidget {
   const CartFilled({super.key});
@@ -187,7 +188,8 @@ class _CartFilledState extends State<CartFilled> {
                           child: ElevatedButton(
                             onPressed: () {
                               hasShownSnackBar = false; // Reset flag before checking
-                              context.read<CartCubit>().checkAvailability();
+                             // context.read<CartCubit>().checkAvailability();
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => PlantsOrderedView(),));
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFFDCDCDC),
