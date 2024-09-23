@@ -19,13 +19,10 @@ class HomeProductsCubit extends Cubit<HomeProductState> {
     List<HomeProduct> cachedProducts = await getCachedProducts();
 
     if (cachedProducts.isNotEmpty) {
-      print("sss");
-      print(cachedProducts[0].image);
       emit(ProductsSuccessfulState(cachedProducts));
     } else {
       // Proceed to fetch fresh data only if cache is empty or expired
       try {
-        print("ss");
         final response = await http.get(
           Uri.parse('$baseUrlArsoon/Product/GetAll'),
           headers: {'accept': 'application/json'},

@@ -5,14 +5,11 @@ import 'package:meta/meta.dart';
 import 'package:plant_it/constants/constants.dart';
 import 'package:plant_it/features/description/presentation/view_model/single_product.dart';
 import 'package:http/http.dart' as http;
-import 'package:plant_it/features/profile/presentation/view_model/recently_saved_product_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 part 'single_product_state.dart';
 
 class SingleProductCubit extends Cubit<SingleProductState> {
-  late Map<int, int> bookmarkedProducts = {};
-   List<RecentlySavedProductModel>savedProducts =[];
   SingleProductCubit() : super(SingleProductInitial(
       SingleProduct(id: -1, productName: '', price: '0', bio: '', availableStock: 0, likesCounter: 0, images: [], productCategories: [])
 
@@ -29,7 +26,6 @@ class SingleProductCubit extends Cubit<SingleProductState> {
       if (response.statusCode == 200) {
         final productJson = json.decode(response.body)['product'];
         final SingleProduct product = SingleProduct.fromJson(productJson);
-        await getProductsBookmarks(state.productID, product);  // Get bookmarks
         emit(SingleProductSuccessfulState(product));
       } else {
         print(response.body);
@@ -60,34 +56,8 @@ class SingleProductCubit extends Cubit<SingleProductState> {
     }
   }
 
-  Future<void> getProductsBookmarks(int productID,SingleProduct product) async {
-    emit(BookmarkLoadingState(product));
-    try {
-      final response = await http.get(
-        Uri.parse('$baseUrlHasoon/Bookmark/productId?productId=$productID'),
-        headers: {
-          'accept': 'application/json',
-          'Authorization': 'Bearer $accessToken',
-        },
-      );
-      if (response.statusCode == 200) {
-        final result = json.decode(response.body);
-        for (var item in result) {
-          bookmarkedProducts[item['productId']] = item['id'];
-        }
-        await cacheBookmarkedProducts(bookmarkedProducts); // Cache the bookmarks
-        emit(BookmarkSuccessfulState(product));
-      } else {
-        print(response.body);
-        throw Exception('Failed to load bookmark');
-      }
-    } catch (e) {
-      print(e.toString());
-      emit(BookmarkFailureState(product));
-    }
-  }
 
-  Future<void> addBookmarkedProducts(SingleProduct product) async {
+  Future<void> addBookmarkedProducts(SingleProduct product,Map<int, int> bookmarkedProducts) async {
     emit(AddBookmarkLoadingState(product));
     try {
       final response = await http.post(
@@ -97,7 +67,6 @@ class SingleProductCubit extends Cubit<SingleProductState> {
           'Authorization': 'Bearer $accessToken',
         },
       );
-
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = json.decode(response.body);
         final int bookmarkID = responseData['data']['id'];
@@ -114,7 +83,7 @@ class SingleProductCubit extends Cubit<SingleProductState> {
     }
   }
 
-  Future<void> removeBookmarkedProducts(SingleProduct product) async {
+  Future<void> removeBookmarkedProducts(SingleProduct product,Map<int, int> bookmarkedProducts) async {
     emit(RemoveBookmarkLoadingState(product));
     final bookmarkID = bookmarkedProducts[product.id];
     if (bookmarkID == null) {
@@ -131,8 +100,10 @@ class SingleProductCubit extends Cubit<SingleProductState> {
           'Authorization': 'Bearer $accessToken',
         },
       );
+      print("here");
       if (response.statusCode == 200) {
         bookmarkedProducts.remove(product.id);
+        print(bookmarkedProducts);
         await cacheBookmarkedProducts(bookmarkedProducts);
         emit(RemoveBookmarkSuccessfulState(product: product));
         debugPrint(response.body);
@@ -155,7 +126,7 @@ class SingleProductCubit extends Cubit<SingleProductState> {
     await prefs.setString('bookmarked_products', json.encode(bookmarkedProductsStringKeys));
   }
 
-  Future<void> getCachedBookmarkedProducts() async {
+  Future<void> getCachedBookmarkedProducts(Map<int, int> bookmarkedProducts) async {
     final prefs = await SharedPreferences.getInstance();
     final String? cachedBookmarkedProductsString = prefs.getString('bookmarked_products');
     if (cachedBookmarkedProductsString != null) {
@@ -165,7 +136,7 @@ class SingleProductCubit extends Cubit<SingleProductState> {
   }
 
 
-  bool isBookmarked(int productID) {
+  bool isBookmarked(int productID,Map<int, int> bookmarkedProducts) {
     return bookmarkedProducts.containsKey(productID);
   }
 }

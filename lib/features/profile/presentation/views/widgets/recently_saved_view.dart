@@ -21,7 +21,7 @@ class RecentlySavedView extends StatelessWidget {
           text: "Recently Saved",
           implyLeading: true,
           methodNeededtoCall: () {
-            pCubit.getRecentlySavedProducts();
+            pCubit.getRecentlySavedProducts(false);
           },
         ),
         body: BlocBuilder<ProfileCubit, ProfileState>(

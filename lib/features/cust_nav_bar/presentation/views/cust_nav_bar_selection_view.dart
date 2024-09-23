@@ -24,7 +24,6 @@ class _CustNavBarSelectionViewState extends State<CustNavBarSelectionView> {
     var lCubit = context.read<LikedPlantsCubit>();
     var sCubit = context.read<AuthCubit>();
     var pCubit = context.read<ProfileCubit>();
-    var spCubit = context.read<SingleProductCubit>();
     return Scaffold(
       backgroundColor: AppColors.basicallyWhite,
       body: pages[widget.currentIndex],
@@ -35,7 +34,7 @@ class _CustNavBarSelectionViewState extends State<CustNavBarSelectionView> {
             lCubit.getRecentlyLikedProducts(sCubit.userID);
           }
           if (index ==0){
-            pCubit.getRecentlySavedProducts();
+            pCubit.getRecentlySavedProducts(false);
           }
 
           setState(() {

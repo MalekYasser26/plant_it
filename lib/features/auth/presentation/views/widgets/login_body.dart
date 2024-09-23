@@ -40,7 +40,7 @@ class LoginBody extends StatelessWidget {
                 listener: (context, state) {
                   if (state is SigninSuccessState) {
                     lCubit.getRecentlyLikedProducts(sCubit.userID);
-                     pCubit.getRecentlySavedProducts();
+                     pCubit.getRecentlySavedProducts(false);
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(

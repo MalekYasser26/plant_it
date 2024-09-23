@@ -81,7 +81,7 @@ class _DescriptionViewState extends State<DescriptionView> {
             state is RemoveBookmarkSuccessfulState) {
           final SingleProduct product = state.product;
           bool isBookmarked =
-              sCubit.bookmarkedProducts.containsKey(widget.product.id);
+              pCubit.bookmarkedProducts.containsKey(widget.product.id);
           final List<String> productImages =
               product.images.map((image) => image.imgUrl).toList();
           return SafeArea(
@@ -91,7 +91,7 @@ class _DescriptionViewState extends State<DescriptionView> {
                 text: product.productName, // Loaded product data
                 implyLeading: true,
                 methodNeededtoCall: () {
-                  pCubit.getRecentlySavedProducts();
+                  pCubit.getRecentlySavedProducts(true);
                 },
               ),
               body: Column(
@@ -163,16 +163,16 @@ class _DescriptionViewState extends State<DescriptionView> {
                               ),
                               IconButton(
                                 onPressed: () {
-                                  print(sCubit.bookmarkedProducts);
+                                  print(pCubit.bookmarkedProducts);
                                   if (!isBookmarked) {
-                                    sCubit.addBookmarkedProducts(product);
-                                    pCubit.getRecentlySavedProducts();
+                                    sCubit.addBookmarkedProducts(product,pCubit.bookmarkedProducts);
+                                    pCubit.getRecentlySavedProducts(true);
                                   } else {
-                                    sCubit.removeBookmarkedProducts(product);
-                                    pCubit.getRecentlySavedProducts();
+                                    sCubit.removeBookmarkedProducts(product,pCubit.bookmarkedProducts);
+                                    pCubit.getRecentlySavedProducts(true);
                                   }
                                 },
-                                icon: sCubit.isBookmarked(widget.product.id)
+                                icon: sCubit.isBookmarked(widget.product.id,pCubit.bookmarkedProducts)
                                     ? const Icon(
                                         Icons.bookmark_added,
                                         color: Colors.green,
