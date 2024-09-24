@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:plant_it/constants/constants.dart';
 import 'package:plant_it/features/favourites/presentation/view_model/liked_plants_cubit.dart';
+import 'package:plant_it/features/favourites/presentation/view_model/recently_liked_products.dart';
 import 'package:plant_it/features/favourites/presentation/views/widgets/like_or_saved_item.dart';
 
 class RecentlyLikedSection extends StatelessWidget {
@@ -32,22 +33,21 @@ class RecentlyLikedSection extends StatelessWidget {
             if (state is RecentlyLikedLoadingState) {
               return const Center(
                 child: CircularProgressIndicator(
-                  backgroundColor: AppColors.darkGreenL,
+                  color: AppColors.darkGreenL,
                 ),
               );
             }
             if (state is RecentlyLikedSuccessfulState) {
+              List<RecentlyLikedProductModel> revProducts = state.products.reversed.toList() ;
               return ListView.separated(
-                reverse: true,
                 itemBuilder: (context, index) {
-                  int reversedIndex = state.totalItems - 2 + index;
                   return LikedOrSavedItem(
                     index: index ,
                     isLiked: true,
-                    name: state.products[reversedIndex].productName,
-                    image: state.products[reversedIndex].image,
-                    price: state.products[reversedIndex].price,
-                    id:state.products[reversedIndex].id ,
+                    name:revProducts[index].productName,
+                    image: revProducts[index].image,
+                    price: revProducts[index].price,
+                    id:revProducts[index].id ,
                   );
                 },
                 shrinkWrap: true,
@@ -55,7 +55,7 @@ class RecentlyLikedSection extends StatelessWidget {
                 separatorBuilder: (context, index) {
                   return const SizedBox(height: 10);
                 },
-                itemCount: state.products.length.clamp(0, 2),
+                itemCount:revProducts.length.clamp(0, 3)
               );
             }
             return const SizedBox.shrink();
