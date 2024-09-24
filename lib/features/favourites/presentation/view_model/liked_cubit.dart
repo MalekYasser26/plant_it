@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'package:plant_it/constants/constants.dart';
-import 'package:plant_it/features/favourites/presentation/view_model/recently_liked_products.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 part 'liked_state.dart';

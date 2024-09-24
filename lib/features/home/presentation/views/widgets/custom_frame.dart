@@ -119,22 +119,21 @@ class _CustomFrameState extends State<CustomFrame> {
                         ),
                       ),
                       IconButton(
-                        onPressed: () {
+                        onPressed: () async {
                           if (!isLiked) {
-                            lCubit.addLikedProducts(widget.product.id);
-                            lpCubit.getRecentlyLikedProducts(sCubit.userID);
-
+                            await lCubit.addLikedProducts(widget.product.id);
                           } else {
-                            lCubit.removeLikedProducts(widget.product.id);
-                            lpCubit.getRecentlyLikedProducts(sCubit.userID);
+                            await lCubit.removeLikedProducts(widget.product.id);
                           }
+                          // Refetch the updated list, set `called` to true to force refresh
+                          await lpCubit.getRecentlyLikedProducts(sCubit.userID, true);
                         },
                         icon: Icon(
                           isLiked ? Icons.favorite : Icons.favorite_border,
                           color: isLiked ? Colors.red : Colors.black,
                           size: getResponsiveSize(context, fontSize: 20),
                         ),
-                      ),
+                      )
                     ],
                   ),
                 ),

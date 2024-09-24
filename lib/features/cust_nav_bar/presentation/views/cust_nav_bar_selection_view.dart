@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:plant_it/constants/constants.dart';
 import 'package:plant_it/features/auth/presentation/view_model/auth_cubit.dart';
 import 'package:plant_it/features/cust_nav_bar/presentation/views/cust_nav_bar_view.dart';
-import 'package:plant_it/features/description/presentation/view_model/single_product_cubit.dart';
 import 'package:plant_it/features/favourites/presentation/view_model/liked_plants_cubit.dart';
 import 'package:plant_it/features/profile/presentation/view_model/profile_cubit.dart';
 
@@ -31,7 +30,7 @@ class _CustNavBarSelectionViewState extends State<CustNavBarSelectionView> {
         currentIndex: widget.currentIndex,
         onTap: (index) {
           if (index ==2){
-            lCubit.getRecentlyLikedProducts(sCubit.userID);
+            lCubit.getRecentlyLikedProducts(sCubit.userID,false);
           }
           if (index ==0){
             pCubit.getRecentlySavedProducts(false);

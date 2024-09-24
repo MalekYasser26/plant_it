@@ -39,7 +39,7 @@ class LoginBody extends StatelessWidget {
               child: BlocConsumer<AuthCubit, AuthState>(
                 listener: (context, state) {
                   if (state is SigninSuccessState) {
-                    lCubit.getRecentlyLikedProducts(sCubit.userID);
+                    lCubit.getRecentlyLikedProducts(sCubit.userID,true);
                      pCubit.getRecentlySavedProducts(false);
                     Navigator.pushReplacement(
                       context,
