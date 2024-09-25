@@ -36,18 +36,18 @@ class RecentlyLikedSection extends StatelessWidget {
                 ),
               );
             }
-            if (state is RecentlyLikedSuccessfulState) {
-             // List<RecentlyLikedProductModel> revProducts = state.products.reversed.toList() ;
+            if (state is LikedSuggestedPlantsCombinedState) {
+              print(state.recentlyLikedProducts);
               return ListView.separated(
                 reverse: true,
                 itemBuilder: (context, index) {
                   return LikedOrSavedItem(
                     index: index ,
                     isLiked: true,
-                    name:state.products[index].productName,
-                    image: state.products[index].image,
-                    price: state.products[index].price,
-                    id:state.products[index].id ,
+                    name:state.recentlyLikedProducts[index].productName,
+                    image: state.recentlyLikedProducts[index].image,
+                    price: state.recentlyLikedProducts[index].price,
+                    id:state.recentlyLikedProducts[index].id ,
                   );
                 },
                 shrinkWrap: true,
@@ -55,7 +55,7 @@ class RecentlyLikedSection extends StatelessWidget {
                 separatorBuilder: (context, index) {
                   return const SizedBox(height: 10);
                 },
-                itemCount:state.products.length.clamp(0, 3)
+                itemCount:state.recentlyLikedProducts.length.clamp(0, 3)
               );
             }
             return const SizedBox.shrink();

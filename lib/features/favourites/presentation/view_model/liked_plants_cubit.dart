@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 import 'package:plant_it/constants/constants.dart';
+import 'package:plant_it/features/favourites/presentation/view_model/product_suggestion_model.dart';
 import 'package:plant_it/features/favourites/presentation/view_model/recently_liked_products.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,12 +15,15 @@ class LikedPlantsCubit extends Cubit<LikedPlantsState> {
   LikedPlantsCubit() : super(LikedPlantsInitial());
   int totalItems = 0;
   List<RecentlyLikedProductModel> cachedProducts = [];
+  List<ProductSuggestionModel> productSuggestions = [];
 
-  Future<void> getRecentlyLikedProducts(int userID , bool called) async {
+  Future<void> getRecentlyLikedProducts(int userID, bool called) async {
     emit(RecentlyLikedLoadingState());
     if (cachedProducts.isNotEmpty && called == false) {
       totalItems = cachedProducts.length;
-      emit(RecentlyLikedSuccessfulState(totalItems, cachedProducts));
+      emit(LikedSuggestedPlantsCombinedState(
+          productSuggestions: productSuggestions, recentlyLikedProducts: cachedProducts, totalItems: totalItems));
+
     } else {
       try {
         final response = await http.get(
@@ -42,7 +46,8 @@ class LikedPlantsCubit extends Cubit<LikedPlantsState> {
               .toList();
           await cacheProducts(cachedProducts);
           totalItems = cachedProducts.length;
-          emit(RecentlyLikedSuccessfulState(totalItems, cachedProducts));
+          emit(LikedSuggestedPlantsCombinedState(
+              productSuggestions: productSuggestions, recentlyLikedProducts: cachedProducts, totalItems: totalItems));
         } else {
           // Handle non-200 status codes
           emit(RecentlyLikedFailureState());
@@ -52,6 +57,82 @@ class LikedPlantsCubit extends Cubit<LikedPlantsState> {
         emit(RecentlyLikedFailureState());
       }
     }
+  }
+
+  Future<void> getProductSuggestions() async {
+    emit(SuggestedProductLoadingState());
+    if (productSuggestions.isNotEmpty) {
+      emit(LikedSuggestedPlantsCombinedState(
+          productSuggestions: productSuggestions, recentlyLikedProducts: cachedProducts, totalItems: totalItems));
+
+      return;
+    } else {
+      try {
+        final response = await http.get(
+          Uri.parse(
+              "https://plantitapi.runasp.net/api/Product/SuggestedProducts"),
+          headers: {
+            'accept': '*/*',
+            'Authorization': 'Bearer $accessToken', // Use the proper token
+          },
+        );
+
+        if (response.statusCode == 200) {
+          final responseBody = json.decode(response.body);
+          final List<dynamic> productJson = responseBody['data'];
+
+          // Safely map the JSON response to a list of ProductSuggestionModel instances
+          productSuggestions = productJson
+              .map((json) => ProductSuggestionModel.fromJson(json))
+              .toList();
+
+          // Cache the product suggestions
+          await cacheProductSuggestions(productSuggestions);
+
+          // Emit the success state with the product suggestions
+          emit(LikedSuggestedPlantsCombinedState(
+              productSuggestions: productSuggestions, recentlyLikedProducts: cachedProducts, totalItems: totalItems));
+
+        } else {
+          emit(SuggestedProductFailureState());
+        }
+      } catch (e) {
+        debugPrint("Error fetching product suggestions: $e");
+        emit(SuggestedProductFailureState());
+      }
+    }
+  }
+
+  Future<void> cacheProductSuggestions(
+      List<ProductSuggestionModel> products) async {
+    final prefs = await SharedPreferences.getInstance();
+    final String productsJson =
+        json.encode(products.map((product) => product.toJson()).toList());
+    await prefs.setString('cached_product_suggestions', productsJson);
+    await prefs.setInt(
+        'cache_suggestions_time', DateTime.now().millisecondsSinceEpoch);
+  }
+
+  Future<List<ProductSuggestionModel>> getCachedProductSuggestions() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? productsJson = prefs.getString('cached_product_suggestions');
+    final int? cacheTime = prefs.getInt('cache_suggestions_time');
+
+    // If cache is available and valid
+    if (productsJson != null && cacheTime != null) {
+      final int currentTime = DateTime.now().millisecondsSinceEpoch;
+      const int cacheDuration = 60 * 60 * 1000; // Cache valid for 1 hour
+
+      if (currentTime - cacheTime < cacheDuration) {
+        final List<dynamic> productList = json.decode(productsJson);
+        return productList
+            .map((json) => ProductSuggestionModel.fromJson(json))
+            .toList();
+      }
+    }
+
+    // Return an empty list if cache is expired or unavailable
+    return [];
   }
 
   Future<void> cacheProducts(List<RecentlyLikedProductModel> products) async {

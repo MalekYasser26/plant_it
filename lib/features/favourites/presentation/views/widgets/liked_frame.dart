@@ -1,11 +1,14 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:plant_it/constants/constants.dart';
 import 'package:plant_it/features/description/presentation/views/description_view.dart';
 import 'package:plant_it/features/home/presentation/view_model/home_product.dart';
 
 class LikedFrame extends StatefulWidget {
-  final String imagePath ;
-  const LikedFrame({super.key, required this.imagePath});
+  final String imagePath,productName ;
+  final double price ;
+  final int likeCounter ;
+  const LikedFrame({super.key, required this.imagePath, required this.productName, required this.price, required this.likeCounter});
 
   @override
   State<LikedFrame> createState() => _LikedFrameState();
@@ -16,7 +19,7 @@ class _LikedFrameState extends State<LikedFrame> {
 
   @override
   Widget build(BuildContext context) {
-    HomeProduct p = HomeProduct(id: 1, productName: "w", price: '10', likesCounter: 1, image: 's') ;
+    HomeProduct p = HomeProduct(id: -1, productName: "", price: '', likesCounter: -2, image: '') ;
 
     return Container(
       decoration: BoxDecoration(
@@ -48,9 +51,25 @@ class _LikedFrameState extends State<LikedFrame> {
                   child: ClipRRect(
                     clipBehavior: Clip.antiAlias,
                     borderRadius: BorderRadius.circular(10),
-                    child: Image.asset(
-                      widget.imagePath,
-                      fit: BoxFit.cover, // Adjusted to cover to fill the container
+                    child: widget.imagePath.startsWith('http') ?
+                    CachedNetworkImage(
+                      imageUrl: widget.imagePath,
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                      errorWidget: (context, url, error) {
+                        return Image.asset(
+                          'assets/images/placeholder.png',
+                          fit: BoxFit.cover,
+                          height: 150,
+                          width: double.infinity,
+                        );
+                      },
+                      fadeInDuration: const Duration(milliseconds: 500),
+                      fadeOutDuration: const Duration(milliseconds: 500),
+                    ) : Image.asset(
+                      'assets/images/placeholder.png',
+                      fit: BoxFit.cover,
+                      width: double.infinity,
                     ),
                   ),
                 ),
@@ -65,7 +84,7 @@ class _LikedFrameState extends State<LikedFrame> {
               children: [
                 Flexible(
                   child: Text(
-                    "Monstera",
+                    widget.productName,
                     style: TextStyle(
                       fontFamily: "Poppins",
                       fontWeight: FontWeight.bold,
@@ -102,7 +121,7 @@ class _LikedFrameState extends State<LikedFrame> {
               children: [
                 Flexible(
                   child: Text(
-                    "222 EGP",
+                    "${widget.price} EGP",
                     style: TextStyle(
                       fontFamily: "Raleway",
                       fontWeight: FontWeight.bold,
@@ -111,7 +130,7 @@ class _LikedFrameState extends State<LikedFrame> {
                   ),
                 ),
                 Text(
-                  "1.4 K",
+                  widget.likeCounter.toString(),
                   style: TextStyle(
                     fontFamily: "Raleway",
                     fontWeight: FontWeight.bold,

@@ -31,11 +31,12 @@ class _CustNavBarSelectionViewState extends State<CustNavBarSelectionView> {
         onTap: (index) {
           if (index ==2){
             lCubit.getRecentlyLikedProducts(sCubit.userID,false);
+            lCubit.getProductSuggestions();
+
           }
           if (index ==0){
             pCubit.getRecentlySavedProducts(false);
           }
-
           setState(() {
             widget.currentIndex = index;
           });
