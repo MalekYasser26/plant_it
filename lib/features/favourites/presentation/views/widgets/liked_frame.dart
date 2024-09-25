@@ -6,9 +6,10 @@ import 'package:plant_it/features/home/presentation/view_model/home_product.dart
 
 class LikedFrame extends StatefulWidget {
   final String imagePath,productName ;
-  final double price ;
+  final String price ;
   final int likeCounter ;
-  const LikedFrame({super.key, required this.imagePath, required this.productName, required this.price, required this.likeCounter});
+  final int id ;
+  const LikedFrame({super.key, required this.imagePath, required this.productName, required this.price, required this.likeCounter, required this.id});
 
   @override
   State<LikedFrame> createState() => _LikedFrameState();
@@ -19,7 +20,7 @@ class _LikedFrameState extends State<LikedFrame> {
 
   @override
   Widget build(BuildContext context) {
-    HomeProduct p = HomeProduct(id: -1, productName: "", price: '', likesCounter: -2, image: '') ;
+    HomeProduct p = HomeProduct(id: widget.id, productName: "", price: '', likesCounter: -2, image: '') ;
 
     return Container(
       decoration: BoxDecoration(

@@ -9,14 +9,14 @@ part 'home_product_state.dart';
 
 class HomeProductsCubit extends Cubit<HomeProductState> {
   HomeProductsCubit() : super(ProductsInitial());
-
+  List<HomeProduct> cachedProducts = [];
   // Fetch Products from API
   Future<void> fetchProducts(Future<void> getLikes) async {
     await getLikes;
 
     // Try to load cached products first
     emit(ProductsLoadingState());
-    List<HomeProduct> cachedProducts = await getCachedProducts();
+    cachedProducts = await getCachedProducts();
 
     if (cachedProducts.isNotEmpty) {
       emit(ProductsSuccessfulState(cachedProducts));
