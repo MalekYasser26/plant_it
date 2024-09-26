@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/cupertino.dart';
@@ -14,6 +15,8 @@ class SingleProductCubit extends Cubit<SingleProductState> {
       SingleProduct(id: -1, productName: '', price: '0', bio: '', availableStock: 0, likesCounter: 0, images: [], productCategories: [])
 
   ));
+  Map<int, int> bookmarkedProducts = {};
+  Timer? _debounce; // Timer for debouncing requests
 
   Future<void> fetchProductById(int userID,SingleProduct product) async {
     emit(SingleProductLoadingState(product)); // Emit loading state before fetch
@@ -56,68 +59,75 @@ class SingleProductCubit extends Cubit<SingleProductState> {
     }
   }
 
+  Future<void> addBookmarkedProducts(SingleProduct product) async {
+    // Debounce logic
+    if (_debounce?.isActive ?? false) {
+      _debounce!.cancel(); // Cancel any ongoing debounce timer
+    }
 
-  Future<void> addBookmarkedProducts(SingleProduct product,Map<int, int> bookmarkedProducts) async {
-    emit(AddBookmarkLoadingState(product));
-    try {
-      final response = await http.post(
-        Uri.parse('$baseUrlHasoon/Bookmark?productId=${product.id}'),
-        headers: {
-          'accept': '*/*',
-          'Authorization': 'Bearer $accessToken',
-        },
-      );
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> responseData = json.decode(response.body);
-        final int bookmarkID = responseData['data']['id'];
-        bookmarkedProducts[product.id] = bookmarkID;
-        await cacheBookmarkedProducts(bookmarkedProducts);
-        emit(AddBookmarkSuccessfulState(product: product));
-      } else {
-        print(response.body);
+    _debounce = Timer(const Duration(milliseconds: 300), () async {
+      emit(AddBookmarkLoadingState(product));
+      try {
+        final response = await http.post(
+          Uri.parse('$baseUrlHasoon/Bookmark?productId=${product.id}'),
+          headers: {
+            'accept': '*/*',
+            'Authorization': 'Bearer $accessToken',
+          },
+        );
+
+        if (response.statusCode == 200) {
+          final Map<String, dynamic> responseData = json.decode(response.body);
+          final int bookmarkID = responseData['data']['id'];
+          bookmarkedProducts[product.id] = bookmarkID;
+          await cacheBookmarkedProducts();
+          emit(AddBookmarkSuccessfulState(product: product));
+        } else {
+          emit(AddBookmarkFailureState(product));
+        }
+      } catch (e) {
         emit(AddBookmarkFailureState(product));
       }
-    } catch (e) {
-      print(e.toString());
-      emit(AddBookmarkFailureState(product));
-    }
+    });
   }
 
-  Future<void> removeBookmarkedProducts(SingleProduct product,Map<int, int> bookmarkedProducts) async {
-    emit(RemoveBookmarkLoadingState(product));
-    final bookmarkID = bookmarkedProducts[product.id];
-    if (bookmarkID == null) {
-      debugPrint("null");
-      emit(RemoveBookmarkFailureState(product));
-      return;
+  Future<void> removeBookmarkedProducts(SingleProduct product) async {
+    if (_debounce?.isActive ?? false) {
+      _debounce!.cancel(); // Cancel any ongoing debounce timer
     }
 
-    try {
-      final response = await http.delete(
-        Uri.parse('$baseUrlHasoon/Bookmark/BookmarkId?BookmarkId=$bookmarkID'),
-        headers: {
-          'accept': '*/*',
-          'Authorization': 'Bearer $accessToken',
-        },
-      );
-      print("here");
-      if (response.statusCode == 200) {
-        bookmarkedProducts.remove(product.id);  // First update the local data
-        await cacheBookmarkedProducts(bookmarkedProducts);  // Then update the cache
-        emit(RemoveBookmarkSuccessfulState(product: product));  // Lastly, emit success state
+    _debounce = Timer(const Duration(milliseconds: 300), () async {
+      emit(RemoveBookmarkLoadingState(product));
+      final bookmarkID = bookmarkedProducts[product.id];
+      if (bookmarkID == null) {
+        emit(RemoveBookmarkFailureState(product));
+        return;
       }
-      else {
-        debugPrint(response.body);
-        throw Exception('Failed to remove liked product');
+
+      try {
+        final response = await http.delete(
+          Uri.parse('$baseUrlHasoon/Bookmark/BookmarkId?BookmarkId=$bookmarkID'),
+          headers: {
+            'accept': '*/*',
+            'Authorization': 'Bearer $accessToken',
+          },
+        );
+
+        if (response.statusCode == 200) {
+          bookmarkedProducts.remove(product.id);
+          await cacheBookmarkedProducts();
+          emit(RemoveBookmarkSuccessfulState(product: product));
+        } else {
+          throw Exception('Failed to remove bookmarked product');
+        }
+      } catch (e) {
+        emit(RemoveBookmarkFailureState(product));
       }
-    } catch (e) {
-      debugPrint(e.toString());
-      emit(RemoveBookmarkFailureState(product));
-    }
+    });
   }
 
 
-  Future<void> cacheBookmarkedProducts(Map<int, int> bookmarkedProducts) async {
+  Future<void> cacheBookmarkedProducts() async {
     final prefs = await SharedPreferences.getInstance();
     final Map<String, int> bookmarkedProductsStringKeys =
     bookmarkedProducts.map((key, value) => MapEntry(key.toString(), value));
@@ -135,7 +145,7 @@ class SingleProductCubit extends Cubit<SingleProductState> {
   }
 
 
-  bool isBookmarked(int productID,Map<int, int> bookmarkedProducts) {
+  bool isBookmarked(int productID) {
     return bookmarkedProducts.containsKey(productID);
   }
 }

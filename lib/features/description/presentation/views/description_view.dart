@@ -162,44 +162,34 @@ class _DescriptionViewState extends State<DescriptionView> {
                                   );
                                 },
                               ),
-                              BlocBuilder<SingleProductCubit,
-                                  SingleProductState>(
+                              BlocBuilder<SingleProductCubit, SingleProductState>(
                                 buildWhen: (previousState, currentState) {
-                                  if (currentState is AddBookmarkSuccessfulState ||
-                                      currentState is RemoveBookmarkSuccessfulState) {
-                                    return currentState.productID ==
-                                        widget.product.id;
-                                  }
-                                  return false; // No rebuild otherwise
+                                  // Rebuild if there's a successful add/remove bookmark action
+                                  return currentState is AddBookmarkSuccessfulState || currentState is RemoveBookmarkSuccessfulState;
                                 },
                                 builder: (context, state) {
                                   return IconButton(
                                     onPressed: () {
-                                      print(pCubit.bookmarkedProducts);
+                                      // Get the SingleProductCubit instance
+                                      final sCubit = context.read<SingleProductCubit>();
+
+                                      // Get the product's bookmark status from the cubit
+                                      bool isBookmarked = sCubit.isBookmarked(widget.product.id);
+
+                                      // If it's not bookmarked, add it; otherwise, remove it
                                       if (!isBookmarked) {
-                                        sCubit.addBookmarkedProducts(
-                                            product, pCubit.bookmarkedProducts);
-                                        pCubit.getRecentlySavedProducts(true);
+                                        sCubit.addBookmarkedProducts(product);
                                       } else {
-                                        sCubit.removeBookmarkedProducts(
-                                            product, pCubit.bookmarkedProducts);
-                                        pCubit.getRecentlySavedProducts(true);
+                                        sCubit.removeBookmarkedProducts(product);
                                       }
                                     },
-                                    icon: sCubit.isBookmarked(widget.product.id,
-                                            pCubit.bookmarkedProducts)
-                                        ? const Icon(
-                                            Icons.bookmark_added,
-                                            color: Colors.green,
-                                            size: 25,
-                                          )
-                                        : const Icon(
-                                            Icons.bookmark_border,
-                                            size: 25,
-                                          ),
+                                    icon: !sCubit.isBookmarked(widget.product.id)
+                                        ? const Icon(Icons.bookmark_border, size: 25)
+                                        : const Icon(Icons.bookmark_added, color: Colors.green, size: 25),
                                   );
                                 },
                               ),
+
                             ],
                           ),
                           const CustRatingStars(),
