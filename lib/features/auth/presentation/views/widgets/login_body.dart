@@ -9,8 +9,11 @@ import 'package:plant_it/features/auth/presentation/views/widgets/join_through_w
 import 'package:plant_it/features/auth/presentation/views/widgets/login_button.dart';
 import 'package:plant_it/features/auth/presentation/views/widgets/password_widget.dart';
 import 'package:plant_it/features/cust_nav_bar/presentation/views/cust_nav_bar_selection_view.dart';
+import 'package:plant_it/features/favourites/presentation/view_model/liked_cubit.dart';
 import 'package:plant_it/features/favourites/presentation/view_model/liked_plants_cubit.dart';
+import 'package:plant_it/features/home/presentation/view_model/home_product_cubit.dart';
 import 'package:plant_it/features/profile/presentation/view_model/profile_cubit.dart';
+import 'package:plant_it/features/ratings_cubit/ratings_cubit.dart';
 
 class LoginBody extends StatelessWidget {
   LoginBody({super.key});
@@ -26,7 +29,10 @@ class LoginBody extends StatelessWidget {
   Widget build(BuildContext context) {
     var sCubit = context.read<AuthCubit>();
     var pCubit = context.read<ProfileCubit>();
+    var hCubit = context.read<HomeProductsCubit>();
+    var rCubit = context.read<RatingsCubit>();
     var lCubit = context.read<LikedPlantsCubit>();
+    var l2Cubit = context.read<LikedCubit>();
 
     return SafeArea(
       child: Scaffold(
@@ -41,6 +47,11 @@ class LoginBody extends StatelessWidget {
                   if (state is SigninSuccessState) {
                     lCubit.getRecentlyLikedProducts(sCubit.userID,true);
                      pCubit.getRecentlySavedProducts(false);
+                     hCubit.fetchProducts(
+                       l2Cubit.getLikedProducts(sCubit.userID)
+                     );
+                    rCubit.getProductRatings();
+
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(

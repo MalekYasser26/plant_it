@@ -25,12 +25,10 @@ class _BasedOnPicksSectionState extends State<BasedOnPicksSection> {
           List combinedProducts = [];
           if (state.productSuggestions.length >= 3) {
             for (int i = 0; i < 3; i++) {
-              print("here 3 ");
               combinedProducts.add(state.productSuggestions[i]);
             }
           } else if (state.productSuggestions.length < 3) {
             for (int i = 0; i < state.productSuggestions.length; i++) {
-              print("here 1 ");
               combinedProducts.add(state.productSuggestions[i]);
             }
             for (int i = 0; i < 3 - state.productSuggestions.length; i++) {
@@ -40,14 +38,8 @@ class _BasedOnPicksSectionState extends State<BasedOnPicksSection> {
               if (!exists) {
                 // Add the item to combinedProducts if it's not found by id
                 combinedProducts.add(hCubit.cachedProducts[i]);
-                print("Added product with id: ${hCubit.cachedProducts[i].id}");
-              } else {
-                print("Product with id ${hCubit.cachedProducts[i].id} is already in combinedProducts");
               }
             }
-          }
-          for (var item in combinedProducts){
-            print(item.id);
           }
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,

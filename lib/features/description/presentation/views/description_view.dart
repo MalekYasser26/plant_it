@@ -82,6 +82,7 @@ class _DescriptionViewState extends State<DescriptionView> {
           final SingleProduct product = state.product;
           bool isBookmarked =
               pCubit.bookmarkedProducts.containsKey(widget.product.id);
+          print(pCubit.bookmarkedProducts);
           final List<String> productImages =
               product.images.map((image) => image.imgUrl).toList();
           return SafeArea(
@@ -161,27 +162,43 @@ class _DescriptionViewState extends State<DescriptionView> {
                                   );
                                 },
                               ),
-                              IconButton(
-                                onPressed: () {
-                                  print(pCubit.bookmarkedProducts);
-                                  if (!isBookmarked) {
-                                    sCubit.addBookmarkedProducts(product,pCubit.bookmarkedProducts);
-                                    pCubit.getRecentlySavedProducts(true);
-                                  } else {
-                                    sCubit.removeBookmarkedProducts(product,pCubit.bookmarkedProducts);
-                                    pCubit.getRecentlySavedProducts(true);
+                              BlocBuilder<SingleProductCubit,
+                                  SingleProductState>(
+                                buildWhen: (previousState, currentState) {
+                                  if (currentState is AddBookmarkSuccessfulState ||
+                                      currentState is RemoveBookmarkSuccessfulState) {
+                                    return currentState.productID ==
+                                        widget.product.id;
                                   }
+                                  return false; // No rebuild otherwise
                                 },
-                                icon: sCubit.isBookmarked(widget.product.id,pCubit.bookmarkedProducts)
-                                    ? const Icon(
-                                        Icons.bookmark_added,
-                                        color: Colors.green,
-                                        size: 25,
-                                      )
-                                    : const Icon(
-                                        Icons.bookmark_border,
-                                        size: 25,
-                                      ),
+                                builder: (context, state) {
+                                  return IconButton(
+                                    onPressed: () {
+                                      print(pCubit.bookmarkedProducts);
+                                      if (!isBookmarked) {
+                                        sCubit.addBookmarkedProducts(
+                                            product, pCubit.bookmarkedProducts);
+                                        pCubit.getRecentlySavedProducts(true);
+                                      } else {
+                                        sCubit.removeBookmarkedProducts(
+                                            product, pCubit.bookmarkedProducts);
+                                        pCubit.getRecentlySavedProducts(true);
+                                      }
+                                    },
+                                    icon: sCubit.isBookmarked(widget.product.id,
+                                            pCubit.bookmarkedProducts)
+                                        ? const Icon(
+                                            Icons.bookmark_added,
+                                            color: Colors.green,
+                                            size: 25,
+                                          )
+                                        : const Icon(
+                                            Icons.bookmark_border,
+                                            size: 25,
+                                          ),
+                                  );
+                                },
                               ),
                             ],
                           ),
@@ -251,7 +268,8 @@ class _DescriptionViewState extends State<DescriptionView> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => CustNavBarSelectionView(currentIndex: 3),
+                              builder: (context) =>
+                                  CustNavBarSelectionView(currentIndex: 3),
                             ),
                           );
                         });
@@ -282,7 +300,8 @@ class _DescriptionViewState extends State<DescriptionView> {
                         child: Row(
                           children: [
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 10),
                               decoration: BoxDecoration(
                                 color: const Color(0xFFDCDCDC),
                                 borderRadius: BorderRadius.circular(15),
@@ -292,7 +311,8 @@ class _DescriptionViewState extends State<DescriptionView> {
                                   InkWell(
                                     child: Icon(
                                       Icons.remove,
-                                      size: getResponsiveSize(context, fontSize: 15),
+                                      size: getResponsiveSize(context,
+                                          fontSize: 15),
                                     ),
                                     onTap: () {
                                       setState(() {
@@ -301,11 +321,13 @@ class _DescriptionViewState extends State<DescriptionView> {
                                     },
                                   ),
                                   Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 5.0),
                                     child: Text(
                                       quantity.toString(),
                                       style: TextStyle(
-                                        fontSize: getResponsiveSize(context, fontSize: 20),
+                                        fontSize: getResponsiveSize(context,
+                                            fontSize: 20),
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
@@ -313,7 +335,8 @@ class _DescriptionViewState extends State<DescriptionView> {
                                   InkWell(
                                     child: Icon(
                                       Icons.add,
-                                      size: getResponsiveSize(context, fontSize: 15),
+                                      size: getResponsiveSize(context,
+                                          fontSize: 15),
                                     ),
                                     onTap: () {
                                       setState(() {
@@ -327,23 +350,27 @@ class _DescriptionViewState extends State<DescriptionView> {
                             const SizedBox(width: 20),
                             Flexible(
                               child: SizedBox(
-                                width: getResponsiveSize(context, fontSize: 350),
+                                width:
+                                    getResponsiveSize(context, fontSize: 350),
                                 child: ElevatedButton(
                                   onPressed: () async {
-                                    await cCubit.addCartItem(product.id, quantity);
+                                    await cCubit.addCartItem(
+                                        product.id, quantity);
                                   },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: const Color(0xFFDCDCDC),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(15),
                                     ),
-                                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 20, vertical: 10),
                                   ),
                                   child: Text(
                                     "Add to cart",
                                     style: TextStyle(
                                       fontFamily: "Poppins",
-                                      fontSize: getResponsiveSize(context, fontSize: 18),
+                                      fontSize: getResponsiveSize(context,
+                                          fontSize: 18),
                                       color: Colors.black,
                                       fontWeight: FontWeight.bold,
                                     ),

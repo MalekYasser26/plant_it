@@ -10,6 +10,7 @@ import 'package:plant_it/features/favourites/presentation/view_model/liked_cubit
 import 'package:plant_it/features/favourites/presentation/view_model/liked_plants_cubit.dart';
 import 'package:plant_it/features/home/presentation/view_model/home_product_cubit.dart';
 import 'package:plant_it/features/profile/presentation/view_model/profile_cubit.dart';
+import 'package:plant_it/features/ratings_cubit/ratings_cubit.dart';
 import 'package:plant_it/features/splash/presentation/views/splash_view.dart';
 
 void main() {
@@ -37,6 +38,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => LikedCubit(),),
         BlocProvider(create: (context) => LikedPlantsCubit(),),
         BlocProvider(create: (context) => CartCubit(),),
+        BlocProvider(create: (context) => RatingsCubit(),),
       ],
       child: const MaterialApp(
         home: SplashView(),

@@ -102,12 +102,11 @@ class SingleProductCubit extends Cubit<SingleProductState> {
       );
       print("here");
       if (response.statusCode == 200) {
-        bookmarkedProducts.remove(product.id);
-        print(bookmarkedProducts);
-        await cacheBookmarkedProducts(bookmarkedProducts);
-        emit(RemoveBookmarkSuccessfulState(product: product));
-        debugPrint(response.body);
-      } else {
+        bookmarkedProducts.remove(product.id);  // First update the local data
+        await cacheBookmarkedProducts(bookmarkedProducts);  // Then update the cache
+        emit(RemoveBookmarkSuccessfulState(product: product));  // Lastly, emit success state
+      }
+      else {
         debugPrint(response.body);
         throw Exception('Failed to remove liked product');
       }

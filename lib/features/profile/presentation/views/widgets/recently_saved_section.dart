@@ -4,6 +4,7 @@ import 'package:plant_it/constants/constants.dart';
 import 'package:plant_it/features/profile/presentation/view_model/profile_cubit.dart';
 import 'package:plant_it/features/profile/presentation/views/widgets/recently_saved_view.dart';
 import 'package:plant_it/features/profile/presentation/views/widgets/saved_item.dart';
+import 'package:plant_it/features/ratings_cubit/ratings_cubit.dart';
 
 class RecentlySavedSection extends StatefulWidget {
   const RecentlySavedSection({
@@ -17,6 +18,7 @@ class RecentlySavedSection extends StatefulWidget {
 class _RecentlySavedSectionState extends State<RecentlySavedSection> {
   @override
   Widget build(BuildContext context) {
+    var rCubit = context.read<RatingsCubit>();
     return BlocBuilder<ProfileCubit, ProfileState>(
       builder: (context, state) {
         return Column(
@@ -71,7 +73,6 @@ class _RecentlySavedSectionState extends State<RecentlySavedSection> {
                 //   );
                 // }
 
-                // Show the saved items list if the state is successful
                 if (state is RecentlySavedSuccessfulState) {
                   final savedProducts = state.savedProducts.reversed
                       .toList(); // Reverse the list to get the most recent items
@@ -86,11 +87,10 @@ class _RecentlySavedSectionState extends State<RecentlySavedSection> {
                         child: SavedItem(
                           index: index,
                           price: product.price.toString(),
-                          // Use actual product price
                           name: product.name,
-                          // Use actual product name
                           image: product.imgUrl.toString(),
-                          id: product.id, // Pass the product ID
+                          id: product.id,
+                          rating: rCubit.isRatingFound(product.id),
                         ),
                       );
                     },

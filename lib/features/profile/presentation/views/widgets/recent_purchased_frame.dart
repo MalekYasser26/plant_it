@@ -124,7 +124,7 @@ class RecentPurchasedFrame extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 20,),
+                    const SizedBox(height: 20,),
                     Padding(
                       padding: const EdgeInsets.only(left: 3.0),
                       child: Text(
@@ -154,7 +154,9 @@ class RecentPurchasedFrame extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    FixedRatingStars(),
+                    const FixedRatingStars(
+                      rating: 1,
+                    ),
                 
                 
                   ],

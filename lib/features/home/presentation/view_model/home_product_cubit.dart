@@ -13,8 +13,6 @@ class HomeProductsCubit extends Cubit<HomeProductState> {
   // Fetch Products from API
   Future<void> fetchProducts(Future<void> getLikes) async {
     await getLikes;
-
-    // Try to load cached products first
     emit(ProductsLoadingState());
     cachedProducts = await getCachedProducts();
 
