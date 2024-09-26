@@ -1,10 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_stars/flutter_rating_stars.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:plant_it/constants/constants.dart';
 import 'package:plant_it/features/description/presentation/views/description_view.dart';
 import 'package:plant_it/features/home/presentation/view_model/home_product.dart';
+import 'package:plant_it/features/ratings_cubit/ratings_cubit.dart';
 import 'package:shimmer/shimmer.dart';
 
 class LikedOrSavedItem extends StatelessWidget {
@@ -18,6 +20,7 @@ class LikedOrSavedItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var rCubit = context.read<RatingsCubit>();
     HomeProduct p = HomeProduct(id: id, productName: "w", price: '10', likesCounter: 1, image: 's') ;
     return InkWell(
       onTap: () {
@@ -95,7 +98,7 @@ class LikedOrSavedItem extends StatelessWidget {
                         IconsCust.likedIcon,
                         height: 13,
                         width: 14,
-                      ) : SizedBox.shrink(),
+                      ) : const SizedBox.shrink(),
                       const Spacer(),
                       // PopupMenuButton(itemBuilder: (context) {
                       //   return {'Logout', 'Settings'}.map((String choice) {
@@ -135,7 +138,7 @@ class LikedOrSavedItem extends StatelessWidget {
                   ),
                   RatingStars(
                     axis: Axis.horizontal,
-                    value: 5,
+                    value: rCubit.isRatingFound(id)!*1.0,
                     starCount: 5,
                     starSize: getResponsiveSize(context, fontSize: 15),
                     starSpacing: 5,
