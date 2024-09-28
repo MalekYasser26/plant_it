@@ -17,6 +17,7 @@ import 'package:plant_it/features/description/presentation/view_model/single_pro
 import 'package:plant_it/features/favourites/presentation/view_model/liked_cubit.dart';
 import 'package:plant_it/features/home/presentation/view_model/home_product.dart';
 import 'package:plant_it/features/profile/presentation/view_model/profile_cubit.dart';
+import 'package:plant_it/features/ratings_cubit/ratings_cubit.dart';
 
 class DescriptionView extends StatefulWidget {
   final HomeProduct product;
@@ -47,6 +48,9 @@ class _DescriptionViewState extends State<DescriptionView> {
             likesCounter: 0,
             images: [],
             productCategories: []));
+    BlocProvider.of<RatingsCubit>(context).getCurrentProductUserRating(
+        widget.product.id
+    );
   }
 
   Widget build(BuildContext context) {
@@ -80,7 +84,6 @@ class _DescriptionViewState extends State<DescriptionView> {
             state is AddBookmarkSuccessfulState ||
             state is RemoveBookmarkSuccessfulState) {
           final SingleProduct product = state.product;
-          bool isBookmarked =
               pCubit.bookmarkedProducts.containsKey(widget.product.id);
           print(pCubit.bookmarkedProducts);
           final List<String> productImages =
@@ -162,37 +165,48 @@ class _DescriptionViewState extends State<DescriptionView> {
                                   );
                                 },
                               ),
-                              BlocBuilder<SingleProductCubit, SingleProductState>(
+                              BlocBuilder<SingleProductCubit,
+                                  SingleProductState>(
                                 buildWhen: (previousState, currentState) {
                                   // Rebuild if there's a successful add/remove bookmark action
-                                  return currentState is AddBookmarkSuccessfulState || currentState is RemoveBookmarkSuccessfulState;
+                                  return currentState
+                                          is AddBookmarkSuccessfulState ||
+                                      currentState
+                                          is RemoveBookmarkSuccessfulState;
                                 },
                                 builder: (context, state) {
                                   return IconButton(
                                     onPressed: () {
                                       // Get the SingleProductCubit instance
-                                      final sCubit = context.read<SingleProductCubit>();
+                                      final sCubit =
+                                          context.read<SingleProductCubit>();
 
                                       // Get the product's bookmark status from the cubit
-                                      bool isBookmarked = sCubit.isBookmarked(widget.product.id);
+                                      bool isBookmarked = sCubit
+                                          .isBookmarked(widget.product.id);
 
                                       // If it's not bookmarked, add it; otherwise, remove it
                                       if (!isBookmarked) {
                                         sCubit.addBookmarkedProducts(product);
                                       } else {
-                                        sCubit.removeBookmarkedProducts(product);
+                                        sCubit
+                                            .removeBookmarkedProducts(product);
                                       }
                                     },
-                                    icon: !sCubit.isBookmarked(widget.product.id)
-                                        ? const Icon(Icons.bookmark_border, size: 25)
-                                        : const Icon(Icons.bookmark_added, color: Colors.green, size: 25),
+                                    icon:
+                                        !sCubit.isBookmarked(widget.product.id)
+                                            ? const Icon(Icons.bookmark_border,
+                                                size: 25)
+                                            : const Icon(Icons.bookmark_added,
+                                                color: Colors.green, size: 25),
                                   );
                                 },
                               ),
-
                             ],
                           ),
-                          const CustRatingStars(),
+                          CustRatingStars(
+                            productId: product.id,
+                          ),
                           const SizedBox(height: 10),
                           SizedBox(
                             height: 40,

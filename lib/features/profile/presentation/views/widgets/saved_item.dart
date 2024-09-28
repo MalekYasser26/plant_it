@@ -8,7 +8,7 @@ import 'package:shimmer/shimmer.dart';
 
 class SavedItem extends StatelessWidget {
   final int index, id;
-  final int ?rating;
+  final double ?rating;
   final String name, image, price;
 
   const SavedItem({
@@ -129,7 +129,7 @@ class SavedItem extends StatelessWidget {
                   ),
                 ),
                  FixedRatingStars(
-                  rating: rating??0,
+                  rating: rating??0.0,
                 ),
               ],
             ),

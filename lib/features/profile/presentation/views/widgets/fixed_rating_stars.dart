@@ -3,7 +3,7 @@ import 'package:flutter_rating_stars/flutter_rating_stars.dart';
 import 'package:plant_it/constants/constants.dart';
 
 class FixedRatingStars extends StatelessWidget {
-  final int rating ;
+  final double rating ;
   const FixedRatingStars({
     super.key, required this.rating,
   });
@@ -12,7 +12,7 @@ class FixedRatingStars extends StatelessWidget {
   Widget build(BuildContext context) {
     return RatingStars(
       axis: Axis.horizontal,
-      value: rating*1.0,
+      value: rating,
       starCount: 5,
       starSize: getResponsiveSize(context, fontSize: 15),
       starSpacing: 5,
