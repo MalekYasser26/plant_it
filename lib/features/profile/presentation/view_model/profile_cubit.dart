@@ -14,8 +14,8 @@ class ProfileCubit extends Cubit<ProfileState> {
   List<RecentlySavedProductModel> savedProducts = [];
   late Map<int, int> bookmarkedProducts = {};
   Set<int> purchasedProductIDs = {};
+  Map<int,String> orderStatuses = {};
 
-  // Method to update user profile
   Future<void> updateUser({
     required String address,
     required String phoneNumber,
@@ -58,9 +58,9 @@ class ProfileCubit extends Cubit<ProfileState> {
   }
 
   Future<void> getRecentlySavedProducts(bool called) async {
-    emit(RecentlySavedLoadingState());
+    emit(RecentlySavedPurchasedLoadingState());
     if (savedProducts.isNotEmpty && called == false) {
-      emit(RecentlySavedSuccessfulState(savedProducts));
+      emit(RecentlySavedPurchasedSuccessfulState(savedProducts));
       return;
     } else {
       try {
@@ -83,20 +83,20 @@ class ProfileCubit extends Cubit<ProfileState> {
               .map((json) => RecentlySavedProductModel.fromJson(json))
               .toList();
           // Emit the fetched products
-          emit(RecentlySavedSuccessfulState(savedProducts));
+          emit(RecentlySavedPurchasedSuccessfulState(savedProducts));
         } else {
-          emit(RecentlySavedFailureState());
+          emit(RecentlySavedPurchasedFailureState());
           print("Failed to load saved products: ${response.statusCode}");
         }
       } catch (error) {
-        emit(RecentlySavedFailureState());
+        emit(RecentlySavedPurchasedFailureState());
         print("An error occurred: $error");
       }
     }
   }
 
   Future<void> getRecentlyPurchasedProducts(bool called, int userID) async {
-    emit(RecentlyPurchasedLoadingState());
+    emit(RecentlySavedPurchasedLoadingState());
     {
       try {
         final response = await http.get(
@@ -110,17 +110,20 @@ class ProfileCubit extends Cubit<ProfileState> {
         if (response.statusCode == 200) {
           final responseBody = json.decode(response.body);
           for (var item in responseBody['Order']) {
-            for (var x in item['order_items']){
-              purchasedProductIDs.add(x['product_id']);
+            orderStatuses[item['id']] = item['status'] ;
+            if (item['status'] == "Delivered") {
+              for (var x in item['order_items']) {
+                purchasedProductIDs.add(x['product_id']);
+              }
             }
           }
-          emit(RecentlyPurchasedSuccessState());
+          emit(RecentlySavedPurchasedSuccessfulState(savedProducts));
         } else {
-          emit(RecentlyPurchasedFailureState());
+          emit(RecentlySavedPurchasedFailureState());
           print("Failed to load purchased products: ${response.statusCode}");
         }
       } catch (error) {
-        emit(RecentlyPurchasedFailureState());
+        emit(RecentlySavedPurchasedFailureState());
         print("An error occurred: $error");
       }
     }

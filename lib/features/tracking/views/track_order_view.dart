@@ -4,7 +4,8 @@ import 'package:plant_it/features/checkout/presentation/widgets/cust_app_bar.dar
 import 'package:plant_it/features/tracking/views/widgets/order_tracker_details.dart';
 
 class TrackOrderView extends StatelessWidget {
-  const TrackOrderView({super.key});
+  final int id ;
+  const TrackOrderView({super.key, required this.id});
 
   @override
   Widget build(BuildContext context) {
@@ -12,15 +13,15 @@ class TrackOrderView extends StatelessWidget {
       child: Scaffold(
         backgroundColor: AppColors.basicallyWhite,
         appBar: CustAppBar(
-          text: "Track order ",
+          text: "Track order",
           implyLeading: true,
         ),
-        body: const Center(
+        body:  Center(
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 15.0,vertical: 15.0),
+            padding: const EdgeInsets.symmetric(horizontal: 15.0,vertical: 15.0),
             child: Column(
               children: [
-                OrderTrackerDetails(),
+                OrderTrackerDetails(id: id,),
               ],
             ),
           ),

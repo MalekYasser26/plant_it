@@ -36,7 +36,7 @@ class _RecentlySavedSectionState extends State<RecentlySavedSection> {
                 ),
                 TextButton(
                   onPressed: () {
-                    if (state is RecentlySavedSuccessfulState ) {
+                    if (state is RecentlySavedPurchasedSuccessfulState ) {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -73,7 +73,7 @@ class _RecentlySavedSectionState extends State<RecentlySavedSection> {
                 //   );
                 // }
 
-                if (state is RecentlySavedSuccessfulState) {
+                if (state is RecentlySavedPurchasedSuccessfulState) {
                   final savedProducts = state.savedProducts.reversed
                       .toList(); // Reverse the list to get the most recent items
                   return ListView.separated(
@@ -99,7 +99,7 @@ class _RecentlySavedSectionState extends State<RecentlySavedSection> {
                 }
 
                 // Show error message if state failed
-                if (state is RecentlySavedFailureState) {
+                if (state is RecentlySavedPurchasedFailureState) {
                   return const Center(
                     child: Text('Failed to load recently saved products'),
                   );

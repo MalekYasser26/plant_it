@@ -76,24 +76,43 @@ class _RecentPurchasesSectionState extends State<RecentPurchasesSection> {
                   productRatings.add(item.value);
                 }
               }
-              return Expanded(
-                child: ListView.separated(
-                  physics: const BouncingScrollPhysics(),
-                  itemBuilder: (context, index) =>
-                      RecentPurchasedFrame(
-                        imagePath: products[index].image,
-                        price: products[index].price,
-                        productName: products[index].productName,
-                        rating: productRatings[index],
-                        id: products[index].id,
-                      ),
-                  separatorBuilder: (context, index) =>
-                  const SizedBox(
-                    height: 12,
+              if (products.isNotEmpty) {
+                return Expanded(
+                  child: ListView.separated(
+                    physics: const BouncingScrollPhysics(),
+                    itemBuilder: (context, index) =>
+                        RecentPurchasedFrame(
+                          imagePath: products[index].image,
+                          price: products[index].price,
+                          productName: products[index].productName,
+                          rating: productRatings[index],
+                          id: products[index].id,
+                        ),
+                    separatorBuilder: (context, index) =>
+                    const SizedBox(
+                      height: 12,
+                    ),
+                    itemCount: products.length.clamp(0, 3),
                   ),
-                  itemCount: products.length.clamp(0, 3),
-                ),
-              );
+                );
+              } else {
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset("assets/images/cartEmpty.png",
+                      height: 200,
+                      width: 150,
+                    ),
+                    const SizedBox(height: 15,),
+                    Text("No purchases found",style: TextStyle(
+                        fontFamily: "Poor Story",
+                        fontSize: getResponsiveSize(context, fontSize: 30),
+                        fontWeight: FontWeight.w400,
+                        color: const Color(0xFFADABAB)
+                    ),)
+                  ],
+                );
+              }
             },
           )
         ],

@@ -1,29 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:plant_it/features/profile/presentation/view_model/profile_cubit.dart';
 import 'package:plant_it/features/tracking/views/widgets/order_status.dart';
 
 class OrderTrackerDetails extends StatelessWidget {
+  final int id ;
   const OrderTrackerDetails({
-    super.key,
+    super.key, required this.id,
   });
 
   @override
   Widget build(BuildContext context) {
+    var oCubit = context.read<ProfileCubit>();
     return Container(
       decoration: const BoxDecoration(
         borderRadius: BorderRadius.all(
           Radius.circular(5),
         ),
       ),
-      child:  const Padding(
-        padding: EdgeInsets.all(15.0),
+      child:   Padding(
+        padding: const EdgeInsets.all(15.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            OrderStatus(text: 'Accepted',isCompleted: true,isLast: false,subtext: "Your request has been approved",),
-            OrderStatus(text: 'Order Preparing',isCompleted: true,isLast: false,subtext: "The order is prepared for receip",),
-            OrderStatus(text: 'Departed',isCompleted: false,isLast: false,subtext: "The parcels left the company",),
-            OrderStatus(text: 'In Transit',isCompleted: false,isLast: true,subtext: "Parcel has been delivered",),
+            OrderStatus(text: 'Pending',isCompleted: true,isLast: false,subtext: "Your request is still pending.",),
+            OrderStatus(text: 'Shipped',isCompleted: oCubit.orderStatuses[id] == "Delivered" ||oCubit.orderStatuses[id] == "Shipped"?true : false,isLast: false,subtext: "Your order has been shipped!",),
+            OrderStatus(text: 'Delivered',isCompleted: oCubit.orderStatuses[id] == "Delivered"?true:false,isLast: true,subtext: "Your order has arrived , take care !",),
 
 
           ],

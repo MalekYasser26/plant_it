@@ -38,7 +38,7 @@ class RatingsCubit extends Cubit<RatingsState> {
           productRatings[item['productId']] =
               (item['averageRating'] as num).toDouble();
         }
-
+          print("here 1" );
         // Cache the product ratings after fetching
         await cacheProductRatings(productRatings);
 
@@ -183,8 +183,10 @@ class RatingsCubit extends Cubit<RatingsState> {
   Future<void> cacheProductRatings(Map<int, double> ratings) async {
     final prefs = await SharedPreferences.getInstance();
 
-    // Convert the product ratings map to JSON for caching
-    final String ratingsJson = json.encode(ratings);
+    // Convert the map keys (int) to string for encoding
+    final ratingsJson = json.encode(
+        ratings.map((key, value) => MapEntry(key.toString(), value))
+    );
 
     // Store the cached ratings and the current time
     await prefs.setString('cached_product_ratings', ratingsJson);
@@ -197,20 +199,18 @@ class RatingsCubit extends Cubit<RatingsState> {
     final String? ratingsJson = prefs.getString('cached_product_ratings');
     final int? cacheTime = prefs.getInt('ratings_cache_time');
 
-    // Check if cache exists and is valid (within 1 hour)
     if (ratingsJson != null && cacheTime != null) {
       final int currentTime = DateTime.now().millisecondsSinceEpoch;
       const int cacheDuration = 60 * 60 * 1000; // 1 hour in milliseconds
 
       if (currentTime - cacheTime < cacheDuration) {
-        // Convert the cached JSON string back to a Map<int, double>
+        // Decode the JSON string and convert keys back to int
         final Map<String, dynamic> ratingsMap = json.decode(ratingsJson);
         return ratingsMap.map((key, value) =>
             MapEntry(int.parse(key), (value as num).toDouble()));
       }
     }
 
-    // If no cache or expired, return an empty map
     return {};
   }
 }

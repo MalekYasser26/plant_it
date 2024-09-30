@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:plant_it/constants/constants.dart';
 import 'package:plant_it/features/auth/presentation/view_model/auth_cubit.dart';
-import 'package:plant_it/features/cart/presentation/view_model/cart_cubit.dart';
 import 'package:plant_it/features/cart/presentation/view_model/cart_item_model.dart';
 import 'package:plant_it/features/checkout/presentation/view_model/checkout_cubit.dart';
 import 'package:plant_it/features/checkout/presentation/widgets/address_info_section.dart';
@@ -56,43 +55,56 @@ class _CheckoutViewBodyState extends State<CheckoutViewBody> {
                 BlocListener<CheckoutCubit, CheckoutState>(
                   listener: (context, state) {
                     if (state is CheckoutSuccessfulState) {
-                      Navigator.pushReplacement(
+                      Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const PlantsOrderedView()
+                          builder: (context) => PlantsOrderedView(), // Your target page here
                         ),
+                            (route) => false,
                       );
                     }
                   },
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        var cCubit = context.read<CartCubit>();
-                        var sCubit = context.read<AuthCubit>();
-                        var chCubit = context.read<CheckoutCubit>();
+                  child: BlocBuilder<CheckoutCubit, CheckoutState>(
+                    builder: (context, state) {
+                      if (state is CheckoutLoadingState) {
+                        return const Center(
+                          child: CircularProgressIndicator(
+                            color: AppColors.darkGreenL,
+                          ),
+                        );
+                      }
 
-                        chCubit.placeOrder(sCubit.userID,);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.greyish,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
+                      return SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            var sCubit = context.read<AuthCubit>();
+                            var chCubit = context.read<CheckoutCubit>();
+
+                            chCubit.placeOrder(sCubit.userID);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.greyish,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 15),
+                          ),
+                          child: Text(
+                            "Place order",
+                            style: TextStyle(
+                              fontFamily: "Poppins",
+                              fontSize: getResponsiveSize(context, fontSize: 18),
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
-                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                      ),
-                      child: Text(
-                        "Place order",
-                        style: TextStyle(
-                          fontFamily: "Poppins",
-                          fontSize: getResponsiveSize(context, fontSize: 18),
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
+                      );
+                    },
                   ),
-                ),
+                )
               ],
             ),
           ),

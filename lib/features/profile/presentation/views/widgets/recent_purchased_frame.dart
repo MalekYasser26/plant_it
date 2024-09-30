@@ -104,35 +104,24 @@ class RecentPurchasedFrame extends StatelessWidget {
                   ],
                 ),
               ),
-              // Flexible(
-              //   child: Column(
-              //     crossAxisAlignment: CrossAxisAlignment.start,
-              //     children: [
-              //       Text(
-              //         "Orders: 12th May 2024",
-              //         style: TextStyle(
-              //           fontFamily: "Raleway",
-              //           fontWeight: FontWeight.w400,
-              //           fontSize: getResponsiveSize(context, fontSize: 12),
-              //           color: Colors.black54,
-              //         ),
-              //         softWrap: true,
-              //         overflow: TextOverflow.visible,
-              //       ),
-              //       Text(
-              //         "State: Arrived",
-              //         style: TextStyle(
-              //           fontFamily: "Raleway",
-              //           fontWeight: FontWeight.w300,
-              //           fontSize: getResponsiveSize(context, fontSize: 12),
-              //           color: Colors.black,
-              //         ),
-              //         softWrap: true,
-              //         overflow: TextOverflow.visible,
-              //       ),
-              //     ],
-              //   ),
-              // )
+              Flexible(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "State: Arrived",
+                      style: TextStyle(
+                        fontFamily: "Raleway",
+                        fontWeight: FontWeight.w300,
+                        fontSize: getResponsiveSize(context, fontSize: 12),
+                        color: Colors.black,
+                      ),
+                      softWrap: true,
+                      overflow: TextOverflow.visible,
+                    ),
+                  ],
+                ),
+              )
             ],
           ))
         ],

@@ -26,7 +26,7 @@ class RecentlySavedView extends StatelessWidget {
         ),
         body: BlocBuilder<ProfileCubit, ProfileState>(
           builder: (context, state) {
-            if (state is RecentlySavedSuccessfulState){
+            if (state is RecentlySavedPurchasedSuccessfulState){
               return Center(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15.0),
