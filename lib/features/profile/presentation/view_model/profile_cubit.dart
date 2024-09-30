@@ -13,6 +13,7 @@ class ProfileCubit extends Cubit<ProfileState> {
   ProfileCubit() : super(ProfileInitial());
   List<RecentlySavedProductModel> savedProducts = [];
   late Map<int, int> bookmarkedProducts = {};
+  Set<int> purchasedProductIDs = {};
 
   // Method to update user profile
   Future<void> updateUser({
@@ -59,49 +60,78 @@ class ProfileCubit extends Cubit<ProfileState> {
   Future<void> getRecentlySavedProducts(bool called) async {
     emit(RecentlySavedLoadingState());
     if (savedProducts.isNotEmpty && called == false) {
-      print("here");
-      print(savedProducts);
       emit(RecentlySavedSuccessfulState(savedProducts));
       return;
     } else {
-    try {
-      final response = await http.get(
-        Uri.parse("$baseUrlHasoon/Bookmark/userBookMarks"),
-        headers: {
-          'accept': '*/*',
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $accessToken',
-        },
-      );
+      try {
+        final response = await http.get(
+          Uri.parse("$baseUrlHasoon/Bookmark/userBookMarks"),
+          headers: {
+            'accept': '*/*',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $accessToken',
+          },
+        );
 
-      if (response.statusCode == 200) {
-        final responseBody = json.decode(response.body) as List<dynamic>;
-        print(savedProducts);
-        // Parse and map response to RecentlySavedProductModel
-        for (var item in responseBody){
-          bookmarkedProducts[item['productId']] = item['id'];
+        if (response.statusCode == 200) {
+          final responseBody = json.decode(response.body) as List<dynamic>;
+          // Parse and map response to RecentlySavedProductModel
+          for (var item in responseBody) {
+            bookmarkedProducts[item['productId']] = item['id'];
+          }
+          savedProducts = responseBody
+              .map((json) => RecentlySavedProductModel.fromJson(json))
+              .toList();
+          // Emit the fetched products
+          emit(RecentlySavedSuccessfulState(savedProducts));
+        } else {
+          emit(RecentlySavedFailureState());
+          print("Failed to load saved products: ${response.statusCode}");
         }
-        savedProducts = responseBody
-            .map((json) => RecentlySavedProductModel.fromJson(json))
-            .toList();
-        // Emit the fetched products
-        emit(RecentlySavedSuccessfulState(savedProducts));
-      } else {
+      } catch (error) {
         emit(RecentlySavedFailureState());
-        print("Failed to load saved products: ${response.statusCode}");
+        print("An error occurred: $error");
       }
-    } catch (error) {
-      emit(RecentlySavedFailureState());
-      print("An error occurred: $error");
     }
-  }}
+  }
+
+  Future<void> getRecentlyPurchasedProducts(bool called, int userID) async {
+    emit(RecentlyPurchasedLoadingState());
+    {
+      try {
+        final response = await http.get(
+          Uri.parse("$baseUrlArsoon/Order/$userID"),
+          headers: {
+            'accept': 'application/json',
+            'Authorization': 'Bearer $accessToken',
+          },
+        );
+
+        if (response.statusCode == 200) {
+          final responseBody = json.decode(response.body);
+          for (var item in responseBody['Order']) {
+            for (var x in item['order_items']){
+              purchasedProductIDs.add(x['product_id']);
+            }
+          }
+          emit(RecentlyPurchasedSuccessState());
+        } else {
+          emit(RecentlyPurchasedFailureState());
+          print("Failed to load purchased products: ${response.statusCode}");
+        }
+      } catch (error) {
+        emit(RecentlyPurchasedFailureState());
+        print("An error occurred: $error");
+      }
+    }
+  }
 
   Future<void> cacheProducts(List<RecentlySavedProductModel> products) async {
     final prefs = await SharedPreferences.getInstance();
 
     // Convert the product list to JSON for caching
     final String productsJson =
-    json.encode(products.map((product) => product.toJson()).toList());
+        json.encode(products.map((product) => product.toJson()).toList());
 
     // Store the cached products and the current time
     await prefs.setString('cached_saved_products', productsJson);
@@ -121,7 +151,9 @@ class ProfileCubit extends Cubit<ProfileState> {
       if (currentTime - cacheTime < cacheDuration) {
         // Convert the cached JSON string back to a list of RecentlySavedProductModel
         final List<dynamic> productList = json.decode(productsJson);
-        return productList.map((json) => RecentlySavedProductModel.fromJson(json)).toList();
+        return productList
+            .map((json) => RecentlySavedProductModel.fromJson(json))
+            .toList();
       }
     }
 

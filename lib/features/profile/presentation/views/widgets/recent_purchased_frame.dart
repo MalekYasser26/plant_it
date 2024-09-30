@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:plant_it/constants/constants.dart';
 import 'package:plant_it/features/description/presentation/views/description_view.dart';
@@ -5,8 +6,11 @@ import 'package:plant_it/features/home/presentation/view_model/home_product.dart
 import 'package:plant_it/features/profile/presentation/views/widgets/fixed_rating_stars.dart';
 
 class RecentPurchasedFrame extends StatelessWidget {
-  final String imagePath;
-  const RecentPurchasedFrame({super.key, required this.imagePath});
+  final String imagePath,productName;
+  final String price;
+  final double rating ;
+  final int id ;
+  const RecentPurchasedFrame({super.key, required this.imagePath, required this.productName, required this.price, required this.rating, required this.id});
 
   @override
   Widget build(BuildContext context) {
@@ -22,113 +26,51 @@ class RecentPurchasedFrame extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Image Section
-          InkWell(
-            onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) =>  DescriptionView(
-                product: p,
-              ),));
-            },
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: Image.asset(
-                imagePath, // Image path
-                width: 80,
-                height: 90,
-                fit: BoxFit.cover,
+          Flexible(
+            child: InkWell(
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) =>  DescriptionView(
+                  product: p,
+                ),));
+              },
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: imagePath.startsWith('http') ?
+                CachedNetworkImage(
+                  imageUrl: imagePath,
+                  fit: BoxFit.fitHeight,
+                  height: 80,
+                  errorWidget: (context, url, error) {
+                    return Image.asset(
+                      'assets/images/placeholder.png',
+                      fit: BoxFit.cover,
+                      height: 150,
+                    );
+                  },
+                  fadeInDuration: const Duration(milliseconds: 500),
+                  fadeOutDuration: const Duration(milliseconds: 500),
+                ) : Image.asset(
+                  'assets/images/placeholder.png',
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
           ),
           const SizedBox(width: 10),
-          // Expanded(
-          //   child: Column(
-          //     crossAxisAlignment: CrossAxisAlignment.start,
-          //     mainAxisAlignment: MainAxisAlignment.center,
-          //     children: [
-          //       const SizedBox(height: 10),
-          //       Row(
-          //         children: [
-          //           const SizedBox(width: 3,),
-          //           Text(
-          //             "Monstera plant",
-          //             style: TextStyle(
-          //               fontFamily: "Poppins",
-          //               fontWeight: FontWeight.bold,
-          //               fontSize: getResponsiveSize(context, fontSize: 13),
-          //               color: Colors.black,
-          //             ),
-          //             overflow: TextOverflow.ellipsis,
-          //           ),
-          //           Spacer(),
-          //           Expanded(
-          //             child: Text(
-          //               "Ordered:\n 12th May ",
-          //               style: TextStyle(
-          //                 fontFamily: "Raleway",
-          //                 fontWeight: FontWeight.w400,
-          //                 fontSize: getResponsiveSize(context, fontSize: 12),
-          //                 color: Colors.black54,
-          //               ),
-          //             ),
-          //           ),
-          //
-          //         ],
-          //       ),
-          //       const SizedBox(height: 5),
-          //       Row(
-          //         children: [
-          //           const SizedBox(width: 3,),
-          //           Expanded(
-          //             child: Text(
-          //               "222 EGP",
-          //               style: TextStyle(
-          //                 fontFamily: "Raleway",
-          //                 fontWeight: FontWeight.w300,
-          //                 fontSize: getResponsiveSize(context, fontSize: 13),
-          //                 color: Colors.black54,
-          //
-          //               ),
-          //               softWrap: true,
-          //               overflow: TextOverflow.visible,
-          //             ),
-          //           ),
-          //           const Spacer(),
-          //           Expanded(
-          //             child: Text(
-          //               "State: Arrived",
-          //               style: TextStyle(
-          //                 fontFamily: "Raleway",
-          //                 fontWeight: FontWeight.w300,
-          //                 fontSize: getResponsiveSize(context, fontSize: 12),
-          //                 color: Colors.black,
-          //               ),
-          //               softWrap: true,
-          //               overflow: TextOverflow.visible,
-          //             ),
-          //           ),
-          //         ],
-          //       ),
-          //       const SizedBox(height: 5),
-          //       const Row(
-          //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //         children: [
-          //           FixedRatingStars(),
-          //         ],
-          //       ),
-          //     ],
-          //   ),
-          // ),
-          Expanded(child: Row(
+          Expanded(
+              flex: 3,
+              child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Flexible(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(height: 20,),
+                    const SizedBox(height: 5,),
                     Padding(
                       padding: const EdgeInsets.only(left: 3.0),
                       child: Text(
-                        "Monstera plant",
+                        productName,
                         style: TextStyle(
                           fontFamily: "Poppins",
                           fontWeight: FontWeight.bold,
@@ -139,10 +81,11 @@ class RecentPurchasedFrame extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
+                    const SizedBox(height:5,),
                     Padding(
                       padding: const EdgeInsets.only(left: 3.0),
                       child: Text(
-                        "2222 EGP",
+                        "$price EGP",
                         style: TextStyle(
                           fontFamily: "Raleway",
                           fontWeight: FontWeight.w300,
@@ -154,43 +97,42 @@ class RecentPurchasedFrame extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    const FixedRatingStars(
-                      rating: 1,
+                    const SizedBox(height: 5,),
+                     FixedRatingStars(
+                      rating: rating ,
                     ),
-                
-                
                   ],
                 ),
               ),
-              Flexible(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Orders: 12th May 2024",
-                      style: TextStyle(
-                        fontFamily: "Raleway",
-                        fontWeight: FontWeight.w400,
-                        fontSize: getResponsiveSize(context, fontSize: 12),
-                        color: Colors.black54,
-                      ),
-                      softWrap: true,
-                      overflow: TextOverflow.visible,
-                    ),
-                    Text(
-                      "State: Arrived",
-                      style: TextStyle(
-                        fontFamily: "Raleway",
-                        fontWeight: FontWeight.w300,
-                        fontSize: getResponsiveSize(context, fontSize: 12),
-                        color: Colors.black,
-                      ),
-                      softWrap: true,
-                      overflow: TextOverflow.visible,
-                    ),
-                  ],
-                ),
-              )
+              // Flexible(
+              //   child: Column(
+              //     crossAxisAlignment: CrossAxisAlignment.start,
+              //     children: [
+              //       Text(
+              //         "Orders: 12th May 2024",
+              //         style: TextStyle(
+              //           fontFamily: "Raleway",
+              //           fontWeight: FontWeight.w400,
+              //           fontSize: getResponsiveSize(context, fontSize: 12),
+              //           color: Colors.black54,
+              //         ),
+              //         softWrap: true,
+              //         overflow: TextOverflow.visible,
+              //       ),
+              //       Text(
+              //         "State: Arrived",
+              //         style: TextStyle(
+              //           fontFamily: "Raleway",
+              //           fontWeight: FontWeight.w300,
+              //           fontSize: getResponsiveSize(context, fontSize: 12),
+              //           color: Colors.black,
+              //         ),
+              //         softWrap: true,
+              //         overflow: TextOverflow.visible,
+              //       ),
+              //     ],
+              //   ),
+              // )
             ],
           ))
         ],

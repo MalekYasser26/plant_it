@@ -10,7 +10,6 @@ part 'home_product_state.dart';
 class HomeProductsCubit extends Cubit<HomeProductState> {
   HomeProductsCubit() : super(ProductsInitial());
   List<HomeProduct> cachedProducts = [];
-  // Fetch Products from API
   Future<void> fetchProducts(Future<void> getLikes) async {
     await getLikes;
     emit(ProductsLoadingState());
@@ -50,7 +49,6 @@ class HomeProductsCubit extends Cubit<HomeProductState> {
     }
   }
 
-  // Cache Products using SharedPreferences
   Future<void> cacheProducts(List<HomeProduct> products) async {
     final prefs = await SharedPreferences.getInstance();
     final String productsJson =
@@ -60,13 +58,11 @@ class HomeProductsCubit extends Cubit<HomeProductState> {
         DateTime.now().millisecondsSinceEpoch); // Store cache time
   }
 
-  // Retrieve Cached Products from SharedPreferences
   Future<List<HomeProduct>> getCachedProducts() async {
     final prefs = await SharedPreferences.getInstance();
     final String? productsJson = prefs.getString('cached_products');
     final int? cacheTime = prefs.getInt('cache_time');
 
-    // Check if cache exists and is still valid (1-hour expiration)
     if (productsJson != null && cacheTime != null) {
       final int currentTime = DateTime.now().millisecondsSinceEpoch;
       const int cacheDuration = 60 * 60 * 1000; // 1 hour in milliseconds

@@ -21,7 +21,6 @@ class TrackOrderView extends StatelessWidget {
             child: Column(
               children: [
                 OrderTrackerDetails(),
-
               ],
             ),
           ),

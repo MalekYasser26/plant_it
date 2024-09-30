@@ -48,7 +48,7 @@ class _SignUpBodyState extends State<SignUpBody> {
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => CustNavBarSelectionView(currentIndex: 0),
+                      builder: (context) => CustNavBarSelectionView(currentIndex: 1),
                     ),
                   );
                 } else if (state is SignupFailureState) {

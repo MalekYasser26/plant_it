@@ -18,3 +18,6 @@ class RecentlySavedSuccessfulState extends ProfileState {
 }
 
 final class RecentlySavedFailureState extends ProfileState {}
+final class RecentlyPurchasedLoadingState extends ProfileState {}
+final class RecentlyPurchasedSuccessState extends ProfileState {}
+final class RecentlyPurchasedFailureState extends ProfileState {}

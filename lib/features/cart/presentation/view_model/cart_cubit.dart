@@ -157,7 +157,7 @@ class CartCubit extends Cubit<CartState> {
     emit(CartInitial());
   }
 
-  Future<void> checkAvailability() async {
+  Future<bool> checkAvailability() async {
     emit(CheckAvailabilityLoadingState());
     try {
       final response = await http.get(
@@ -168,18 +168,23 @@ class CartCubit extends Cubit<CartState> {
           'Authorization': 'Bearer $accessToken',
         },
       );
+
       final result = json.decode(response.body);
       print(result['succeeded']);
+
       if (result['succeeded'] == true) {
         emit(CheckAvailabilitySuccessfulState());
-      } else if (result['succeeded'] == false) {
+        return true;
+      } else {
         emit(CheckAvailabilityFailureState(
           result['data']['productName'],
           result['data']['availableStock'],
         ));
+        return false; // Return false if not available
       }
     } catch (e) {
-      emit(CheckAvailabilityFailureState(e.toString(),0)); // Handle error state
+      emit(CheckAvailabilityFailureState(e.toString(), 0));
+      return false;
     }
   }
 }

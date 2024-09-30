@@ -30,16 +30,16 @@ class IconsConnectionOrderStatus extends StatelessWidget {
         isLast==false ?  Padding(
           padding:  isCompleted==true? const EdgeInsets.only(left: 5.0) :EdgeInsets.zero,
           child:MediaQuery.of(context).size.height>750 ?const Text(
-            "l\nl\nl",
+            "l\nl\nl\nl\nl",
             style: TextStyle(
-                color: AppColors.offWhite,
+                color: AppColors.lighterGreen,
                 fontWeight: FontWeight.bold,
                 fontSize: 15),
           ) :
           const Text(
             "l",
             style: TextStyle(
-                color: AppColors.offWhite,
+                color: AppColors.lighterGreen,
                 fontWeight: FontWeight.bold,
                 fontSize: 15),
           ),

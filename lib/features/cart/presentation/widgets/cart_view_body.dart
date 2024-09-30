@@ -18,7 +18,7 @@ class _CartViewBodyState extends State<CartViewBody> {
     super.initState();
     context
         .read<CartCubit>()
-        .getCartItems(); // Call the method when the widget is initialized
+        .getCartItems();
   }
 
   @override

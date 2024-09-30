@@ -19,7 +19,7 @@ class SingleProductCubit extends Cubit<SingleProductState> {
   Timer? _debounce; // Timer for debouncing requests
 
   Future<void> fetchProductById(int userID,SingleProduct product) async {
-    emit(SingleProductLoadingState(product)); // Emit loading state before fetch
+    emit(SingleProductLoadingState(product));
     try {
       final response = await http.get(
         Uri.parse('$baseUrlArsoon/Product/${product.id}'),
