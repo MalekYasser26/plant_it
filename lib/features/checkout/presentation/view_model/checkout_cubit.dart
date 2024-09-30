@@ -14,7 +14,7 @@ class CheckoutCubit extends Cubit<CheckoutState> {
         headers: {
           'accept': 'application/json',
           'Authorization': 'Bearer $accessToken',
-          'Content-Type': 'application/json'
+          // 'Content-Type': 'application/json'
         },
       );
 

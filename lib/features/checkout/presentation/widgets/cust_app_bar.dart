@@ -25,15 +25,17 @@ class CustAppBar extends StatelessWidget implements PreferredSizeWidget {
         scrolledUnderElevation: 0.0,
         leading: implyLeading
             ? IconButton(
-            onPressed: () {
-              // Call the function if it's provided
-              if (methodNeededtoCall != null) {
-                methodNeededtoCall!();
-              }
-              // Pop the screen
+          onPressed: () {
+            // If a custom method is provided, use it
+            if (methodNeededtoCall != null) {
+              methodNeededtoCall!();
+            } else {
+              // Otherwise, just pop the current screen
               Navigator.pop(context, true);
-            },
-            icon: const Icon(Icons.arrow_back_ios))
+            }
+          },
+          icon: const Icon(Icons.arrow_back_ios),
+        )
             : const SizedBox.shrink(),
         title: Text(
           text,

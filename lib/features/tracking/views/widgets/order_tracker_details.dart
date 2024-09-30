@@ -24,7 +24,7 @@ class OrderTrackerDetails extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            OrderStatus(text: 'Pending',isCompleted: true,isLast: false,subtext: "Your request is still pending.",),
+            const OrderStatus(text: 'Pending',isCompleted: true,isLast: false,subtext: "Your request is still pending.",),
             OrderStatus(text: 'Shipped',isCompleted: oCubit.orderStatuses[id] == "Delivered" ||oCubit.orderStatuses[id] == "Shipped"?true : false,isLast: false,subtext: "Your order has been shipped!",),
             OrderStatus(text: 'Delivered',isCompleted: oCubit.orderStatuses[id] == "Delivered"?true:false,isLast: true,subtext: "Your order has arrived , take care !",),
 

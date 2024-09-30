@@ -80,7 +80,6 @@ class _CheckoutViewBodyState extends State<CheckoutViewBody> {
                           onPressed: () {
                             var sCubit = context.read<AuthCubit>();
                             var chCubit = context.read<CheckoutCubit>();
-
                             chCubit.placeOrder(sCubit.userID);
                           },
                           style: ElevatedButton.styleFrom(

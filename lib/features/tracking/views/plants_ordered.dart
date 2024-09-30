@@ -12,12 +12,12 @@ class PlantsOrderedView extends StatelessWidget {
       child: Scaffold(
         backgroundColor: AppColors.basicallyWhite,
         appBar: CustAppBar(
-          text: "Checkout ",
+          text: "Checkout",
           implyLeading: true,
           methodNeededtoCall: () => Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (context) => CustNavBarSelectionView(currentIndex: 0),),
-            (route) => false,
+            MaterialPageRoute(builder: (context) => CustNavBarSelectionView(currentIndex: 0)),
+                (route) => false,  // Ensures all previous routes are removed
           ),
         ),
         body: Center(
