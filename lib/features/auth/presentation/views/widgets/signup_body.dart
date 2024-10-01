@@ -10,7 +10,13 @@ import 'package:plant_it/features/auth/presentation/views/widgets/email_widget.d
 import 'package:plant_it/features/auth/presentation/views/widgets/join_through_widget.dart';
 import 'package:plant_it/features/auth/presentation/views/widgets/login_button.dart';
 import 'package:plant_it/features/auth/presentation/views/widgets/password_widget.dart';
+import 'package:plant_it/features/cart/presentation/view_model/cart_cubit.dart';
 import 'package:plant_it/features/cust_nav_bar/presentation/views/cust_nav_bar_selection_view.dart';
+import 'package:plant_it/features/favourites/presentation/view_model/liked_cubit.dart';
+import 'package:plant_it/features/favourites/presentation/view_model/liked_plants_cubit.dart';
+import 'package:plant_it/features/home/presentation/view_model/home_product_cubit.dart';
+import 'package:plant_it/features/profile/presentation/view_model/profile_cubit.dart';
+import 'package:plant_it/features/ratings_cubit/ratings_cubit.dart';
 
 class SignUpBody extends StatefulWidget {
   const SignUpBody({super.key});
@@ -28,12 +34,18 @@ class _SignUpBodyState extends State<SignUpBody> {
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     var sCubit = context.read<AuthCubit>();
-
+    var pCubit = context.read<ProfileCubit>();
+    var hCubit = context.read<HomeProductsCubit>();
+    var rCubit = context.read<RatingsCubit>();
+    var lCubit = context.read<LikedPlantsCubit>();
+    var l2Cubit = context.read<LikedCubit>();
+    var cCubit = context.read<CartCubit>();
     return SafeArea(
       child: Scaffold(
         backgroundColor: AppColors.basicallyWhite,
@@ -44,11 +56,18 @@ class _SignUpBodyState extends State<SignUpBody> {
             child: BlocConsumer<AuthCubit, AuthState>(
               listener: (context, state) {
                 if (state is SignupSuccessState) {
-                  // Navigate to another screen on successful sign-up
+                  lCubit.getRecentlyLikedProducts(sCubit.userID, true);
+                  pCubit.getRecentlySavedProducts(false);
+                  hCubit.fetchProducts(l2Cubit.getLikedProducts(sCubit.userID));
+                  lCubit.getProductSuggestions();
+                  pCubit.getRecentlyPurchasedProducts(false, sCubit.userID);
+                  cCubit.getCartItems();
+                  rCubit.getProductRatings();
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => CustNavBarSelectionView(currentIndex: 1),
+                      builder: (context) =>
+                          CustNavBarSelectionView(currentIndex: 1),
                     ),
                   );
                 } else if (state is SignupFailureState) {
@@ -98,7 +117,8 @@ class _SignUpBodyState extends State<SignUpBody> {
                             return 'Please enter your name';
                           }
                           return null;
-                        }, keyboardType: TextInputType.name,
+                        },
+                        keyboardType: TextInputType.name,
                       ),
                       CustTextField(
                         text: "Address",
@@ -110,7 +130,8 @@ class _SignUpBodyState extends State<SignUpBody> {
                             return 'Please enter your address';
                           }
                           return null;
-                        }, keyboardType: TextInputType.streetAddress,
+                        },
+                        keyboardType: TextInputType.streetAddress,
                       ),
                       CustTextField(
                         text: "Phone",
@@ -151,22 +172,22 @@ class _SignUpBodyState extends State<SignUpBody> {
                       // Show circular progress indicator or button based on state
                       state is SignupLoadingState
                           ? const CircularProgressIndicator(
-                        color: AppColors.darkGreen,
-                      )
+                              color: AppColors.darkGreen,
+                            )
                           : CustButton(
-                        text: "Sign up",
-                        onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            sCubit.signUp(
-                              emailController.text,
-                              passwordController.text,
-                              nameController.text,
-                              phoneController.text,
-                              addressController.text,
-                            );
-                          }
-                        },
-                      ),
+                              text: "Sign up",
+                              onPressed: () {
+                                if (_formKey.currentState!.validate()) {
+                                  sCubit.signUp(
+                                    emailController.text,
+                                    passwordController.text,
+                                    nameController.text,
+                                    phoneController.text,
+                                    addressController.text,
+                                  );
+                                }
+                              },
+                            ),
                       const SizedBox(height: 5),
                       const JoinThroughWidget(),
                       const SizedBox(height: 20),
@@ -175,7 +196,8 @@ class _SignUpBodyState extends State<SignUpBody> {
                           text: 'Already have an account? ',
                           style: TextStyle(
                               fontFamily: "Poppins",
-                              fontSize: getResponsiveSize(context, fontSize: 14),
+                              fontSize:
+                                  getResponsiveSize(context, fontSize: 14),
                               fontWeight: FontWeight.w600,
                               color: Colors.black),
                           children: [
@@ -183,7 +205,8 @@ class _SignUpBodyState extends State<SignUpBody> {
                               text: 'Sign in',
                               style: TextStyle(
                                   fontFamily: "Poppins",
-                                  fontSize: getResponsiveSize(context, fontSize: 14),
+                                  fontSize:
+                                      getResponsiveSize(context, fontSize: 14),
                                   fontWeight: FontWeight.w600,
                                   color: AppColors.darkGreen),
                               recognizer: TapGestureRecognizer()

@@ -8,6 +8,7 @@ import 'package:plant_it/features/auth/presentation/views/widgets/email_widget.d
 import 'package:plant_it/features/auth/presentation/views/widgets/join_through_widget.dart';
 import 'package:plant_it/features/auth/presentation/views/widgets/login_button.dart';
 import 'package:plant_it/features/auth/presentation/views/widgets/password_widget.dart';
+import 'package:plant_it/features/cart/presentation/view_model/cart_cubit.dart';
 import 'package:plant_it/features/cust_nav_bar/presentation/views/cust_nav_bar_selection_view.dart';
 import 'package:plant_it/features/favourites/presentation/view_model/liked_cubit.dart';
 import 'package:plant_it/features/favourites/presentation/view_model/liked_plants_cubit.dart';
@@ -33,6 +34,7 @@ class LoginBody extends StatelessWidget {
     var rCubit = context.read<RatingsCubit>();
     var lCubit = context.read<LikedPlantsCubit>();
     var l2Cubit = context.read<LikedCubit>();
+    var cCubit = context.read<CartCubit>();
 
     return SafeArea(
       child: Scaffold(
@@ -50,13 +52,15 @@ class LoginBody extends StatelessWidget {
                      hCubit.fetchProducts(
                        l2Cubit.getLikedProducts(sCubit.userID)
                      );
+                    lCubit.getProductSuggestions();
+                    pCubit.getRecentlyPurchasedProducts(false,sCubit.userID);
+                    cCubit.getCartItems();
                     rCubit.getProductRatings();
-
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
                         builder: (context) =>
-                            CustNavBarSelectionView(currentIndex: 2),
+                            CustNavBarSelectionView(currentIndex: 1),
                       ),
                     );
                   } else if (state is SigninFailureState) {
