@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:http/http.dart' as http;
 import 'package:plant_it/constants/constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 part 'auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
@@ -74,6 +75,15 @@ class AuthCubit extends Cubit<AuthState> {
     } catch (e) {
       emit(SignupFailureState());
     }
+  }
+
+  Future<void> logOut() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    // Remove the saved token or any other user data
+    await prefs.clear();
+
+    // Navigate to the login screen (assuming LoginScreen is the name of the widget)
   }
 
   // Add this method to update the user data when ProfileCubit updates the user profile
