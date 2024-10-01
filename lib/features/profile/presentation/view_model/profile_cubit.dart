@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:intl/intl.dart';
 import 'package:meta/meta.dart';
 import 'package:http/http.dart' as http;
 import 'package:plant_it/constants/constants.dart';
@@ -15,6 +16,7 @@ class ProfileCubit extends Cubit<ProfileState> {
   late Map<int, int> bookmarkedProducts = {};
   Set<int> purchasedProductIDs = {};
   Map<int,String> orderStatuses = {};
+  Map<int,String> orderStatusDates = {};
 
   Future<void> updateUser({
     required String address,
@@ -111,12 +113,17 @@ class ProfileCubit extends Cubit<ProfileState> {
           final responseBody = json.decode(response.body);
           for (var item in responseBody['Order']) {
             orderStatuses[item['id']] = item['status'] ;
+            String date = item['order_date'];
+            DateTime parsedDate = DateTime.parse(date);
+            String formattedDate = DateFormat('yyyy-MM-dd').format(parsedDate);
+            orderStatusDates[item['id']] = formattedDate ;
             if (item['status'] == "Delivered") {
               for (var x in item['order_items']) {
                 purchasedProductIDs.add(x['product_id']);
               }
             }
           }
+          print(groupDatesByStatus());
           emit(RecentlySavedPurchasedSuccessfulState(savedProducts));
         } else {
           emit(RecentlySavedPurchasedFailureState());
@@ -129,6 +136,24 @@ class ProfileCubit extends Cubit<ProfileState> {
     }
   }
 
+  Map<String, List<String>> groupDatesByStatus() {
+
+    Map<String, List<String>> groupedByStatus = {
+      'Pending': [],
+      'Shipped': [],
+      'Delivered': []
+    };
+
+    orderStatuses.forEach((id, status) {
+      String? date = orderStatusDates[id];
+
+      if (date != null && groupedByStatus.containsKey(status)) {
+        groupedByStatus[status]?.add(date);
+      }
+    });
+
+    return groupedByStatus;
+  }
   Future<void> cacheProducts(List<RecentlySavedProductModel> products) async {
     final prefs = await SharedPreferences.getInstance();
 
