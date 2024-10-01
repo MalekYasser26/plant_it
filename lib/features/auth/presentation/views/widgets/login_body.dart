@@ -56,7 +56,7 @@ class LoginBody extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder: (context) =>
-                            CustNavBarSelectionView(currentIndex: 1),
+                            CustNavBarSelectionView(currentIndex: 2),
                       ),
                     );
                   } else if (state is SigninFailureState) {

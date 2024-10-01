@@ -18,9 +18,9 @@ class BasedOnPicksSection extends StatefulWidget {
 class _BasedOnPicksSectionState extends State<BasedOnPicksSection> {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<LikedPlantsCubit, LikedPlantsState>(
+    var hCubit = context.read<HomeProductsCubit>();
+    return hCubit.cachedProducts.isNotEmpty ?BlocBuilder<LikedPlantsCubit, LikedPlantsState>(
       builder: (context, state) {
-        var hCubit = context.read<HomeProductsCubit>();
         if (state is LikedSuggestedPlantsCombinedState) {
           List combinedProducts = [];
           if (state.productSuggestions.length >= 3) {
@@ -99,6 +99,6 @@ class _BasedOnPicksSectionState extends State<BasedOnPicksSection> {
         }
         return const SizedBox.shrink();
       },
-    );
+    ) : const SizedBox.shrink();
   }
 }
