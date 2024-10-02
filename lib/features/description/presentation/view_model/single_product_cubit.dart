@@ -15,7 +15,6 @@ class SingleProductCubit extends Cubit<SingleProductState> {
       SingleProduct(id: -1, productName: '', price: '0', bio: '', availableStock: 0, likesCounter: 0, images: [], productCategories: [])
 
   ));
-  Map<int, int> bookmarkedProducts = {};
   Timer? _debounce; // Timer for debouncing requests
 
   Future<void> fetchProductById(int userID,SingleProduct product) async {
@@ -59,7 +58,8 @@ class SingleProductCubit extends Cubit<SingleProductState> {
     }
   }
 
-  Future<void> addBookmarkedProducts(SingleProduct product) async {
+
+  Future<void> addBookmarkedProducts(SingleProduct product , Map<int, int> bookmarkedProducts) async {
     // Debounce logic
     if (_debounce?.isActive ?? false) {
       _debounce!.cancel(); // Cancel any ongoing debounce timer
@@ -79,7 +79,7 @@ class SingleProductCubit extends Cubit<SingleProductState> {
           final Map<String, dynamic> responseData = json.decode(response.body);
           final int bookmarkID = responseData['data']['id'];
           bookmarkedProducts[product.id] = bookmarkID;
-          await cacheBookmarkedProducts();
+          await cacheBookmarkedProducts(bookmarkedProducts);
           emit(AddBookmarkSuccessfulState(product: product));
         } else {
           print(response.body);
@@ -92,7 +92,7 @@ class SingleProductCubit extends Cubit<SingleProductState> {
     });
   }
 
-  Future<void> removeBookmarkedProducts(SingleProduct product) async {
+  Future<void> removeBookmarkedProducts(SingleProduct product,Map<int, int> bookmarkedProducts) async {
     if (_debounce?.isActive ?? false) {
       _debounce!.cancel(); // Cancel any ongoing debounce timer
     }
@@ -116,7 +116,7 @@ class SingleProductCubit extends Cubit<SingleProductState> {
 
         if (response.statusCode == 200) {
           bookmarkedProducts.remove(product.id);
-          await cacheBookmarkedProducts();
+          await cacheBookmarkedProducts(bookmarkedProducts);
           emit(RemoveBookmarkSuccessfulState(product: product));
         } else {
           throw Exception('Failed to remove bookmarked product');
@@ -128,7 +128,7 @@ class SingleProductCubit extends Cubit<SingleProductState> {
   }
 
 
-  Future<void> cacheBookmarkedProducts() async {
+  Future<void> cacheBookmarkedProducts(Map<int, int> bookmarkedProducts) async {
     final prefs = await SharedPreferences.getInstance();
     final Map<String, int> bookmarkedProductsStringKeys =
     bookmarkedProducts.map((key, value) => MapEntry(key.toString(), value));
@@ -146,7 +146,7 @@ class SingleProductCubit extends Cubit<SingleProductState> {
   }
 
 
-  bool isBookmarked(int productID) {
+  bool isBookmarked(int productID,Map<int, int> bookmarkedProducts) {
     return bookmarkedProducts.containsKey(productID);
   }
 }

@@ -27,18 +27,17 @@ class SplashView extends StatelessWidget {
     return BlocListener<AuthCubit, AuthState>(
       listener: (context, state) {
         if (state is AuthAuthenticatedState) {
-          lCubit.getRecentlyLikedProducts(sCubit.userID,true);
+          lCubit.getRecentlyLikedProducts(sCubit.userID, true);
           pCubit.getRecentlySavedProducts(true);
-          hCubit.fetchProducts(
-              l2Cubit.getLikedProducts(sCubit.userID),
-            true
-          );
+          hCubit.fetchProducts(l2Cubit.getLikedProducts(sCubit.userID), true);
           lCubit.getProductSuggestions(true);
-          pCubit.getRecentlyPurchasedProducts(true,sCubit.userID);
+          pCubit.getRecentlyPurchasedProducts(true, sCubit.userID);
           cCubit.getCartItems();
-          rCubit.getProductRatings(true);          Navigator.pushReplacement(
+          rCubit.getProductRatings(true);
+          Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (_) => CustNavBarSelectionView(currentIndex: 1)),
+            MaterialPageRoute(
+                builder: (_) => CustNavBarSelectionView(currentIndex: 1)),
           );
         } else if (state is AuthInitial) {
           // Navigate to Login Screen if not authenticated
@@ -78,8 +77,7 @@ class SplashView extends StatelessWidget {
                     Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const LoginView()
-                        ));
+                            builder: (context) => const LoginView()));
                   },
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(

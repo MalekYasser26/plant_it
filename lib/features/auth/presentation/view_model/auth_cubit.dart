@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:bloc/bloc.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:meta/meta.dart';
 import 'package:http/http.dart' as http;
 import 'package:plant_it/constants/constants.dart';
@@ -139,7 +140,7 @@ class AuthCubit extends Cubit<AuthState> {
 
     if (savedAccessToken != null) {
       accessToken = savedAccessToken;
-      emit(AuthAuthenticatedState()); // Assuming this state exists
+      emit(AuthAuthenticatedState());
     } else {
       emit(AuthInitial()); // Emit initial state if no token
     }

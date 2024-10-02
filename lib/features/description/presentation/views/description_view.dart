@@ -185,18 +185,18 @@ class _DescriptionViewState extends State<DescriptionView> {
 
                                       // Get the product's bookmark status from the cubit
                                       bool isBookmarked = sCubit
-                                          .isBookmarked(widget.product.id);
+                                          .isBookmarked(widget.product.id,pCubit.bookmarkedProducts);
 
                                       // If it's not bookmarked, add it; otherwise, remove it
                                       if (!isBookmarked) {
-                                        sCubit.addBookmarkedProducts(product);
+                                        sCubit.addBookmarkedProducts(product,pCubit.bookmarkedProducts);
                                       } else {
                                         sCubit
-                                            .removeBookmarkedProducts(product);
+                                            .removeBookmarkedProducts(product,pCubit.bookmarkedProducts);
                                       }
                                     },
                                     icon:
-                                        !sCubit.isBookmarked(widget.product.id)
+                                        !sCubit.isBookmarked(widget.product.id,pCubit.bookmarkedProducts)
                                             ? const Icon(Icons.bookmark_border,
                                                 size: 25)
                                             : const Icon(Icons.bookmark_added,

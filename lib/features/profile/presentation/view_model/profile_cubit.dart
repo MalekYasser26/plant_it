@@ -17,7 +17,11 @@ class ProfileCubit extends Cubit<ProfileState> {
   Set<int> purchasedProductIDs = {};
   Map<int,String> orderStatuses = {};
   Map<int,String> orderStatusDates = {};
-
+  Map<String, List<String>> groupedByStatus = {
+    'Pending': [],
+    'Shipped': [],
+    'Delivered': []
+  };
   Future<void> updateUser({
     required String address,
     required String phoneNumber,
@@ -81,6 +85,7 @@ class ProfileCubit extends Cubit<ProfileState> {
           for (var item in responseBody) {
             bookmarkedProducts[item['productId']] = item['id'];
           }
+          print(bookmarkedProducts);
           savedProducts = responseBody
               .map((json) => RecentlySavedProductModel.fromJson(json))
               .toList();
@@ -108,7 +113,6 @@ class ProfileCubit extends Cubit<ProfileState> {
             'Authorization': 'Bearer $accessToken',
           },
         );
-
         if (response.statusCode == 200) {
           final responseBody = json.decode(response.body);
           for (var item in responseBody['Order']) {
@@ -123,7 +127,6 @@ class ProfileCubit extends Cubit<ProfileState> {
               }
             }
           }
-          print(groupDatesByStatus());
           emit(RecentlySavedPurchasedSuccessfulState(savedProducts));
         } else {
           emit(RecentlySavedPurchasedFailureState());
@@ -137,23 +140,36 @@ class ProfileCubit extends Cubit<ProfileState> {
   }
 
   Map<String, List<String>> groupDatesByStatus() {
+    Map<String, Set<String>> tempGroupedByStatus = {
+      'Pending': <String>{},
+      'Shipped': <String>{},
+      'Delivered': <String>{}
+    };
+    orderStatuses.forEach((id, status) {
+      String? date = orderStatusDates[id];
+      if (date != null && tempGroupedByStatus.containsKey(status)) {
+        tempGroupedByStatus[status]?.add(date); // Add to set to prevent duplicates
+      }
+    });
 
-    Map<String, List<String>> groupedByStatus = {
+    // Convert sets to lists before returning
+    groupedByStatus = tempGroupedByStatus.map(
+          (status, datesSet) => MapEntry(status, datesSet.toList()),
+    );
+
+    print(groupedByStatus); // To verify the result
+
+    return groupedByStatus;
+  }
+  void clearGroupedByStatus() {
+    groupedByStatus = {
       'Pending': [],
       'Shipped': [],
       'Delivered': []
     };
-
-    orderStatuses.forEach((id, status) {
-      String? date = orderStatusDates[id];
-
-      if (date != null && groupedByStatus.containsKey(status)) {
-        groupedByStatus[status]?.add(date);
-      }
-    });
-
-    return groupedByStatus;
+    emit(ProfileInitial()); // Emit a state to reflect changes
   }
+
   Future<void> cacheProducts(List<RecentlySavedProductModel> products) async {
     final prefs = await SharedPreferences.getInstance();
 

@@ -49,12 +49,13 @@ class LoginBody extends StatelessWidget {
                   if (state is SigninSuccessState) {
                     lCubit.getRecentlyLikedProducts(sCubit.userID,true);
                      pCubit.getRecentlySavedProducts(true);
+                     pCubit.clearGroupedByStatus();
                      hCubit.fetchProducts(
                        l2Cubit.getLikedProducts(sCubit.userID),
                        true
                      );
                     lCubit.getProductSuggestions(true);
-                    pCubit.getRecentlyPurchasedProducts(false,sCubit.userID);
+                    pCubit.getRecentlyPurchasedProducts(true,sCubit.userID);
                     cCubit.getCartItems();
                     rCubit.getProductRatings(true);
                     Navigator.pushReplacement(
