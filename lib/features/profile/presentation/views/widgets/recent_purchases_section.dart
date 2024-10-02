@@ -77,6 +77,8 @@ class _RecentPurchasesSectionState extends State<RecentPurchasesSection> {
                 }
               }
               if (products.isNotEmpty) {
+                print(products.length);
+                print(productRatings.length);
                 return Expanded(
                   child: ListView.separated(
                     physics: const BouncingScrollPhysics(),

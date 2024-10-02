@@ -57,12 +57,12 @@ class _SignUpBodyState extends State<SignUpBody> {
               listener: (context, state) {
                 if (state is SignupSuccessState) {
                   lCubit.getRecentlyLikedProducts(sCubit.userID, true);
-                  pCubit.getRecentlySavedProducts(false);
-                  hCubit.fetchProducts(l2Cubit.getLikedProducts(sCubit.userID));
-                  lCubit.getProductSuggestions();
-                  pCubit.getRecentlyPurchasedProducts(false, sCubit.userID);
+                  pCubit.getRecentlySavedProducts(true);
+                  hCubit.fetchProducts(l2Cubit.getLikedProducts(sCubit.userID),true);
+                  lCubit.getProductSuggestions(true);
+                  pCubit.getRecentlyPurchasedProducts(true, sCubit.userID);
                   cCubit.getCartItems();
-                  rCubit.getProductRatings();
+                  rCubit.getProductRatings(true);
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(

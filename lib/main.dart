@@ -14,26 +14,29 @@ import 'package:plant_it/features/profile/presentation/view_model/profile_cubit.
 import 'package:plant_it/features/ratings_cubit/ratings_cubit.dart';
 import 'package:plant_it/features/splash/presentation/views/splash_view.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   Bloc.observer = SimpleBlocObserver();
+  final authCubit = AuthCubit();
+  await authCubit.checkAuthStatus(); // Check the token status on app launch
+
   runApp(
     DevicePreview(
       enabled: !kReleaseMode,
-      builder: (context) => MyApp(), // Wrap your app
+      builder: (context) => const MyApp(), // Pass AuthCubit
     ),
   );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key,}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-
     return MultiBlocProvider(
       providers: [
+        BlocProvider(create: (context) => AuthCubit()), // Use initialized AuthCubit
         BlocProvider(create: (context) => ProfileCubit(),),
-        BlocProvider(create: (context) => AuthCubit(),),
         BlocProvider(create: (context) => HomeProductsCubit(),),
         BlocProvider(create: (context) => SingleProductCubit(),),
         BlocProvider(create: (context) => LikedCubit(),),
@@ -49,5 +52,4 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
 

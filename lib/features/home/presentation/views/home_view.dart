@@ -22,7 +22,8 @@ class _HomeViewState extends State<HomeView> {
     BlocProvider.of<HomeProductsCubit>(context).fetchProducts(
         BlocProvider.of<LikedCubit>(context).getLikedProducts(
             BlocProvider.of<AuthCubit>(context).userID
-        )
+        ),
+      false
     );
   }
 

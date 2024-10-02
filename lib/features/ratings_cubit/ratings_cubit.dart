@@ -12,10 +12,10 @@ class RatingsCubit extends Cubit<RatingsState> {
   Map<int, double> productRatings = {};
   Map<int, double> cachedRatings = {};
 
-  Future<Map<int, double>> getProductRatings() async {
+  Future<Map<int, double>> getProductRatings(bool called) async {
     // First, try to get cached ratings
      cachedRatings = await getCachedProductRatings();
-    if (cachedRatings.isNotEmpty) {
+    if (cachedRatings.isNotEmpty && called == false) {
       emit(ProductRatingSuccessfulState());
       return cachedRatings;
     }

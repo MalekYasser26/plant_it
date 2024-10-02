@@ -59,9 +59,9 @@ class LikedPlantsCubit extends Cubit<LikedPlantsState> {
     }
   }
 
-  Future<void> getProductSuggestions() async {
+  Future<void> getProductSuggestions(bool called ) async {
     emit(SuggestedProductLoadingState());
-    if (productSuggestions.isNotEmpty) {
+    if (productSuggestions.isNotEmpty && called == false) {
       emit(LikedSuggestedPlantsCombinedState(
           productSuggestions: productSuggestions, recentlyLikedProducts: cachedProducts, totalItems: totalItems));
 

@@ -58,6 +58,7 @@ class _DescriptionViewState extends State<DescriptionView> {
     var sCubit = context.read<SingleProductCubit>();
     var pCubit = context.read<ProfileCubit>();
     var cCubit = context.read<CartCubit>();
+    var aCubit = context.read<AuthCubit>();
     return BlocBuilder<SingleProductCubit, SingleProductState>(
       buildWhen: (previousState, currentState) {
         // Rebuild when the product is successfully loaded
@@ -96,6 +97,7 @@ class _DescriptionViewState extends State<DescriptionView> {
                 implyLeading: true,
                 methodNeededtoCall: () {
                   pCubit.getRecentlySavedProducts(true);
+                  Navigator.pop(context);
                 },
               ),
               body: Column(
@@ -360,6 +362,7 @@ class _DescriptionViewState extends State<DescriptionView> {
                                   onPressed: () async {
                                     await cCubit.addCartItem(
                                         product.id, quantity);
+                                    print(aCubit.userID);
                                   },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: const Color(0xFFDCDCDC),

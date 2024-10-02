@@ -10,12 +10,12 @@ part 'home_product_state.dart';
 class HomeProductsCubit extends Cubit<HomeProductState> {
   HomeProductsCubit() : super(ProductsInitial());
   List<HomeProduct> cachedProducts = [];
-  Future<void> fetchProducts(Future<void> getLikes) async {
+  Future<void> fetchProducts(Future<void> getLikes,bool called) async {
     await getLikes;
     emit(ProductsLoadingState());
     cachedProducts = await getCachedProducts();
 
-    if (cachedProducts.isNotEmpty) {
+    if (cachedProducts.isNotEmpty && called == false) {
       emit(ProductsSuccessfulState(cachedProducts));
     } else {
       // Proceed to fetch fresh data only if cache is empty or expired
@@ -81,7 +81,8 @@ class HomeProductsCubit extends Cubit<HomeProductState> {
   Future<void> searchProducts(String searchedText, Future<void> getLikes) async {
     if (searchedText.isEmpty) {
       fetchProducts(
-        getLikes
+        getLikes,
+        false
       );
       return;
     }

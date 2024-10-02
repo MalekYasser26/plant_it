@@ -4,7 +4,6 @@ import 'package:plant_it/constants/constants.dart';
 import 'package:plant_it/features/auth/presentation/view_model/auth_cubit.dart';
 import 'package:plant_it/features/cust_nav_bar/presentation/views/cust_nav_bar_view.dart';
 import 'package:plant_it/features/favourites/presentation/view_model/liked_plants_cubit.dart';
-import 'package:plant_it/features/home/presentation/view_model/home_product_cubit.dart';
 import 'package:plant_it/features/profile/presentation/view_model/profile_cubit.dart';
 import 'package:plant_it/features/ratings_cubit/ratings_cubit.dart';
 
@@ -34,13 +33,13 @@ class _CustNavBarSelectionViewState extends State<CustNavBarSelectionView> {
         onTap: (index) {
           if (index ==2){
             lCubit.getRecentlyLikedProducts(sCubit.userID,false);
-            lCubit.getProductSuggestions();
-            rCubit.getProductRatings();
+            lCubit.getProductSuggestions(false);
+            rCubit.getProductRatings(false);
           }
           if (index ==0){
             pCubit.getRecentlyPurchasedProducts(false,sCubit.userID);
-            rCubit.getProductRatings();
-            pCubit.getRecentlySavedProducts(false);
+            rCubit.getProductRatings(false);
+            pCubit.getRecentlySavedProducts(true);
           }
           setState(() {
             widget.currentIndex = index;

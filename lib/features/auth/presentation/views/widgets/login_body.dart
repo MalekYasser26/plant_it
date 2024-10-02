@@ -48,14 +48,15 @@ class LoginBody extends StatelessWidget {
                 listener: (context, state) {
                   if (state is SigninSuccessState) {
                     lCubit.getRecentlyLikedProducts(sCubit.userID,true);
-                     pCubit.getRecentlySavedProducts(false);
+                     pCubit.getRecentlySavedProducts(true);
                      hCubit.fetchProducts(
-                       l2Cubit.getLikedProducts(sCubit.userID)
+                       l2Cubit.getLikedProducts(sCubit.userID),
+                       true
                      );
-                    lCubit.getProductSuggestions();
+                    lCubit.getProductSuggestions(true);
                     pCubit.getRecentlyPurchasedProducts(false,sCubit.userID);
                     cCubit.getCartItems();
-                    rCubit.getProductRatings();
+                    rCubit.getProductRatings(true);
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
@@ -121,7 +122,6 @@ class LoginBody extends StatelessWidget {
                                 text: "Sign in",
                                 onPressed: () {
                                   if (_formKey.currentState!.validate()) {
-                                    // If form is valid, proceed with login
                                     sCubit.signIn(
                                       emailController.text,
                                       passwordController.text,

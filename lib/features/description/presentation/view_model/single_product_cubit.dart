@@ -64,7 +64,6 @@ class SingleProductCubit extends Cubit<SingleProductState> {
     if (_debounce?.isActive ?? false) {
       _debounce!.cancel(); // Cancel any ongoing debounce timer
     }
-
     _debounce = Timer(const Duration(milliseconds: 300), () async {
       emit(AddBookmarkLoadingState(product));
       try {
@@ -83,6 +82,8 @@ class SingleProductCubit extends Cubit<SingleProductState> {
           await cacheBookmarkedProducts();
           emit(AddBookmarkSuccessfulState(product: product));
         } else {
+          print(response.body);
+
           emit(AddBookmarkFailureState(product));
         }
       } catch (e) {

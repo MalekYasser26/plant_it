@@ -60,7 +60,8 @@ class _SearchWidgetState extends State<SearchWidget> {
                 pCubit.fetchProducts(
                   lCubit.getLikedProducts(
                     sCubit.userID
-                  )
+                  ),
+                  false
                 );
               }
             },
