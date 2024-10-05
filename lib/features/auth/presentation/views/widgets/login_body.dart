@@ -47,9 +47,9 @@ class LoginBody extends StatelessWidget {
               child: BlocConsumer<AuthCubit, AuthState>(
                 listener: (context, state) {
                   if (state is SigninSuccessState) {
+                    pCubit.clearGroupedByStatus();
                     lCubit.getRecentlyLikedProducts(sCubit.userID,true);
                      pCubit.getRecentlySavedProducts(true);
-                     pCubit.clearGroupedByStatus();
                      hCubit.fetchProducts(
                        l2Cubit.getLikedProducts(sCubit.userID),
                        true

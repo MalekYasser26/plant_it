@@ -131,7 +131,7 @@ class AuthCubit extends Cubit<AuthState> {
 
   Future<void> logOut() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.clear();
+    await prefs.remove('accessToken');
     emit(AuthInitial());
   }
   Future<void> checkAuthStatus() async {

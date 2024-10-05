@@ -167,7 +167,7 @@ class ProfileCubit extends Cubit<ProfileState> {
       'Shipped': [],
       'Delivered': []
     };
-    emit(ProfileInitial()); // Emit a state to reflect changes
+    emit(ProfileInitial()); // Emit the state after clearing the data
   }
 
   Future<void> cacheProducts(List<RecentlySavedProductModel> products) async {

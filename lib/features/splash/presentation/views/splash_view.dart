@@ -11,11 +11,20 @@ import 'package:plant_it/features/favourites/presentation/view_model/liked_plant
 import 'package:plant_it/features/home/presentation/view_model/home_product_cubit.dart';
 import 'package:plant_it/features/profile/presentation/view_model/profile_cubit.dart';
 import 'package:plant_it/features/ratings_cubit/ratings_cubit.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class SplashView extends StatelessWidget {
+class SplashView extends StatefulWidget {
   const SplashView({super.key});
 
   @override
+  State<SplashView> createState() => _SplashViewState();
+}
+
+class _SplashViewState extends State<SplashView> {
+
+  @override
+
+
   Widget build(BuildContext context) {
     var sCubit = context.read<AuthCubit>();
     var pCubit = context.read<ProfileCubit>();
@@ -24,103 +33,98 @@ class SplashView extends StatelessWidget {
     var lCubit = context.read<LikedPlantsCubit>();
     var l2Cubit = context.read<LikedCubit>();
     var cCubit = context.read<CartCubit>();
-    return BlocListener<AuthCubit, AuthState>(
-      listener: (context, state) {
-        if (state is AuthAuthenticatedState) {
-          lCubit.getRecentlyLikedProducts(sCubit.userID, true);
-          pCubit.getRecentlySavedProducts(true);
-          hCubit.fetchProducts(l2Cubit.getLikedProducts(sCubit.userID), true);
-          lCubit.getProductSuggestions(true);
-          pCubit.getRecentlyPurchasedProducts(true, sCubit.userID);
-          cCubit.getCartItems();
-          rCubit.getProductRatings(true);
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (_) => CustNavBarSelectionView(currentIndex: 1)),
-          );
-        } else if (state is AuthInitial) {
-          // Navigate to Login Screen if not authenticated
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (_) => const LoginView()),
-          );
-        }
-      },
-      child: Scaffold(
-        body: Stack(
-          alignment: Alignment.center,
-          children: [
-            Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    AppColors.darkGreen,
-                    AppColors.darkGreenL,
-                    AppColors.normGreen,
-                    AppColors.lightGreen,
-                    AppColors.lighterGreen,
-                    AppColors.barelyGreen,
-                  ],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                ),
+    return Scaffold(
+      body: Stack(
+        alignment: Alignment.center,
+        children: [
+          Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  AppColors.darkGreen,
+                  AppColors.darkGreenL,
+                  AppColors.normGreen,
+                  AppColors.lightGreen,
+                  AppColors.lighterGreen,
+                  AppColors.barelyGreen,
+                ],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
               ),
             ),
-            Positioned(
-              bottom: 80,
-              left: 0,
-              right: 0,
-              child: Center(
-                child: ElevatedButton(
-                  onPressed: () {
+          ),
+          Positioned(
+            bottom: 80,
+            left: 0,
+            right: 0,
+            child: Center(
+              child: ElevatedButton(
+                onPressed: ()async {
+                  final prefs = await SharedPreferences.getInstance();
+                  if (prefs.getString("accessToken") != null &&
+                      prefs.getString("accessToken")!.isNotEmpty) {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) =>
+                              CustNavBarSelectionView(currentIndex: 1)),
+                    );
+                    lCubit.getRecentlyLikedProducts(sCubit.userID, true);
+                    pCubit.getRecentlySavedProducts(true);
+                    hCubit.fetchProducts(
+                        l2Cubit.getLikedProducts(sCubit.userID), true);
+                    lCubit.getProductSuggestions(true);
+                    pCubit.getRecentlyPurchasedProducts(true, sCubit.userID);
+                    cCubit.getCartItems();
+                    rCubit.getProductRatings(true);
+                  } else {
                     Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
                             builder: (context) => const LoginView()));
-                  },
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 15,
-                      horizontal: 100,
-                    ),
-                    backgroundColor: AppColors.basicallyWhite,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 15,
+                    horizontal: 100,
                   ),
-                  child: Text(
-                    "Get Started",
-                    style: TextStyle(
-                      fontSize: getResponsiveSize(context, fontSize: 18),
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'Poppins',
-                      color: AppColors.darkGreenL,
-                    ),
+                  backgroundColor: AppColors.basicallyWhite,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                ),
+                child: Text(
+                  "Get Started",
+                  style: TextStyle(
+                    fontSize: getResponsiveSize(context, fontSize: 18),
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Poppins',
+                    color: AppColors.darkGreenL,
                   ),
                 ),
               ),
             ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset(
-                  ImagesCust.logo,
-                  height: 97,
-                  width: 100,
-                ),
-                Text(
-                  "Plant-it",
-                  style: TextStyle(
-                      fontSize: getResponsiveSize(context, fontSize: 32),
-                      fontWeight: FontWeight.w700,
-                      fontFamily: "Poppins",
-                      color: Colors.white),
-                ),
-              ],
-            ),
-          ],
-        ),
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(
+                ImagesCust.logo,
+                height: 97,
+                width: 100,
+              ),
+              Text(
+                "Plant-it",
+                style: TextStyle(
+                    fontSize: getResponsiveSize(context, fontSize: 32),
+                    fontWeight: FontWeight.w700,
+                    fontFamily: "Poppins",
+                    color: Colors.white),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
