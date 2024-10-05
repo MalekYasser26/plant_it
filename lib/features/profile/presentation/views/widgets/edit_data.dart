@@ -3,9 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:plant_it/constants/constants.dart';
 import 'package:plant_it/features/auth/presentation/view_model/auth_cubit.dart';
 import 'package:plant_it/features/profile/presentation/view_model/profile_cubit.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class EditData extends StatefulWidget {
-  const EditData({super.key});
+  final Function loadData ;
+  const EditData({super.key, required this.loadData()});
 
   @override
   _EditDataState createState() => _EditDataState();
@@ -13,6 +15,36 @@ class EditData extends StatefulWidget {
 
 class _EditDataState extends State<EditData> {
   final _formKey = GlobalKey<FormState>();
+  String name = '';
+  String phoneNum = '';
+  String address = '';
+
+  // Controllers for TextFormFields
+  late TextEditingController _nameController;
+  late TextEditingController _phoneNumController;
+  late TextEditingController _addressController;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Initialize controllers
+    _nameController = TextEditingController();
+    _phoneNumController = TextEditingController();
+    _addressController = TextEditingController();
+
+    widget.loadData(); // Load the data
+  }
+
+  Future<void> _updateSharedPrefValue(String key, String newValue) async {
+    // Get the SharedPreferences instance
+    final prefs = await SharedPreferences.getInstance();
+
+    // Update the value for the specified key
+    await prefs.setString(key, newValue);
+
+    print('Updated $key to $newValue in SharedPreferences');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,30 +54,35 @@ class _EditDataState extends State<EditData> {
     return BlocListener<ProfileCubit, ProfileState>(
       listener: (context, state) {
         if (state is ProfileSuccessfulState) {
-          // Show success Snackbar
+          print("hhhhhhhhhhhhh");
+          widget.loadData();
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               behavior: SnackBarBehavior.floating,
-              content: Text('Profile updated successfully!',
-                  style:  TextStyle(
+              content: Text(
+                'Profile updated successfully!',
+                style: TextStyle(
                   fontFamily: "Poppins",
                   fontWeight: FontWeight.bold,
                 ),
+              ),
+              backgroundColor: AppColors.darkGreen,
             ),
-            backgroundColor: AppColors.darkGreen,),
           );
           Navigator.pop(context); // Close the modal
         } else if (state is ProfileFailureState) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               shape: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(15))),
-              content: Text('Profile failed to update!',
-                style:  TextStyle(
+              content: Text(
+                'Profile failed to update!',
+                style: TextStyle(
                   fontFamily: "Poppins",
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              backgroundColor: AppColors.darkGreen,),
+              backgroundColor: AppColors.darkGreen,
+            ),
           );
         }
       },
@@ -56,7 +93,7 @@ class _EditDataState extends State<EditData> {
           children: [
             // Name TextFormField
             TextFormField(
-              initialValue: sCubit.name,
+              controller: _nameController, // Use controller instead of initialValue
               decoration: InputDecoration(
                 labelText: 'Name',
                 labelStyle: TextStyle(
@@ -76,12 +113,13 @@ class _EditDataState extends State<EditData> {
               },
               onSaved: (value) {
                 sCubit.name = value ?? sCubit.name;
+                _updateSharedPrefValue('name', value!);
               },
             ),
 
             // Phone Number TextFormField
             TextFormField(
-              initialValue: sCubit.phoneNum,
+              controller: _phoneNumController, // Use controller instead of initialValue
               keyboardType: TextInputType.phone,
               decoration: InputDecoration(
                 labelText: 'Phone Number',
@@ -101,12 +139,14 @@ class _EditDataState extends State<EditData> {
               },
               onSaved: (value) {
                 sCubit.phoneNum = value ?? sCubit.phoneNum;
+                _updateSharedPrefValue('phoneNum', value!);
+
               },
             ),
 
             // Address TextFormField
             TextFormField(
-              initialValue: sCubit.address,
+              controller: _addressController, // Use controller instead of initialValue
               keyboardType: TextInputType.streetAddress,
               decoration: InputDecoration(
                 labelText: 'Address',
@@ -126,6 +166,8 @@ class _EditDataState extends State<EditData> {
               },
               onSaved: (value) {
                 sCubit.address = value ?? sCubit.address;
+                _updateSharedPrefValue('address', value!);
+
               },
             ),
 

@@ -3,9 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart'; // Add this import
 import 'dart:io'; // For working with file system paths
 import 'package:plant_it/constants/constants.dart';
-import 'package:plant_it/features/auth/presentation/view_model/auth_cubit.dart';
 import 'package:plant_it/features/profile/presentation/view_model/profile_cubit.dart';
 import 'package:plant_it/features/profile/presentation/views/widgets/edit_data.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HiBrunoSection extends StatefulWidget {
   const HiBrunoSection({super.key});
@@ -17,84 +17,139 @@ class HiBrunoSection extends StatefulWidget {
 class _HiBrunoSectionState extends State<HiBrunoSection> {
   File? _image; // Store the selected image here
   final ImagePicker _picker = ImagePicker();
+  String name = '';
+  String phoneNum = '';
+  String address = '';
+
 
   @override
-  Widget build(BuildContext context) {
-    var sCubit = context.read<AuthCubit>();
-    return Row(
-      children: [
-        InkWell(
-          onTap: () {
-            _pickImage(); // Open image picker
-          },
-          child: Stack(
-            children: [
-              CircleAvatar(
-                minRadius: 30,
-                maxRadius: 40,
-                child: ClipRRect(
-                  clipBehavior: Clip.antiAlias,
-                  borderRadius: BorderRadius.circular(50),
-                  child: _image != null
-                      ? Image.file(_image!, fit: BoxFit.cover)
-                      : Image.asset('assets/images/bruno.png'), // Default image if no image is selected
-                ),
-              ),
-              const Positioned(
-                right: 0,
-                bottom: 0,
-                child: Icon(
-                  Icons.camera_alt_outlined,
-                  color: Colors.black,
-                ),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(width: 10),
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.all(0.0).copyWith(
-              bottom: MediaQuery.of(context).viewInsets.bottom, // Adjust for keyboard
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        "Hi ${sCubit.name}! ",
-                        style: TextStyle(
-                          fontFamily: "Poppins",
-                          fontWeight: FontWeight.w500,
-                          fontSize: getResponsiveSize(context, fontSize: 18),
-                        ),
-                        softWrap: true,
+  void initState() {
+    super.initState();
+    _loadData();
+  }
 
-                      ),
+  Future<void> _loadData() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      name = prefs.getString('name') ?? '';
+      phoneNum = prefs.getString('phoneNum') ?? '';
+      address = prefs.getString('address') ?? '';
+    });
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            InkWell(
+              onTap: () {
+                _pickImage();
+              },
+              child: Stack(
+                children: [
+                  CircleAvatar(
+                    minRadius: 30,
+                    maxRadius: 40,
+                    child: ClipRRect(
+                      clipBehavior: Clip.antiAlias,
+                      borderRadius: BorderRadius.circular(50),
+                      child: _image != null
+                          ? Image.file(_image!, fit: BoxFit.cover)
+                          : Image.asset('assets/images/bruno.png'), // Default image if no image is selected
                     ),
-                    IconButton(
-                      onPressed: () {
-                        _showEditInfoModal(context);
-                      },
-                      icon: const Icon(
-                        Icons.edit,
-                        color: Colors.black,
-                      ),
+                  ),
+                  const Positioned(
+                    right: 0,
+                    bottom: 0,
+                    child: Icon(
+                      Icons.camera_alt_outlined,
+                      color: Colors.black,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(0.0).copyWith(
+                  bottom: MediaQuery.of(context).viewInsets.bottom, // Adjust for keyboard
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            "Hi $name! ",
+                            style: TextStyle(
+                              fontFamily: "Poppins",
+                              fontWeight: FontWeight.w500,
+                              fontSize: getResponsiveSize(context, fontSize: 18),
+                            ),
+                            softWrap: true,
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            _showEditInfoModal(context);
+                          },
+                          icon: const Icon(
+                            Icons.edit,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-              ],
+              ),
+            )
+          ],
+        ),
+        const SizedBox(height: 15,),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Your info",
+              style: TextStyle(
+                fontFamily: "Poppins",
+                fontWeight: FontWeight.bold,
+                fontSize: getResponsiveSize(context, fontSize: 20),
+              ),
             ),
-          ),
-        )
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Text(
+                "Phone number: $phoneNum",
+                style: TextStyle(
+                  fontFamily: "Raleway",
+                  fontWeight: FontWeight.w300,
+                  fontSize: getResponsiveSize(context, fontSize: 15),
+                ),
+              ),
+            ),
+            Text(
+              "Address: $address",
+              style: TextStyle(
+                fontFamily: "Raleway",
+                fontWeight: FontWeight.w300,
+                fontSize: getResponsiveSize(context, fontSize: 15),
+              ),
+              softWrap: true,
+            ),
+          ],
+        ),
+
       ],
     );
   }
 
-  // Function to pick image from the gallery
   Future<void> _pickImage() async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
 
@@ -107,15 +162,13 @@ class _HiBrunoSectionState extends State<HiBrunoSection> {
 
   void _showEditInfoModal(BuildContext context) {
     var pCubit = context.read<ProfileCubit>();
-  showModalBottomSheet(
+    showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       builder: (BuildContext context) {
         return BlocListener<ProfileCubit, ProfileState>(
           listener: (context, state) {
             if (state is ProfileSuccessfulState) {
-              setState(() {});
-              // Trigger UI refresh after a successful update
               pCubit.getRecentlySavedProducts(false);
             }
           },
@@ -126,7 +179,16 @@ class _HiBrunoSectionState extends State<HiBrunoSection> {
               right: 20,
               top: 20,
             ),
-            child: const EditData(),
+            child:  EditData(
+              loadData: () async {
+                final prefs = await SharedPreferences.getInstance();
+                setState(() {
+                  name = prefs.getString('name') ?? '';
+                  phoneNum = prefs.getString('phoneNum') ?? '';
+                  address = prefs.getString('address') ?? '';
+                });
+              }
+            ),
           ),
         );
       },

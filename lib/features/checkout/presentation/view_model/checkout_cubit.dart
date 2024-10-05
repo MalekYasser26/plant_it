@@ -2,15 +2,18 @@ import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:http/http.dart' as http;
 import 'package:plant_it/constants/constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 part 'checkout_state.dart';
 
 class CheckoutCubit extends Cubit<CheckoutState> {
   CheckoutCubit() : super(CheckoutInitial());
   Future<void> placeOrder(int userID) async {
     emit(CheckoutLoadingState());
+    final prefs = await SharedPreferences.getInstance();
+
     try {
       final response = await http.post(
-        Uri.parse('$baseUrlArsoon/Order/$userID'),
+        Uri.parse('$baseUrlArsoon/Order/${prefs.getInt('userID')}'),
         headers: {
           'accept': 'application/json',
           'Authorization': 'Bearer $accessToken',

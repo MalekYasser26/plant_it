@@ -17,9 +17,9 @@ class RecentlyLikedProductModel {
     final String productImage = product['productImage'] ?? "assets/images/placeholder.png";
 
     return RecentlyLikedProductModel(
-      id: json['productId'],
+      id: json['productId'] ?? -1 ,
       productName: product['productName'] ?? 'Unknown',
-      price: product['price'],
+      price: product['price'] ?? -1,
       image: productImage,
     );
   }

@@ -37,6 +37,7 @@ class RecentlyLikedSection extends StatelessWidget {
               );
             }
             if (state is LikedSuggestedPlantsCombinedState) {
+              print(state.recentlyLikedProducts);
               return ListView.separated(
                 reverse: true,
                 itemBuilder: (context, index) {

@@ -53,12 +53,12 @@ class _CheckoutViewBodyState extends State<CheckoutViewBody> {
                   ),
                 ),
                 BlocListener<CheckoutCubit, CheckoutState>(
-                  listener: (context, state) {
+                  listener: (context, state)async  {
                     if (state is CheckoutSuccessfulState) {
                       Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => PlantsOrderedView(), // Your target page here
+                          builder: (context) => const PlantsOrderedView(), // Your target page here
                         ),
                             (route) => false,
                       );

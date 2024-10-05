@@ -9,7 +9,6 @@ import 'package:plant_it/features/profile/presentation/view_model/profile_cubit.
 import 'package:plant_it/features/profile/presentation/views/widgets/hi_bruno_section.dart';
 import 'package:plant_it/features/profile/presentation/views/widgets/recent_purchases_section.dart';
 import 'package:plant_it/features/profile/presentation/views/widgets/recently_saved_section.dart';
-import 'package:plant_it/features/profile/presentation/views/widgets/your_info_section.dart';
 
 class ProfileViewBody extends StatefulWidget {
   const ProfileViewBody({super.key});
@@ -23,40 +22,55 @@ class _ProfileViewBodyState extends State<ProfileViewBody> {
   Widget build(BuildContext context) {
     var sCubit = context.read<AuthCubit>();
     var pCubit = context.read<ProfileCubit>();
-    return  SafeArea(
+    return SafeArea(
       child: Stack(
         children: [
-          Scaffold(
-          resizeToAvoidBottomInset: false,
-          backgroundColor: AppColors.basicallyWhite,
-          appBar: CustAppBar(
-            text: "Your profile",
-            implyLeading: false,
+          BlocBuilder<AuthCubit, AuthState>(
+            builder: (context, state) {
+              return Scaffold(
+                resizeToAvoidBottomInset: false,
+                backgroundColor: AppColors.basicallyWhite,
+                appBar: CustAppBar(
+                  text: "Your profile",
+                  implyLeading: false,
+                ),
+                body: const Padding(
+                  padding: EdgeInsets.all(15.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      HiBrunoSection(),
+                    //  YourInfoSection(),
+                      RecentPurchasesSection(),
+                      RecentlySavedSection(),
+                    ],
+                  ),
+                ),
+              );
+            },
           ),
-          body: const Padding(
-            padding: EdgeInsets.all(15.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                HiBrunoSection(),
-                YourInfoSection(),
-                RecentPurchasesSection(),
-                RecentlySavedSection(),
-              ],
-            ),
-          ),
-        ),
           Positioned(
             right: 0,
             top: 5,
-            child: IconButton(onPressed: () {
-              pCubit.clearGroupedByStatus();
-              sCubit.logOut();
-              Navigator.pushAndRemoveUntil(context,MaterialPageRoute(builder: (context) => const LoginView(),),(route) => false, );
-            }, icon: const Icon(Icons.logout_rounded,size: 30,color: Colors.red,)),
+            child: IconButton(
+                onPressed: () {
+                  pCubit.clearGroupedByStatus();
+                  sCubit.logOut();
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const LoginView(),
+                    ),
+                    (route) => false,
+                  );
+                },
+                icon: const Icon(
+                  Icons.logout_rounded,
+                  size: 30,
+                  color: Colors.red,
+                )),
           ),
-
         ],
       ),
     );

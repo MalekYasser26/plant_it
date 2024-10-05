@@ -65,7 +65,7 @@ class LoginBody extends StatelessWidget {
                             CustNavBarSelectionView(currentIndex: 1),
                       ),
                     );
-                  } else if (state is SigninFailureState) {
+                  } else if (state is SigninFailureState){
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(

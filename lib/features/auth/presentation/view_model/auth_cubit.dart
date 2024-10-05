@@ -40,10 +40,14 @@ class AuthCubit extends Cubit<AuthState> {
         address = userData['address'];
         userID = userData['id'];
 
-        // Store tokens in SharedPreferences
+        // Store tokens and user data in SharedPreferences
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('accessToken', accessToken!);
         await prefs.setString('refreshToken', refreshToken);
+        await prefs.setString('name', name);
+        await prefs.setString('phoneNum', phoneNum);
+        await prefs.setString('address', address);
+        await prefs.setInt('userID', userID);
 
       } else {
         errorMsg = responseBody['message'];
@@ -128,7 +132,11 @@ class AuthCubit extends Cubit<AuthState> {
       print('Error refreshing token: ${e.toString()}');
     }
   }
-
+  Future<String?> getName()async{
+    final prefs = await SharedPreferences.getInstance();
+    print(prefs.getString('name'));
+    return prefs.getString('name');
+  }
   Future<void> logOut() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('accessToken');
@@ -140,6 +148,11 @@ class AuthCubit extends Cubit<AuthState> {
 
     if (savedAccessToken != null) {
       accessToken = savedAccessToken;
+      name = prefs.getString('name') ?? '';
+      phoneNum = prefs.getString('phoneNum') ?? '';
+      address = prefs.getString('address') ?? '';
+      userID = prefs.getInt('userID') ?? -1;
+
       emit(AuthAuthenticatedState());
     } else {
       emit(AuthInitial()); // Emit initial state if no token
@@ -150,13 +163,20 @@ class AuthCubit extends Cubit<AuthState> {
     required String updatedName,
     required String updatedPhoneNum,
     required String updatedAddress,
-  }) {
+  }) async {
     // Update internal state
     name = updatedName;
     phoneNum = updatedPhoneNum;
     address = updatedAddress;
 
+    // Cache updated data
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('name', updatedName);
+    await prefs.setString('phoneNum', updatedPhoneNum);
+    await prefs.setString('address', updatedAddress);
+
     // Emit a state change to refresh the UI
     emit(AuthUpdatedState());
   }
+
 }

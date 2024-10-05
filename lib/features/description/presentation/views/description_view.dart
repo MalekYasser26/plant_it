@@ -38,7 +38,6 @@ class _DescriptionViewState extends State<DescriptionView> {
     super.initState();
     // Fetch bookmarks and product data
     BlocProvider.of<SingleProductCubit>(context).fetchProductById(
-        context.read<AuthCubit>().userID,
         SingleProduct(
             id: widget.product.id,
             productName: '',

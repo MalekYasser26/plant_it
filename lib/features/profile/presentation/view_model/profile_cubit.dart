@@ -104,10 +104,13 @@ class ProfileCubit extends Cubit<ProfileState> {
 
   Future<void> getRecentlyPurchasedProducts(bool called, int userID) async {
     emit(RecentlySavedPurchasedLoadingState());
+    final prefs = await SharedPreferences.getInstance();
+    print(prefs.getInt('userID'));
+
     {
       try {
         final response = await http.get(
-          Uri.parse("$baseUrlArsoon/Order/$userID"),
+          Uri.parse("$baseUrlArsoon/Order/${prefs.getInt('userID')}"),
           headers: {
             'accept': 'application/json',
             'Authorization': 'Bearer $accessToken',

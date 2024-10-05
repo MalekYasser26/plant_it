@@ -19,35 +19,38 @@ class LikedPlantsCubit extends Cubit<LikedPlantsState> {
 
   Future<void> getRecentlyLikedProducts(int userID, bool called) async {
     emit(RecentlyLikedLoadingState());
+    final prefs = await SharedPreferences.getInstance();
     if (cachedProducts.isNotEmpty && called == false) {
+      print("hereeeeee");
       totalItems = cachedProducts.length;
       emit(LikedSuggestedPlantsCombinedState(
-          productSuggestions: productSuggestions, recentlyLikedProducts: cachedProducts, totalItems: totalItems));
-
+          productSuggestions: productSuggestions,
+          recentlyLikedProducts: cachedProducts,
+          totalItems: totalItems));
     } else {
       try {
         final response = await http.get(
-          Uri.parse("$baseUrlHasoon/Likes/userId?userId=$userID"),
+          Uri.parse("$baseUrlHasoon/Likes/userId?userId=${prefs.getInt('userID')}"),
           headers: {
             'accept': '*/*',
             'Content-Type': 'application/json',
             'Authorization': 'Bearer $accessToken',
           },
         );
-
         if (response.statusCode == 200) {
+
           final responseBody = json.decode(response.body);
           final List<dynamic> productJson =
               responseBody['data']; // Access the 'data' field
-
-          // Map each item in the 'data' list to a RecentlySavedProductModel
           cachedProducts = productJson
               .map((json) => RecentlyLikedProductModel.fromJson(json))
               .toList();
           await cacheProducts(cachedProducts);
           totalItems = cachedProducts.length;
           emit(LikedSuggestedPlantsCombinedState(
-              productSuggestions: productSuggestions, recentlyLikedProducts: cachedProducts, totalItems: totalItems));
+              productSuggestions: productSuggestions,
+              recentlyLikedProducts: cachedProducts,
+              totalItems: totalItems));
         } else {
           // Handle non-200 status codes
           emit(RecentlyLikedFailureState());
@@ -59,11 +62,13 @@ class LikedPlantsCubit extends Cubit<LikedPlantsState> {
     }
   }
 
-  Future<void> getProductSuggestions(bool called ) async {
+  Future<void> getProductSuggestions(bool called) async {
     emit(SuggestedProductLoadingState());
     if (productSuggestions.isNotEmpty && called == false) {
       emit(LikedSuggestedPlantsCombinedState(
-          productSuggestions: productSuggestions, recentlyLikedProducts: cachedProducts, totalItems: totalItems));
+          productSuggestions: productSuggestions,
+          recentlyLikedProducts: cachedProducts,
+          totalItems: totalItems));
 
       return;
     } else {
@@ -91,8 +96,9 @@ class LikedPlantsCubit extends Cubit<LikedPlantsState> {
 
           // Emit the success state with the product suggestions
           emit(LikedSuggestedPlantsCombinedState(
-              productSuggestions: productSuggestions, recentlyLikedProducts: cachedProducts, totalItems: totalItems));
-
+              productSuggestions: productSuggestions,
+              recentlyLikedProducts: cachedProducts,
+              totalItems: totalItems));
         } else {
           emit(SuggestedProductFailureState());
         }
