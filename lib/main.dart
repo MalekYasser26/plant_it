@@ -1,4 +1,5 @@
 import 'package:device_preview/device_preview.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,10 +14,14 @@ import 'package:plant_it/features/home/presentation/view_model/home_product_cubi
 import 'package:plant_it/features/profile/presentation/view_model/profile_cubit.dart';
 import 'package:plant_it/features/ratings_cubit/ratings_cubit.dart';
 import 'package:plant_it/features/splash/presentation/views/splash_view.dart';
+import 'package:plant_it/firebase_options.dart';
 
-void main() async {
+Future <void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Bloc.observer = SimpleBlocObserver();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   final authCubit = AuthCubit();
   await authCubit.checkAuthStatus(); // Check the token status on app launch
 

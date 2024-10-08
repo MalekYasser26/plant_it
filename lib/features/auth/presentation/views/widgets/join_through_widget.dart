@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:plant_it/constants/constants.dart';
+import 'package:plant_it/features/auth/presentation/view_model/auth_cubit.dart';
 
 class JoinThroughWidget extends StatelessWidget {
   const JoinThroughWidget({
@@ -8,6 +10,7 @@ class JoinThroughWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var sCubit = context.read<AuthCubit>();
     return Column(
       children: [
         Text(
@@ -35,18 +38,26 @@ class JoinThroughWidget extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset(
-              ImagesCust.facebookLogo,
-              height: 30,
-              width: 30,
+            InkWell(
+              onTap: () {
+                sCubit.signInWithGoogle(context);
+              },
+              child: Image.asset(
+                ImagesCust.googleLogo,
+                height: 30,
+                width: 30,
+              ),
             ),
-            const SizedBox(
-              width: 30,
-            ),
-            Image.asset(
-              ImagesCust.googleLogo,
-              height: 30,
-              width: 30,
+            SizedBox(width: 30,),
+            InkWell(
+              onTap: () {
+                sCubit.signOutFromGoogle(context);
+              },
+              child: Image.asset(
+                ImagesCust.facebookLogo,
+                height: 30,
+                width: 30,
+              ),
             ),
           ],
         ),

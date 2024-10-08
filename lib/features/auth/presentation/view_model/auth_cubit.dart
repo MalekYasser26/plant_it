@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:meta/meta.dart';
 import 'package:http/http.dart' as http;
 import 'package:plant_it/constants/constants.dart';
@@ -59,7 +60,55 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
-  Future<void> signUp(String email, String password, String displayedName, String phoneNum, String address) async {
+  final GoogleSignIn _googleSignIn = GoogleSignIn(
+    scopes: [
+      'email',
+      'https://www.googleapis.com/auth/contacts.readonly',
+    ],
+  );
+
+  Future<void> signInWithGoogle(BuildContext context) async {
+    try {
+      // User interactive UI
+      GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      if (googleUser != null) {
+        GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        // await prefs.setString('googleUserId', googleUser.id);
+        // await prefs.setString('googleUserEmail', googleUser.email);
+        // await prefs.setString('googleUserName', googleUser.displayName ?? '');
+        // await prefs.setString('googleUserPhotoUrl', googleUser.photoUrl ?? '');
+        // await prefs.setString('googleAccessToken', googleAuth.accessToken ?? '');
+        // await prefs.setString('googleIdToken', googleAuth.idToken ?? '');
+
+        // Optional: Navigate to the next screen or perform additional actions
+       // Navigator.pushReplacementNamed(context, '/home'); // Navigate to home screen
+
+        // Print user info for debugging
+        print('Signed in with Google: ${googleUser.email}');
+        print('${googleAuth.accessToken.toString()}');
+       // print('ya29.a0AcM612wnIn3JwkC6pgmSCIojkYiqJqFlAV1qpv3f6ygEzHjZnnMh1nqibMl7vPOb3Y5lYR_MyEhIoVvypFf9zK4JBMvhM9oRbICIfNzZ5ILgWob3w1XgPNZoaros8DvgdIIJq5U8MOSGaKuq-fOwlDGyNEJF0Lz86HJ6me66aCgYKAaESARISFQHGX2MilTBTJCviTETVLgE_TgOGqA0175');
+      } else {
+        print('Google Sign-In aborted');
+      }
+    } catch (error) {
+      print('Error during Google Sign-In: $error');
+      // Optionally, show an error message to the user
+    }
+  }
+
+  Future<void> signOutFromGoogle(BuildContext context) async {
+    try {
+      await _googleSignIn.signOut();
+      // Clear any saved user data
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.clear();
+
+      print('User signed out from Google');
+    } catch (error) {
+      print('Error signing out from Google: $error');
+    }
+  }  Future<void> signUp(String email, String password, String displayedName, String phoneNum, String address) async {
     emit(SignupLoadingState());
     try {
       final response = await http.post(
