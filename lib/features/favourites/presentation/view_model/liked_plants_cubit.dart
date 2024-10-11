@@ -34,7 +34,7 @@ class LikedPlantsCubit extends Cubit<LikedPlantsState> {
           headers: {
             'accept': '*/*',
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer $accessToken',
+            'Authorization': 'Bearer ${prefs.getString("accessToken")}',
           },
         );
         if (response.statusCode == 200) {
@@ -64,12 +64,14 @@ class LikedPlantsCubit extends Cubit<LikedPlantsState> {
 
   Future<void> getProductSuggestions(bool called) async {
     emit(SuggestedProductLoadingState());
+    final prefs = await SharedPreferences.getInstance();
+
     if (productSuggestions.isNotEmpty && called == false) {
       emit(LikedSuggestedPlantsCombinedState(
           productSuggestions: productSuggestions,
           recentlyLikedProducts: cachedProducts,
           totalItems: totalItems));
-
+      print("hereeeee111111");
       return;
     } else {
       try {
@@ -78,10 +80,9 @@ class LikedPlantsCubit extends Cubit<LikedPlantsState> {
               "https://plantitapi.runasp.net/api/Product/SuggestedProducts"),
           headers: {
             'accept': '*/*',
-            'Authorization': 'Bearer $accessToken', // Use the proper token
+            'Authorization': 'Bearer ${prefs.getString("accessToken")}',
           },
         );
-
         if (response.statusCode == 200) {
           final responseBody = json.decode(response.body);
           final List<dynamic> productJson = responseBody['data'];
@@ -99,7 +100,10 @@ class LikedPlantsCubit extends Cubit<LikedPlantsState> {
               productSuggestions: productSuggestions,
               recentlyLikedProducts: cachedProducts,
               totalItems: totalItems));
+          print("hereeeee212323");
         } else {
+          print("+++");
+          print(productSuggestions);
           emit(SuggestedProductFailureState());
         }
       } catch (e) {

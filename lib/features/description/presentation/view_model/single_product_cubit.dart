@@ -66,12 +66,13 @@ class SingleProductCubit extends Cubit<SingleProductState> {
     }
     _debounce = Timer(const Duration(milliseconds: 300), () async {
       emit(AddBookmarkLoadingState(product));
+      final prefs = await SharedPreferences.getInstance();
       try {
         final response = await http.post(
           Uri.parse('$baseUrlHasoon/Bookmark?productId=${product.id}'),
           headers: {
             'accept': '*/*',
-            'Authorization': 'Bearer $accessToken',
+            'Authorization': 'Bearer ${prefs.getString("accessToken")}',
           },
         );
 
@@ -98,6 +99,7 @@ class SingleProductCubit extends Cubit<SingleProductState> {
     }
 
     _debounce = Timer(const Duration(milliseconds: 300), () async {
+      final prefs = await SharedPreferences.getInstance();
       emit(RemoveBookmarkLoadingState(product));
       final bookmarkID = bookmarkedProducts[product.id];
       if (bookmarkID == null) {
@@ -110,7 +112,7 @@ class SingleProductCubit extends Cubit<SingleProductState> {
           Uri.parse('$baseUrlHasoon/Bookmark/BookmarkId?BookmarkId=$bookmarkID'),
           headers: {
             'accept': '*/*',
-            'Authorization': 'Bearer $accessToken',
+            'Authorization': 'Bearer ${prefs.getString("accessToken")}',
           },
         );
 

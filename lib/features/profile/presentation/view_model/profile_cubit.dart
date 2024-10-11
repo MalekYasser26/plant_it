@@ -28,6 +28,7 @@ class ProfileCubit extends Cubit<ProfileState> {
     required String displayedName,
   }) async {
     emit(ProfileLoadingState()); // Emit loading state
+    final prefs = await SharedPreferences.getInstance();
 
     try {
       // Creating the body for the PUT request
@@ -43,7 +44,7 @@ class ProfileCubit extends Cubit<ProfileState> {
         headers: {
           'accept': '*/*',
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer $accessToken',
+          'Authorization': 'Bearer ${prefs.getString("accessToken")}',
         },
         body: jsonEncode(requestBody),
       );
@@ -65,6 +66,7 @@ class ProfileCubit extends Cubit<ProfileState> {
 
   Future<void> getRecentlySavedProducts(bool called) async {
     emit(RecentlySavedPurchasedLoadingState());
+    final prefs = await SharedPreferences.getInstance();
     if (savedProducts.isNotEmpty && called == false) {
       emit(RecentlySavedPurchasedSuccessfulState(savedProducts));
       return;
@@ -75,7 +77,7 @@ class ProfileCubit extends Cubit<ProfileState> {
           headers: {
             'accept': '*/*',
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer $accessToken',
+            'Authorization': 'Bearer ${prefs.getString("accessToken")}',
           },
         );
 
@@ -106,14 +108,13 @@ class ProfileCubit extends Cubit<ProfileState> {
     emit(RecentlySavedPurchasedLoadingState());
     final prefs = await SharedPreferences.getInstance();
     print(prefs.getInt('userID'));
-
     {
       try {
         final response = await http.get(
           Uri.parse("$baseUrlArsoon/Order/${prefs.getInt('userID')}"),
           headers: {
             'accept': 'application/json',
-            'Authorization': 'Bearer $accessToken',
+            'Authorization': 'Bearer ${prefs.getString("accessToken")}',
           },
         );
         if (response.statusCode == 200) {

@@ -7,6 +7,7 @@ import 'package:meta/meta.dart';
 import 'package:http/http.dart' as http;
 import 'package:plant_it/constants/constants.dart';
 import 'package:plant_it/features/cart/presentation/view_model/cart_item_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 part 'cart_state.dart';
 
@@ -15,13 +16,14 @@ class CartCubit extends Cubit<CartState> {
   Map<int, int> cartIDs = {};
 
   Future<void> getCartItems() async {
+    final prefs = await SharedPreferences.getInstance();
     try {
       final response = await http.get(
         Uri.parse('$baseUrlHasoon/Cart/userCart'),
         headers: {
           'accept': '*/*',
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer $accessToken',
+          'Authorization': 'Bearer ${prefs.getString("accessToken")}',
         },
       );
       final result = json.decode(response.body);
@@ -54,13 +56,14 @@ class CartCubit extends Cubit<CartState> {
   }
 
   Future<void> updateCartItem(int productId, int quantity) async {
+    final prefs = await SharedPreferences.getInstance();
     try {
       final response = await http.put(
         Uri.parse('$baseUrlHasoon/Cart'),
         headers: {
           'accept': '*/*',
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer $accessToken', // Pass your access token here
+          'Authorization': 'Bearer ${prefs.getString("accessToken")}',
         },
         body: jsonEncode({
           'productId': productId,
@@ -82,6 +85,7 @@ class CartCubit extends Cubit<CartState> {
 
   Future<void> addCartItem(int productID, int quantity) async {
     emit(AddCartItemLoadingState());
+    final prefs = await SharedPreferences.getInstance();
 
     try {
       final response = await http.post(
@@ -89,7 +93,7 @@ class CartCubit extends Cubit<CartState> {
         headers: {
           'accept': '*/*',
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer $accessToken',
+          'Authorization': 'Bearer ${prefs.getString("accessToken")}',
           // Assuming accessToken is already defined
         },
         body: json.encode({
@@ -118,6 +122,7 @@ class CartCubit extends Cubit<CartState> {
 
   Future<void> removeCartItem(int productID) async {
     emit(RemoveCartItemLoadingState());
+    final prefs = await SharedPreferences.getInstance();
 
     try {
       // Get the cartID from the productID
@@ -133,7 +138,7 @@ class CartCubit extends Cubit<CartState> {
         Uri.parse('$baseUrlHasoon/Cart?cartId=$cartID'),
         headers: {
           'accept': '*/*',
-          'Authorization': 'Bearer $accessToken',
+          'Authorization': 'Bearer ${prefs.getString("accessToken")}',
           // Assuming accessToken is already defined
         },
       );
@@ -159,13 +164,15 @@ class CartCubit extends Cubit<CartState> {
 
   Future<bool> checkAvailability() async {
     emit(CheckAvailabilityLoadingState());
+    final prefs = await SharedPreferences.getInstance();
+
     try {
       final response = await http.get(
         Uri.parse('$baseUrlHasoon/Cart/CheckAvailable'),
         headers: {
           'accept': '*/*',
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer $accessToken',
+          'Authorization': 'Bearer ${prefs.getString("accessToken")}',
         },
       );
 

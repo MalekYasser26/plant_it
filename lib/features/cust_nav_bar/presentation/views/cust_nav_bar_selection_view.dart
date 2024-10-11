@@ -32,14 +32,18 @@ class _CustNavBarSelectionViewState extends State<CustNavBarSelectionView> {
         currentIndex: widget.currentIndex,
         onTap: (index) {
           if (index ==2){
-            lCubit.getRecentlyLikedProducts(sCubit.userID,false);
-            lCubit.getProductSuggestions(false);
-            rCubit.getProductRatings(false);
+            lCubit.getRecentlyLikedProducts(sCubit.userID,true);
+            lCubit.getProductSuggestions(true);
+            rCubit.getProductRatings(true);
           }
           if (index ==0){
             pCubit.getRecentlyPurchasedProducts(false,sCubit.userID);
             rCubit.getProductRatings(false);
-            pCubit.getRecentlySavedProducts(true);
+            pCubit.getRecentlySavedProducts(false);
+            pCubit.groupDatesByStatus();
+          } if (index==3){
+            pCubit.getRecentlyPurchasedProducts(true,sCubit.userID);
+            pCubit.groupDatesByStatus();
           }
           setState(() {
             widget.currentIndex = index;

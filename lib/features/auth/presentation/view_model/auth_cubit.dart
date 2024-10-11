@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:bloc/bloc.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:meta/meta.dart';
@@ -33,7 +35,7 @@ class AuthCubit extends Cubit<AuthState> {
       if (response.statusCode == 200) {
         // Save tokens and user data
         emit(SigninSuccessState());
-        accessToken = responseBody['token'];
+        String accessToken = responseBody['token'];
         final refreshToken = responseBody['refreshToken'];
 
         name = userData['displayedName'];
@@ -43,7 +45,7 @@ class AuthCubit extends Cubit<AuthState> {
 
         // Store tokens and user data in SharedPreferences
         final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('accessToken', accessToken!);
+        await prefs.setString('accessToken', accessToken);
         await prefs.setString('refreshToken', refreshToken);
         await prefs.setString('name', name);
         await prefs.setString('phoneNum', phoneNum);
@@ -59,54 +61,126 @@ class AuthCubit extends Cubit<AuthState> {
       emit(SigninFailureState());
     }
   }
+  Future<void> signIn2() async {
+    final response = await http.get(
+      Uri.parse('https://plantitapi.runasp.net/api/Authentication/google-login'),
+    );
+    print(response.body);
+  }
 
-  final GoogleSignIn _googleSignIn = GoogleSignIn(
+  final GoogleSignIn googleSignIn = GoogleSignIn(
+    clientId:
+    '969138196401-il0b3v9rd7gg31s7pt5e7uqa4ascbf0r.apps.googleusercontent.com',
     scopes: [
       'email',
       'https://www.googleapis.com/auth/contacts.readonly',
     ],
   );
 
-  Future<void> signInWithGoogle(BuildContext context) async {
+  // Future<void> signInWithGoogle(BuildContext context) async {
+  //   // try {
+  //   //   // User interactive UI
+  //   //   GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+  //   //   if (googleUser != null) {
+  //   //     GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+  //   //     SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   //     // await prefs.setString('googleUserId', googleUser.id);
+  //   //     // await prefs.setString('googleUserEmail', googleUser.email);
+  //   //     // await prefs.setString('googleUserName', googleUser.displayName ?? '');
+  //   //     // await prefs.setString('googleUserPhotoUrl', googleUser.photoUrl ?? '');
+  //   //     // await prefs.setString('googleAccessToken', googleAuth.accessToken ?? '');
+  //   //     // await prefs.setString('googleIdToken', googleAuth.idToken ?? '');
+  //   //
+  //   //     // Optional: Navigate to the next screen or perform additional actions
+  //   //    // Navigator.pushReplacementNamed(context, '/home'); // Navigate to home screen
+  //   //
+  //   //     // Print user info for debugging
+  //   //     print('Signed in with Google: ${googleUser.email}');
+  //   //     print('${googleAuth.accessToken}');
+  //   //     print('${googleAuth.idToken}');
+  //   //   } else {
+  //   //     print('Google Sign-In aborted');
+  //   //   }
+  //   // } catch (error) {
+  //   //   print('Error during Google Sign-In: $error');
+  //   //   // Optionally, show an error message to the user
+  //   // }
+  //   googleSignIn.signIn().then((result){
+  //     result?.authentication.then((googleKey){
+  //       print(googleKey.accessToken);
+  //       print(googleKey.idToken);
+  //       print(googleSignIn.currentUser?.displayName);
+  //     }).catchError((err){
+  //       print('inner error');
+  //     });
+  //   }).catchError((err){
+  //     print('error occured');
+  //   });
+  // }
+
+  Future<void> signInWithGoogle() async {
     try {
-      // User interactive UI
-      GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      // Trigger the authentication flow
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
       if (googleUser != null) {
-        GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        // await prefs.setString('googleUserId', googleUser.id);
-        // await prefs.setString('googleUserEmail', googleUser.email);
-        // await prefs.setString('googleUserName', googleUser.displayName ?? '');
-        // await prefs.setString('googleUserPhotoUrl', googleUser.photoUrl ?? '');
-        // await prefs.setString('googleAccessToken', googleAuth.accessToken ?? '');
-        // await prefs.setString('googleIdToken', googleAuth.idToken ?? '');
+        // Obtain the auth details from the request
+        final GoogleSignInAuthentication googleAuth = await googleUser
+            .authentication;
 
-        // Optional: Navigate to the next screen or perform additional actions
-       // Navigator.pushReplacementNamed(context, '/home'); // Navigate to home screen
+        final AuthCredential credential = GoogleAuthProvider.credential(
+          accessToken: googleAuth.accessToken,
+          idToken: googleAuth.idToken,
+        );
+        UserCredential userCredential = await FirebaseAuth.instance
+            .signInWithCredential(credential);
+        String? token = await userCredential.user?.getIdToken();
+        log('Firebase Token: $token');
+        final response = await http.post(
+          Uri.parse('$baseUrlHasoon/Authentication/google-login?token=$token'),
+          headers: {'Content-Type': 'application/json'},
+        );
+        final responseBody = json.decode(response.body);
+        var userData = responseBody['userData'];
+        if (response.statusCode == 200) {
+          // Save tokens and user data
+          emit(SigninSuccessState());
+          String accessToken = responseBody['token'];
+          final refreshToken = responseBody['refreshToken'];
+          name = userData['displayedName']??"";
+          phoneNum = userData['phoneNumber']??"";
+          address = userData['address']??"";
+          userID = userData['id']??"";
+          // Store tokens and user data in SharedPreferences
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setString('accessToken', accessToken);
+          await prefs.setString('refreshToken', refreshToken);
+          await prefs.setString('name', name);
+          await prefs.setString('phoneNum', phoneNum);
+          await prefs.setString('address', address);
+          await prefs.setInt('userID', userID);
 
-        // Print user info for debugging
-        print('Signed in with Google: ${googleUser.email}');
-        print('${googleAuth.accessToken.toString()}');
-       // print('ya29.a0AcM612wnIn3JwkC6pgmSCIojkYiqJqFlAV1qpv3f6ygEzHjZnnMh1nqibMl7vPOb3Y5lYR_MyEhIoVvypFf9zK4JBMvhM9oRbICIfNzZ5ILgWob3w1XgPNZoaros8DvgdIIJq5U8MOSGaKuq-fOwlDGyNEJF0Lz86HJ6me66aCgYKAaESARISFQHGX2MilTBTJCviTETVLgE_TgOGqA0175');
-      } else {
-        print('Google Sign-In aborted');
+        } else {
+          errorMsg = responseBody['message'];
+          emit(SigninFailureState());
+        }
       }
-    } catch (error) {
-      print('Error during Google Sign-In: $error');
-      // Optionally, show an error message to the user
+    } catch (e) {
+      emit(SigninFailureState());
+      print('Error signing in with Google: $e');
     }
   }
-
-  Future<void> signOutFromGoogle(BuildContext context) async {
+  Future<void> googleSignOut() async {
     try {
-      await _googleSignIn.signOut();
-      // Clear any saved user data
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.clear();
+      // Sign out from Firebase
+      await FirebaseAuth.instance.signOut();
 
-      print('User signed out from Google');
-    } catch (error) {
-      print('Error signing out from Google: $error');
+      // Sign out from Google
+      await GoogleSignIn().signOut();
+
+      print("User logged out successfully");
+    } catch (e) {
+      print("Error logging out: $e");
     }
   }  Future<void> signUp(String email, String password, String displayedName, String phoneNum, String address) async {
     emit(SignupLoadingState());
@@ -128,7 +202,7 @@ class AuthCubit extends Cubit<AuthState> {
       if (response.statusCode == 200 && responseBody['succeeded'] == true) {
         // Save tokens and user data
         emit(SignupSuccessState());
-        accessToken = responseBody['token'];
+        String accessToken = responseBody['token'];
         final refreshToken = responseBody['refreshToken'];
 
         name = userData['displayedName'];
@@ -137,7 +211,7 @@ class AuthCubit extends Cubit<AuthState> {
 
         // Store tokens in SharedPreferences
         final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('accessToken', accessToken!);
+        await prefs.setString('accessToken', accessToken);
         await prefs.setString('refreshToken', refreshToken);
 
       } else {
@@ -160,7 +234,7 @@ class AuthCubit extends Cubit<AuthState> {
       final response = await http.post(
         Uri.parse('$baseUrlHasoon/Authentication/refreshToken?oldRefReshToken=$refreshToken'),
         headers: {
-          'Authorization': 'Bearer $accessToken',
+          'Authorization': 'Bearer ${prefs.getString("accessToken")}',
           'accept': '*/*',
         },
       );
@@ -168,10 +242,9 @@ class AuthCubit extends Cubit<AuthState> {
       final responseBody = json.decode(response.body);
       if (response.statusCode == 200 && responseBody['succeeded'] == true) {
         // Update tokens in memory and SharedPreferences
-        accessToken = responseBody['data']['accessToken'];
+        String accessToken = responseBody['data']['accessToken'];
         refreshToken = responseBody['data']['refreshToken'];
-
-        await prefs.setString('accessToken', accessToken!);
+        await prefs.setString('accessToken', accessToken);
         await prefs.setString('refreshToken', refreshToken!);
 
       } else {
@@ -190,22 +263,6 @@ class AuthCubit extends Cubit<AuthState> {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('accessToken');
     emit(AuthInitial());
-  }
-  Future<void> checkAuthStatus() async {
-    final prefs = await SharedPreferences.getInstance();
-    String? savedAccessToken = prefs.getString('accessToken');
-
-    if (savedAccessToken != null) {
-      accessToken = savedAccessToken;
-      name = prefs.getString('name') ?? '';
-      phoneNum = prefs.getString('phoneNum') ?? '';
-      address = prefs.getString('address') ?? '';
-      userID = prefs.getInt('userID') ?? -1;
-
-      emit(AuthAuthenticatedState());
-    } else {
-      emit(AuthInitial()); // Emit initial state if no token
-    }
   }
 
   void updateUserData({

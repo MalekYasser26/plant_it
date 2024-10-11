@@ -106,7 +106,7 @@ class LikedCubit extends Cubit<LikedState> {
         headers: {
           'accept': '*/*',
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer $accessToken',
+          'Authorization': 'Bearer ${prefs.getString("accessToken")}',
         },
       );
 

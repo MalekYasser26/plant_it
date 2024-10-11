@@ -23,7 +23,6 @@ Future <void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   final authCubit = AuthCubit();
-  await authCubit.checkAuthStatus(); // Check the token status on app launch
 
   runApp(
     DevicePreview(

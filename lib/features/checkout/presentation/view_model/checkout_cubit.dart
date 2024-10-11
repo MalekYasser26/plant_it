@@ -16,7 +16,7 @@ class CheckoutCubit extends Cubit<CheckoutState> {
         Uri.parse('$baseUrlArsoon/Order/${prefs.getInt('userID')}'),
         headers: {
           'accept': 'application/json',
-          'Authorization': 'Bearer $accessToken',
+          'Authorization': 'Bearer ${prefs.getString("accessToken")}',
           // 'Content-Type': 'application/json'
         },
       );

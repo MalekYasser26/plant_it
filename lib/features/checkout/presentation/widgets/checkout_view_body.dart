@@ -10,6 +10,7 @@ import 'package:plant_it/features/checkout/presentation/widgets/items_section.da
 import 'package:plant_it/features/checkout/presentation/widgets/cust_app_bar.dart';
 import 'package:plant_it/features/checkout/presentation/widgets/order_summary.dart';
 import 'package:plant_it/features/checkout/presentation/widgets/payment_method_section.dart';
+import 'package:plant_it/features/profile/presentation/view_model/profile_cubit.dart';
 import 'package:plant_it/features/tracking/views/plants_ordered.dart';
 
 class CheckoutViewBody extends StatefulWidget {
@@ -80,7 +81,9 @@ class _CheckoutViewBodyState extends State<CheckoutViewBody> {
                           onPressed: () {
                             var sCubit = context.read<AuthCubit>();
                             var chCubit = context.read<CheckoutCubit>();
+                            var pCubit = context.read<ProfileCubit>();
                             chCubit.placeOrder(sCubit.userID);
+                            pCubit.groupDatesByStatus();
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.greyish,

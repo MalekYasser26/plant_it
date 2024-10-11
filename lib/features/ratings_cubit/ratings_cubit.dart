@@ -11,6 +11,7 @@ class RatingsCubit extends Cubit<RatingsState> {
   RatingsCubit() : super(RatingsInitial());
   Map<int, double> productRatings = {};
   Map<int, double> cachedRatings = {};
+  Map<int, double> userCachedRatings = {};
 
   Future<Map<int, double>> getProductRatings(bool called) async {
     // First, try to get cached ratings
@@ -19,8 +20,6 @@ class RatingsCubit extends Cubit<RatingsState> {
       emit(ProductRatingSuccessfulState());
       return cachedRatings;
     }
-
-    // If no cached data, fetch from the API
     emit(ProductRatingLoadingState());
     try {
       final response = await http.get(
@@ -56,6 +55,7 @@ class RatingsCubit extends Cubit<RatingsState> {
   }
 
   double? isRatingFound(int productID) {
+    print(cachedRatings);
     if (cachedRatings.containsKey(productID)) {
       print("FOUNDDDDD");
       return cachedRatings[productID];
@@ -70,13 +70,15 @@ class RatingsCubit extends Cubit<RatingsState> {
     required int rating,
   }) async {
     emit(AddRatingLoadingState());
-
+    final prefs = await SharedPreferences.getInstance();
+    print(prefs.getString("accessToken"));
+    print("I am ");
     try {
       final response = await http.post(
         Uri.parse('$baseUrlHasoon/ProductRating/ratings'),
         headers: {
           'accept': '*/*',
-          'Authorization': 'Bearer $accessToken',
+          'Authorization': 'Bearer ${prefs.getString("accessToken")}',
           'Content-Type': 'application/json',
         },
         body: jsonEncode({
@@ -85,16 +87,17 @@ class RatingsCubit extends Cubit<RatingsState> {
           'rating': rating,
         }),
       );
-
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = json.decode(response.body);
         if (responseData['succeeded']) {
           productRatings[productId] = (rating as num).toDouble();
           emit(AddRatingSuccessfulState());
         } else {
+          print("${prefs.getString('accessToken')}");
           throw Exception('Failed to add rating: ${responseData['message']}');
         }
       } else {
+        print("${prefs.getString('accessToken')}");
         throw Exception('Failed to add rating: ${response.body}');
       }
     } catch (e) {
@@ -109,12 +112,13 @@ class RatingsCubit extends Cubit<RatingsState> {
     required int rating,
   }) async {
     emit(AddRatingLoadingState());
+    final prefs = await SharedPreferences.getInstance();
     try {
       final response = await http.put(
         Uri.parse('$baseUrlHasoon/ProductRating/ratings'),
         headers: {
           'accept': '*/*',
-          'Authorization': 'Bearer $accessToken',
+          'Authorization': 'Bearer ${prefs.getString("accessToken")}',
           'Content-Type': 'application/json',
         },
         body: jsonEncode({
@@ -145,12 +149,13 @@ class RatingsCubit extends Cubit<RatingsState> {
   Future<double> getCurrentProductUserRating(int productID) async {
     double userRating = 0.0; // Initialize with default value
     emit(GetUserRatingLoadingState());
+    final prefs = await SharedPreferences.getInstance();
     try {
       final response = await http.get(
         Uri.parse('$baseUrlHasoon/ProductRating/user/$productID'),
         headers: {
           'accept': '*/*',
-          'Authorization': 'Bearer $accessToken',
+          'Authorization': 'Bearer ${prefs.getString("accessToken")}',
         },
       );
 
@@ -177,7 +182,7 @@ class RatingsCubit extends Cubit<RatingsState> {
       emit(GetUserRatingFailureState());
     }
 
-    return userRating; // Return the rating even if default
+    return userRating;
   }
 
   Future<void> cacheProductRatings(Map<int, double> ratings) async {
