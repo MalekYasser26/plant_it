@@ -184,7 +184,6 @@ class AuthCubit extends Cubit<AuthState> {
       emit(SignupFailureState());
     }
   }
-
   Future<void> refreshToken() async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -215,11 +214,6 @@ class AuthCubit extends Cubit<AuthState> {
     } catch (e) {
       print('Error refreshing token: ${e.toString()}');
     }
-  }
-  Future<String?> getName()async{
-    final prefs = await SharedPreferences.getInstance();
-    print(prefs.getString('name'));
-    return prefs.getString('name');
   }
   Future<void> logOut() async {
     final prefs = await SharedPreferences.getInstance();

@@ -14,8 +14,10 @@ import 'package:plant_it/features/tracking/views/plants_ordered.dart';
 
 class CheckoutViewBody extends StatefulWidget {
   final List<CartItemModel> cartItems;
+  final String totalPrice;
 
-  const CheckoutViewBody({super.key, required this.cartItems});
+  const CheckoutViewBody(
+      {super.key, required this.cartItems, required this.totalPrice});
 
   @override
   State<CheckoutViewBody> createState() => _CheckoutViewBodyState();
@@ -48,19 +50,34 @@ class _CheckoutViewBodyState extends State<CheckoutViewBody> {
                       const SizedBox(height: 10),
                       const PaymentMethodSection(),
                       const SizedBox(height: 10),
-                      const OrderSummary(),
+                      OrderSummary(totalPrice: widget.totalPrice),
                     ],
                   ),
                 ),
                 BlocListener<CheckoutCubit, CheckoutState>(
-                  listener: (context, state)async  {
+                  listener: (context, state) {
                     if (state is CheckoutSuccessfulState) {
                       Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const PlantsOrderedView(), // Your target page here
+                          builder: (context) => const PlantsOrderedView(),
                         ),
                             (route) => false,
+                      );
+                    }
+
+                    if (state is CheckoutDataIncompleteState) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          behavior: SnackBarBehavior.floating,
+                          content: Text("Go to the profile screen and complete your address & info first",
+                            style: TextStyle(
+                              fontFamily: "Poppins",
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          backgroundColor: Colors.red,
+                          ),
                       );
                     }
                   },
@@ -89,8 +106,7 @@ class _CheckoutViewBodyState extends State<CheckoutViewBody> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15),
                             ),
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 15),
+                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                           ),
                           child: Text(
                             "Place order",

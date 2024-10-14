@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:plant_it/constants/constants.dart';
 
 class OrderSummary extends StatelessWidget {
+  final String totalPrice ;
   const OrderSummary({
-    super.key,
+    super.key, required this.totalPrice,
   });
 
   @override
@@ -37,9 +38,9 @@ class OrderSummary extends StatelessWidget {
                       fontSize:getResponsiveSize(context, fontSize: 15),
                       fontWeight: FontWeight.w300,
                     ),),
-                    const Row(
+                     Row(
                       children: [
-                        Text(
+                        const Text(
                           "EGP ",
                           style: TextStyle(
                             fontFamily: "Raleway",
@@ -48,8 +49,8 @@ class OrderSummary extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          "222 ",
-                          style: TextStyle(
+                          "${totalPrice.toString()} ",
+                          style: const TextStyle(
                             fontFamily: "Raleway",
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
@@ -107,9 +108,9 @@ class OrderSummary extends StatelessWidget {
                       ),
                     ),
 
-                    const Row(
+                     Row(
                       children: [
-                        Text(
+                        const Text(
                           "EGP ",
                           style: TextStyle(
                             fontFamily: "Raleway",
@@ -118,8 +119,8 @@ class OrderSummary extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          "222 ",
-                          style: TextStyle(
+                          "${totalPrice.toString()} ",
+                          style: const TextStyle(
                             fontFamily: "Raleway",
                             fontSize: 22,
                             fontWeight: FontWeight.bold,

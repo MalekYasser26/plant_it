@@ -153,6 +153,7 @@ class _CartFilledState extends State<CartFilled> {
                         MaterialPageRoute(
                           builder: (context) =>  CheckoutView(
                             cartItems: cartItems,
+                            totalPrice : totalPrice.toString(),
                           ),
                         ),
                       );
