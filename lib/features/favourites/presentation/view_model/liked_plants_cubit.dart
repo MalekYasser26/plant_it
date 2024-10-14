@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
 import 'package:plant_it/constants/constants.dart';
 import 'package:plant_it/features/favourites/presentation/view_model/product_suggestion_model.dart';
 import 'package:plant_it/features/favourites/presentation/view_model/recently_liked_products.dart';

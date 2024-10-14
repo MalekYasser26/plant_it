@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -52,6 +51,7 @@ class _DescriptionViewState extends State<DescriptionView> {
     );
   }
 
+  @override
   Widget build(BuildContext context) {
     var lCubit = context.read<LikedCubit>();
     var sCubit = context.read<SingleProductCubit>();
@@ -317,7 +317,7 @@ class _DescriptionViewState extends State<DescriptionView> {
                                     child: Icon(
                                       Icons.remove,
                                       size: getResponsiveSize(context,
-                                          fontSize: 15),
+                                          fontSize: 30),
                                     ),
                                     onTap: () {
                                       setState(() {
@@ -341,7 +341,7 @@ class _DescriptionViewState extends State<DescriptionView> {
                                     child: Icon(
                                       Icons.add,
                                       size: getResponsiveSize(context,
-                                          fontSize: 15),
+                                          fontSize: 30),
                                     ),
                                     onTap: () {
                                       setState(() {
@@ -412,14 +412,14 @@ class _DescriptionViewState extends State<DescriptionView> {
           );
         }
         if (state is SingleProductFailureState) {
-          return SafeArea(
+          return const SafeArea(
             child: Scaffold(
               backgroundColor: AppColors.basicallyWhite,
               appBar: CustAppBar(
                 text: "", // Loaded product data
                 implyLeading: true,
               ),
-              body: const Center(
+              body: Center(
                 child: Text(
                   'Failed to load product',
                   style: TextStyle(fontSize: 18),
@@ -428,14 +428,14 @@ class _DescriptionViewState extends State<DescriptionView> {
             ),
           );
         }
-        return SafeArea(
+        return const SafeArea(
           child: Scaffold(
             backgroundColor: AppColors.basicallyWhite,
             appBar: CustAppBar(
               text: "", // Loaded product data
               implyLeading: true,
             ),
-            body: const Center(
+            body: Center(
               child: CircularProgressIndicator(
                 color: AppColors.darkGreen,
               ),

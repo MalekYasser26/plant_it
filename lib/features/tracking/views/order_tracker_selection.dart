@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:plant_it/constants/constants.dart';
 import 'package:plant_it/features/checkout/presentation/widgets/cust_app_bar.dart';
@@ -15,7 +13,7 @@ class OrderTrackerSelection extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         backgroundColor: AppColors.basicallyWhite,
-        appBar: CustAppBar(
+        appBar: const CustAppBar(
           text: "Orders Status ",
           implyLeading: true,
         ),

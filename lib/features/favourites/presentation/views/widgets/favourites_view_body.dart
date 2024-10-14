@@ -14,7 +14,7 @@ class FavouritesViewBody extends StatefulWidget {
 class _FavouritesViewBodyState extends State<FavouritesViewBody> {
   @override
   Widget build(BuildContext context) {
-    return  SafeArea(
+    return  const SafeArea(
       child: Scaffold(
         backgroundColor: AppColors.basicallyWhite,
         appBar: CustAppBar(
@@ -22,7 +22,7 @@ class _FavouritesViewBodyState extends State<FavouritesViewBody> {
           implyLeading: false,
         ),
         // Wrap with SingleChildScrollView to allow scroll on smaller devices
-        body: const SingleChildScrollView(
+        body: SingleChildScrollView(
           physics: BouncingScrollPhysics(),
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 15.0),

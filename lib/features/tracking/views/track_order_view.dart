@@ -12,7 +12,7 @@ class TrackOrderView extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         backgroundColor: AppColors.basicallyWhite,
-        appBar: CustAppBar(
+        appBar: const CustAppBar(
           text: "Track order",
           implyLeading: true,
         ),

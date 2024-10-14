@@ -5,7 +5,6 @@ import 'package:plant_it/features/cart/presentation/view_model/cart_cubit.dart';
 import 'package:plant_it/features/cart/presentation/widgets/cart_empty.dart';
 import 'package:plant_it/features/cart/presentation/widgets/cart_filled.dart';
 import 'package:plant_it/features/checkout/presentation/widgets/cust_app_bar.dart';
-import 'package:plant_it/features/profile/presentation/view_model/profile_cubit.dart';
 import 'package:plant_it/features/tracking/views/order_tracker_selection.dart';
 
 class CartViewBody extends StatefulWidget {
@@ -24,13 +23,14 @@ class _CartViewBodyState extends State<CartViewBody> {
         .getCartItems();
   }
 
+  @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Stack(
         children:[
           Scaffold(
           backgroundColor: AppColors.basicallyWhite,
-          appBar: CustAppBar(
+          appBar: const CustAppBar(
             text: "Your cart",
             implyLeading: false,
           ),

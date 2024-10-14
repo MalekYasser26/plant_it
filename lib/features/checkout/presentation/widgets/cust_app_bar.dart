@@ -6,7 +6,7 @@ class CustAppBar extends StatelessWidget implements PreferredSizeWidget {
   final bool implyLeading;
   final VoidCallback? methodNeededtoCall;  // Declare as nullable VoidCallback
 
-  CustAppBar({
+  const CustAppBar({
     super.key,
     required this.text,
     required this.implyLeading,

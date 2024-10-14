@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:plant_it/constants/constants.dart';
@@ -27,14 +26,14 @@ class _ProfileViewBodyState extends State<ProfileViewBody> {
         children: [
           BlocBuilder<AuthCubit, AuthState>(
             builder: (context, state) {
-              return Scaffold(
+              return const Scaffold(
                 resizeToAvoidBottomInset: false,
                 backgroundColor: AppColors.basicallyWhite,
                 appBar: CustAppBar(
                   text: "Your profile",
                   implyLeading: false,
                 ),
-                body: const Padding(
+                body: Padding(
                   padding: EdgeInsets.all(15.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -57,6 +56,7 @@ class _ProfileViewBodyState extends State<ProfileViewBody> {
                 onPressed: () {
                   pCubit.clearGroupedByStatus();
                   sCubit.logOut();
+                  sCubit.googleSignOut();
                   Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:plant_it/constants/constants.dart';
@@ -28,7 +27,7 @@ class _CheckoutViewBodyState extends State<CheckoutViewBody> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: AppColors.basicallyWhite,
-        appBar: CustAppBar(
+        appBar: const CustAppBar(
           text: "Checkout",
           implyLeading: true,
         ),

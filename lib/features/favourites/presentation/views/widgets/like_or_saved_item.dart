@@ -7,7 +7,6 @@ import 'package:plant_it/constants/constants.dart';
 import 'package:plant_it/features/description/presentation/views/description_view.dart';
 import 'package:plant_it/features/home/presentation/view_model/home_product.dart';
 import 'package:plant_it/features/ratings_cubit/ratings_cubit.dart';
-import 'package:shimmer/shimmer.dart';
 
 class LikedOrSavedItem extends StatelessWidget {
   final int index,id ;

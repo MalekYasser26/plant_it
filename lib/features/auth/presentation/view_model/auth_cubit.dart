@@ -77,48 +77,10 @@ class AuthCubit extends Cubit<AuthState> {
     ],
   );
 
-  // Future<void> signInWithGoogle(BuildContext context) async {
-  //   // try {
-  //   //   // User interactive UI
-  //   //   GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-  //   //   if (googleUser != null) {
-  //   //     GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-  //   //     SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   //     // await prefs.setString('googleUserId', googleUser.id);
-  //   //     // await prefs.setString('googleUserEmail', googleUser.email);
-  //   //     // await prefs.setString('googleUserName', googleUser.displayName ?? '');
-  //   //     // await prefs.setString('googleUserPhotoUrl', googleUser.photoUrl ?? '');
-  //   //     // await prefs.setString('googleAccessToken', googleAuth.accessToken ?? '');
-  //   //     // await prefs.setString('googleIdToken', googleAuth.idToken ?? '');
-  //   //
-  //   //     // Optional: Navigate to the next screen or perform additional actions
-  //   //    // Navigator.pushReplacementNamed(context, '/home'); // Navigate to home screen
-  //   //
-  //   //     // Print user info for debugging
-  //   //     print('Signed in with Google: ${googleUser.email}');
-  //   //     print('${googleAuth.accessToken}');
-  //   //     print('${googleAuth.idToken}');
-  //   //   } else {
-  //   //     print('Google Sign-In aborted');
-  //   //   }
-  //   // } catch (error) {
-  //   //   print('Error during Google Sign-In: $error');
-  //   //   // Optionally, show an error message to the user
-  //   // }
-  //   googleSignIn.signIn().then((result){
-  //     result?.authentication.then((googleKey){
-  //       print(googleKey.accessToken);
-  //       print(googleKey.idToken);
-  //       print(googleSignIn.currentUser?.displayName);
-  //     }).catchError((err){
-  //       print('inner error');
-  //     });
-  //   }).catchError((err){
-  //     print('error occured');
-  //   });
-  // }
+
 
   Future<void> signInWithGoogle() async {
+    emit(SigninLoadingState());
     try {
       // Trigger the authentication flow
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
@@ -159,7 +121,6 @@ class AuthCubit extends Cubit<AuthState> {
           await prefs.setString('phoneNum', phoneNum);
           await prefs.setString('address', address);
           await prefs.setInt('userID', userID);
-
         } else {
           errorMsg = responseBody['message'];
           emit(SigninFailureState());
@@ -174,15 +135,16 @@ class AuthCubit extends Cubit<AuthState> {
     try {
       // Sign out from Firebase
       await FirebaseAuth.instance.signOut();
-
-      // Sign out from Google
       await GoogleSignIn().signOut();
-
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove('accessToken');
+      emit(AuthInitial());
       print("User logged out successfully");
     } catch (e) {
       print("Error logging out: $e");
     }
-  }  Future<void> signUp(String email, String password, String displayedName, String phoneNum, String address) async {
+  }
+  Future<void> signUp(String email, String password, String displayedName, String phoneNum, String address) async {
     emit(SignupLoadingState());
     try {
       final response = await http.post(

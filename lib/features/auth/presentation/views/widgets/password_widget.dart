@@ -4,8 +4,7 @@ import 'package:plant_it/constants/constants.dart';
 class PasswordField extends StatefulWidget {
   final String aboveText;
   final TextEditingController controller; // Add controller
-  const PasswordField({Key? key, required this.aboveText, required this.controller})
-      : super(key: key);
+  const PasswordField({super.key, required this.aboveText, required this.controller});
 
   @override
   _PasswordFieldState createState() => _PasswordFieldState();

@@ -4,8 +4,7 @@ import 'package:plant_it/constants/constants.dart';
 class EmailField extends StatelessWidget {
   final String aboveText;
   final TextEditingController controller; // Add controller
-  const EmailField({Key? key, required this.aboveText, required this.controller})
-      : super(key: key);
+  const EmailField({super.key, required this.aboveText, required this.controller});
 
   @override
   Widget build(BuildContext context) {

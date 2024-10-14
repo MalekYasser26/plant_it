@@ -22,7 +22,7 @@ Future <void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  final authCubit = AuthCubit();
+  //final authCubit = AuthCubit();
 
   runApp(
     DevicePreview(
@@ -33,7 +33,7 @@ Future <void> main() async {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key,}) : super(key: key);
+  const MyApp({super.key,});
 
   @override
   Widget build(BuildContext context) {

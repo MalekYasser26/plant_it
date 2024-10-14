@@ -19,7 +19,7 @@ class RecentPurchasesView extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         backgroundColor: AppColors.basicallyWhite,
-        appBar: CustAppBar(
+        appBar: const CustAppBar(
           text: "Recent purchases",
           implyLeading: true,
         ),
