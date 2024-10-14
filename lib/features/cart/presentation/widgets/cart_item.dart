@@ -6,7 +6,7 @@ import 'package:plant_it/features/cart/presentation/view_model/cart_cubit.dart';
 
 class CartItem extends StatefulWidget {
   final int index, productID;
-  final String name,image;
+  final String name, image;
   final int quantity;
   final double price;
 
@@ -16,7 +16,8 @@ class CartItem extends StatefulWidget {
     required this.name,
     required this.quantity,
     required this.price,
-    required this.productID, required this.image,
+    required this.productID,
+    required this.image,
   });
 
   @override
@@ -26,12 +27,12 @@ class CartItem extends StatefulWidget {
 class _CartItemState extends State<CartItem> {
   bool isEditPressed = false;
   late int quantityEdit;
-  bool quantityReverted = false; // To track if quantity has been reverted
+  bool quantityReverted = false;
 
   @override
   void initState() {
     super.initState();
-    quantityEdit = widget.quantity;  // Initialize with original quantity
+    quantityEdit = widget.quantity;
   }
 
   @override
@@ -44,8 +45,8 @@ class _CartItemState extends State<CartItem> {
           builder: (context, state) {
             if (state is UpdateCartFailureState && !quantityReverted) {
               // Revert quantity to original when the update fails, but only once
-                quantityEdit = widget.quantity;
-                quantityReverted = true; // Prevent multiple resets
+              quantityEdit = widget.quantity;
+              quantityReverted = true; // Prevent multiple resets
             }
 
             if (state is UpdateCartSuccessState) {
@@ -69,26 +70,28 @@ class _CartItemState extends State<CartItem> {
                     ),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(15),
-                      child: widget.image.startsWith('http') ?
-                      CachedNetworkImage(
-                        imageUrl: widget.image,
-                        fit: BoxFit.cover,
-                        width: double.infinity,
-                        errorWidget: (context, url, error) {
-                          return Image.asset(
-                            'assets/images/placeholder.png',
-                            fit: BoxFit.cover,
-                            height: 150,
-                            width: double.infinity,
-                          );
-                        },
-                        fadeInDuration: const Duration(milliseconds: 500),
-                        fadeOutDuration: const Duration(milliseconds: 500),
-                      ) : Image.asset(
-                        widget.image,
-                        fit: BoxFit.cover,
-                        width: double.infinity,
-                      ),
+                      child: widget.image.startsWith('http')
+                          ? CachedNetworkImage(
+                              imageUrl: widget.image,
+                              fit: BoxFit.cover,
+                              width: double.infinity,
+                              errorWidget: (context, url, error) {
+                                return Image.asset(
+                                  'assets/images/placeholder.png',
+                                  fit: BoxFit.cover,
+                                  height: 150,
+                                  width: double.infinity,
+                                );
+                              },
+                              fadeInDuration: const Duration(milliseconds: 500),
+                              fadeOutDuration:
+                                  const Duration(milliseconds: 500),
+                            )
+                          : Image.asset(
+                              widget.image,
+                              fit: BoxFit.cover,
+                              width: double.infinity,
+                            ),
                     ),
                   ),
                   const SizedBox(width: 20),
@@ -109,72 +112,90 @@ class _CartItemState extends State<CartItem> {
                           children: [
                             Row(
                               children: [
-                                Text(
-                                  "${quantityEdit}x",
-                                  style: TextStyle(
-                                    fontFamily: "Raleway",
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: getResponsiveSize(context, fontSize: 16),
-                                  ),
-                                ),
+                                isEditPressed
+                                    ? Text(
+                                        "${quantityEdit}x",
+                                        style: TextStyle(
+                                          fontFamily: "Raleway",
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: getResponsiveSize(context,
+                                              fontSize: 16),
+                                        ),
+                                      )
+                                    : Text(
+                                        "${widget.quantity}x",
+                                        style: TextStyle(
+                                          fontFamily: "Raleway",
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: getResponsiveSize(context,
+                                              fontSize: 16),
+                                        ),
+                                      ),
                                 isEditPressed
                                     ? Row(
-                                  children: [
-                                    Column(
-                                      children: [
-                                        IconButton(
-                                          onPressed: () {
-                                            setState(() {
-                                              quantityEdit++; // Increment the quantity
-                                            });
-                                          },
-                                          icon: const Icon(
-                                            Icons.keyboard_double_arrow_up,
-                                            color: AppColors.normGreen,
+                                        children: [
+                                          Column(
+                                            children: [
+                                              IconButton(
+                                                onPressed: () {
+                                                  setState(() {
+                                                    quantityEdit++; // Increment the quantity
+                                                  });
+                                                },
+                                                icon: const Icon(
+                                                  Icons
+                                                      .keyboard_double_arrow_up,
+                                                  color: AppColors.normGreen,
+                                                ),
+                                              ),
+                                              IconButton(
+                                                onPressed: () {
+                                                  setState(() {
+                                                    if (quantityEdit > 1) {
+                                                      quantityEdit--; // Decrement but not below 1
+                                                    }
+                                                  });
+                                                },
+                                                icon: const Icon(
+                                                  Icons
+                                                      .keyboard_double_arrow_down,
+                                                  color: Colors.red,
+                                                ),
+                                              ),
+                                            ],
                                           ),
-                                        ),
-                                        IconButton(
-                                          onPressed: () {
-                                            setState(() {
-                                              if (quantityEdit > 1) {
-                                                quantityEdit--; // Decrement but not below 1
-                                              }
-                                            });
-                                          },
-                                          icon: const Icon(
-                                            Icons.keyboard_double_arrow_down,
-                                            color: Colors.red,
+                                          IconButton(
+                                            onPressed: () {
+                                              // Submit the quantity change
+                                              context
+                                                  .read<CartCubit>()
+                                                  .updateCartItem(
+                                                      widget.productID,
+                                                      quantityEdit);
+                                              setState(() {
+                                                isEditPressed =
+                                                    false; // Exit edit mode after submission
+                                              });
+                                            },
+                                            icon: const Icon(
+                                              Icons.check,
+                                              color: AppColors.darkGreen,
+                                            ),
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                    IconButton(
-                                      onPressed: () {
-                                        // Submit the quantity change
-                                        context.read<CartCubit>().updateCartItem(widget.productID, quantityEdit);
-                                        setState(() {
-                                          isEditPressed = false; // Exit edit mode after submission
-                                        });
-
-                                      },
-                                      icon: const Icon(
-                                        Icons.check,
-                                        color: AppColors.darkGreen,
-                                      ),
-                                    ),
-                                  ],
-                                )
+                                        ],
+                                      )
                                     : IconButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      isEditPressed = true; // Enter edit mode
-                                    });
-                                  },
-                                  icon: const Icon(
-                                    Icons.edit,
-                                    color: AppColors.greyish,
-                                  ),
-                                ),
+                                        onPressed: () {
+                                          setState(() {
+                                            isEditPressed =
+                                                true; // Enter edit mode
+                                          });
+                                        },
+                                        icon: const Icon(
+                                          Icons.edit,
+                                          color: AppColors.greyish,
+                                        ),
+                                      ),
                               ],
                             ),
                             Row(
@@ -187,14 +208,23 @@ class _CartItemState extends State<CartItem> {
                                     fontWeight: FontWeight.w300,
                                   ),
                                 ),
-                                Text(
-                                  "${widget.price * quantityEdit} ",
-                                  style: const TextStyle(
-                                    fontFamily: "Raleway",
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
+                                isEditPressed
+                                    ? Text(
+                                        "${widget.price * quantityEdit} ",
+                                        style: const TextStyle(
+                                          fontFamily: "Raleway",
+                                          fontSize: 22,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      )
+                                    : Text(
+                                        "${widget.price * widget.quantity} ",
+                                        style: const TextStyle(
+                                          fontFamily: "Raleway",
+                                          fontSize: 22,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      )
                               ],
                             ),
                           ],
@@ -208,32 +238,32 @@ class _CartItemState extends State<CartItem> {
           },
         ),
         BlocBuilder<CartCubit, CartState>(
-  builder: (context, state) {
-    return Positioned(
-          top: -15,
-          right: 10,
-          child: GestureDetector(
-            onTap: () {
-              cCubit.removeCartItem(widget.productID);
-            },
-            child: Container(
-              height: 35,
-              width: 35,
-              decoration: BoxDecoration(
-                color: Colors.transparent,
-                shape: BoxShape.circle,
-                border: Border.all(color: AppColors.greyish),
+          builder: (context, state) {
+            return Positioned(
+              top: -15,
+              right: 10,
+              child: GestureDetector(
+                onTap: () {
+                  cCubit.removeCartItem(widget.productID);
+                },
+                child: Container(
+                  height: 35,
+                  width: 35,
+                  decoration: BoxDecoration(
+                    color: Colors.transparent,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: AppColors.greyish),
+                  ),
+                  child: Icon(
+                    Icons.close,
+                    size: getResponsiveSize(context, fontSize: 25),
+                    color: Colors.black54,
+                  ),
+                ),
               ),
-              child: Icon(
-                Icons.close,
-                size: getResponsiveSize(context, fontSize: 25),
-                color: Colors.black54,
-              ),
-            ),
-          ),
-        );
-  },
-),
+            );
+          },
+        ),
       ],
     );
   }
