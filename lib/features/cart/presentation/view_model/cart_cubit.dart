@@ -14,7 +14,7 @@ part 'cart_state.dart';
 class CartCubit extends Cubit<CartState> {
   CartCubit() : super(CartInitial());
   Map<int, int> cartIDs = {};
-
+  bool isEditPressed = false ;
   Future<void> getCartItems() async {
     final prefs = await SharedPreferences.getInstance();
     try {
@@ -53,6 +53,9 @@ class CartCubit extends Cubit<CartState> {
     } catch (e) {
       emit(CartFailureState()); // Handle error state
     }
+  }
+  changeState(){
+    emit(UpdateUICartState());
   }
 
   Future<void> updateCartItem(int productId, int quantity) async {

@@ -11,11 +11,13 @@ class CustomGridView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MasonryGridView.builder(
+      scrollDirection: Axis.vertical,
       physics: const BouncingScrollPhysics(),
       itemCount: products.length, // Number of products
       gridDelegate: const SliverSimpleGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
       ),
+
       itemBuilder: (context, index) {
         final product = products[index]; // Get each product
         return GridViewItem(

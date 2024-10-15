@@ -5,13 +5,13 @@ import 'package:plant_it/features/auth/presentation/view_model/auth_cubit.dart';
 import 'package:plant_it/features/checkout/presentation/widgets/line_text.dart';
 
 class AddressInfoWidget extends StatelessWidget {
+  final String address , phoneNum ;
   const AddressInfoWidget({
-    super.key,
+    super.key, required this.address, required this.phoneNum,
   });
 
   @override
   Widget build(BuildContext context) {
-    var sCubit = context.read<AuthCubit>();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -33,7 +33,7 @@ class AddressInfoWidget extends StatelessWidget {
             size: getResponsiveSize(context, fontSize: 30),
             color: Colors.grey,
           ),
-          text: sCubit.address,
+          text: address,
         ),
         const SizedBox(height: 10,),
         LineText(
@@ -43,7 +43,7 @@ class AddressInfoWidget extends StatelessWidget {
             color: Colors.grey,
 
           ),
-          text: "Phone number: ${sCubit.phoneNum} ",
+          text: "Phone number: $phoneNum ",
 
         ),
         const SizedBox(height: 10,),

@@ -5,10 +5,11 @@ import 'package:plant_it/features/checkout/presentation/widgets/checkout_view_bo
 class CheckoutView extends StatelessWidget {
   final List<CartItemModel> cartItems;
   final String totalPrice ;
+  final String address , phoneNum ;
 
-  const CheckoutView({super.key, required this.cartItems, required this.totalPrice});
+  const CheckoutView({super.key, required this.cartItems, required this.totalPrice, required this.address, required this.phoneNum});
   @override
   Widget build(BuildContext context) {
-    return  CheckoutViewBody(cartItems: cartItems,totalPrice: totalPrice,);
+    return  CheckoutViewBody(cartItems: cartItems,totalPrice: totalPrice,address: address,phoneNum: phoneNum,);
   }
 }

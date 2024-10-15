@@ -15,9 +15,10 @@ import 'package:plant_it/features/tracking/views/plants_ordered.dart';
 class CheckoutViewBody extends StatefulWidget {
   final List<CartItemModel> cartItems;
   final String totalPrice;
+  final String address , phoneNum ;
 
   const CheckoutViewBody(
-      {super.key, required this.cartItems, required this.totalPrice});
+      {super.key, required this.cartItems, required this.totalPrice, required this.address, required this.phoneNum});
 
   @override
   State<CheckoutViewBody> createState() => _CheckoutViewBodyState();
@@ -42,7 +43,10 @@ class _CheckoutViewBodyState extends State<CheckoutViewBody> {
                   child: ListView(
                     physics: const BouncingScrollPhysics(),
                     children: [
-                      const AddressInfoSection(),
+                       AddressInfoSection(
+                        phoneNum: widget.phoneNum,
+                         address: widget.address,
+                      ),
                       const SizedBox(height: 10),
                       ItemsSection(
                         cartItems: widget.cartItems,

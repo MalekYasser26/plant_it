@@ -6,6 +6,7 @@ import 'package:plant_it/features/cust_nav_bar/presentation/views/cust_nav_bar_v
 import 'package:plant_it/features/favourites/presentation/view_model/liked_plants_cubit.dart';
 import 'package:plant_it/features/profile/presentation/view_model/profile_cubit.dart';
 import 'package:plant_it/features/ratings_cubit/ratings_cubit.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CustNavBarSelectionView extends StatefulWidget {
    int currentIndex ;
@@ -22,7 +23,6 @@ class _CustNavBarSelectionViewState extends State<CustNavBarSelectionView> {
   @override
   Widget build(BuildContext context) {
     var lCubit = context.read<LikedPlantsCubit>();
-    var sCubit = context.read<AuthCubit>();
     var pCubit = context.read<ProfileCubit>();
     var rCubit = context.read<RatingsCubit>();
     return Scaffold(
@@ -30,19 +30,20 @@ class _CustNavBarSelectionViewState extends State<CustNavBarSelectionView> {
       body: pages[widget.currentIndex],
       bottomNavigationBar: CustomBottomNavBar(
         currentIndex: widget.currentIndex,
-        onTap: (index) {
+        onTap: (index)async {
+          final prefs = await SharedPreferences.getInstance();
           if (index ==2){
-            lCubit.getRecentlyLikedProducts(sCubit.userID,true);
+            lCubit.getRecentlyLikedProducts(prefs.getInt("userID")!,false);
             lCubit.getProductSuggestions(true);
-            rCubit.getProductRatings(true);
+            rCubit.getProductRatings(false);
           }
           if (index ==0){
-            pCubit.getRecentlyPurchasedProducts(false,sCubit.userID);
+            pCubit.getRecentlyPurchasedProducts(false,prefs.getInt("userID")!);
             rCubit.getProductRatings(false);
             pCubit.getRecentlySavedProducts(false);
             pCubit.groupDatesByStatus();
           } if (index==3){
-            pCubit.getRecentlyPurchasedProducts(true,sCubit.userID);
+            pCubit.getRecentlyPurchasedProducts(true,prefs.getInt("userID")!);
             pCubit.groupDatesByStatus();
           }
           setState(() {

@@ -29,75 +29,78 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: AppColors.basicallyWhite,
-        body: Container(
-          decoration: const BoxDecoration(
-            color: AppColors.basicallyWhite,
-          ),
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15.0),
-              child: Column(
-                children: [
-                  const SizedBox(height: 30),
-                  Container(
-                    color: AppColors.basicallyWhite,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          ImagesCust.logo,
-                          height: getResponsiveSize(context, fontSize: 40),
-                          width: getResponsiveSize(context, fontSize: 40),
-                        ),
-                        const SizedBox(width: 5),
-                        Text(
-                          "Plant-it",
-                          style: TextStyle(
-                            fontFamily: "Poppins",
-                            fontSize: getResponsiveSize(context, fontSize: 30),
-                            fontWeight: FontWeight.bold,
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: SafeArea(
+        child: Scaffold(
+          backgroundColor: AppColors.basicallyWhite,
+          body: Container(
+            decoration: const BoxDecoration(
+              color: AppColors.basicallyWhite,
+            ),
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 30),
+                    Container(
+                      color: AppColors.basicallyWhite,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            ImagesCust.logo,
+                            height: getResponsiveSize(context, fontSize: 40),
+                            width: getResponsiveSize(context, fontSize: 40),
                           ),
-                        )
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 30),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 12.0),
-                    child: SearchWidget(),
-                  ),
-                  const SizedBox(height: 40),
-                  // Listen to ProductsCubit state and display products accordingly
-                  Expanded(
-                    child: BlocBuilder<HomeProductsCubit, HomeProductState>(
-                      builder: (context, state) {
-                        if (state is ProductsLoadingState || state is SearchLoadingState) {
-                          return const Center(
-                            child: CircularProgressIndicator(
-                              color: AppColors.darkGreen,
+                          const SizedBox(width: 5),
+                          Text(
+                            "Plant-it",
+                            style: TextStyle(
+                              fontFamily: "Poppins",
+                              fontSize: getResponsiveSize(context, fontSize: 30),
+                              fontWeight: FontWeight.bold,
                             ),
-                          );
-                        } else if (state is ProductsSuccessfulState) {
-                          return CustomGridView(products: state.products); // Show default products
-                        } else if (state is SearchSuccessfulState) {
-                          return CustomGridView(products: state.products); // Show search results
-                        } else if (state is SearchEmptyState) {
-                          return const Center(
-                            child: Text('No products found'),
-                          );
-                        } else if (state is ProductsFailureState || state is SearchFailureState) {
-                          return const Center(
-                            child: Text('Failed to load products'),
-                          );
-                        }
-                        return const SizedBox.shrink();
-                      },
+                          )
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 30),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 12.0),
+                      child: SearchWidget(),
+                    ),
+                    const SizedBox(height: 40),
+                    // Listen to ProductsCubit state and display products accordingly
+                    Expanded(
+                      child: BlocBuilder<HomeProductsCubit, HomeProductState>(
+                        builder: (context, state) {
+                          if (state is ProductsLoadingState || state is SearchLoadingState) {
+                            return const Center(
+                              child: CircularProgressIndicator(
+                                color: AppColors.darkGreen,
+                              ),
+                            );
+                          } else if (state is ProductsSuccessfulState) {
+                            return CustomGridView(products: state.products); // Show default products
+                          } else if (state is SearchSuccessfulState) {
+                            return CustomGridView(products: state.products); // Show search results
+                          } else if (state is SearchEmptyState) {
+                            return const Center(
+                              child: Text('No products found'),
+                            );
+                          } else if (state is ProductsFailureState || state is SearchFailureState) {
+                            return const Center(
+                              child: Text('Failed to load products'),
+                            );
+                          }
+                          return const SizedBox.shrink();
+                        },
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

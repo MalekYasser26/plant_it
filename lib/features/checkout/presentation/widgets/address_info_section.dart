@@ -3,8 +3,10 @@ import 'package:plant_it/constants/constants.dart';
 import 'package:plant_it/features/checkout/presentation/widgets/address_info_widget.dart';
 
 class AddressInfoSection extends StatelessWidget {
+  final String address , phoneNum ;
+
   const AddressInfoSection({
-    super.key,
+    super.key, required this.address, required this.phoneNum,
   });
 
   @override
@@ -48,9 +50,12 @@ class AddressInfoSection extends StatelessWidget {
               color: Color(0xFFF8F9EF),
               borderRadius: BorderRadius.all(Radius.circular(15))
           ),
-          child: const Column(
+          child:  Column(
             children: [
-              AddressInfoWidget(),
+              AddressInfoWidget(
+                address: address,
+                phoneNum: phoneNum,
+              ),
             ],
           ),
         ),

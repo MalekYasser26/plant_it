@@ -6,6 +6,7 @@ import 'package:plant_it/features/cart/presentation/view_model/cart_item_model.d
 import 'package:plant_it/features/cart/presentation/widgets/cart_empty.dart';
 import 'package:plant_it/features/cart/presentation/widgets/cart_item.dart';
 import 'package:plant_it/features/checkout/presentation/views/checkout_view.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CartFilled extends StatefulWidget {
   const CartFilled({super.key});
@@ -29,6 +30,7 @@ class _CartFilledState extends State<CartFilled> {
 
   @override
   Widget build(BuildContext context) {
+    var cCubit = context.read<CartCubit>();
     return BlocListener<CartCubit, CartState>(
       listener: (context, state) {
         if (state is UpdateCartFailureState) {
@@ -79,7 +81,7 @@ class _CartFilledState extends State<CartFilled> {
                       image: cartItems[index].image,
                     ),
                     separatorBuilder: (context, index) =>
-                    const SizedBox(height: 30),
+                        const SizedBox(height: 30),
                     itemCount: cartItems.length,
                   );
                 }
@@ -111,7 +113,7 @@ class _CartFilledState extends State<CartFilled> {
                             style: TextStyle(
                               fontFamily: "Poppins",
                               fontSize:
-                              getResponsiveSize(context, fontSize: 12),
+                                  getResponsiveSize(context, fontSize: 12),
                               fontWeight: FontWeight.w600,
                               color: AppColors.darkGreenL,
                             ),
@@ -121,7 +123,7 @@ class _CartFilledState extends State<CartFilled> {
                                 style: TextStyle(
                                   fontFamily: "Raleway",
                                   fontSize:
-                                  getResponsiveSize(context, fontSize: 12),
+                                      getResponsiveSize(context, fontSize: 12),
                                   fontWeight: FontWeight.w300,
                                   color: Colors.black,
                                 ),
@@ -132,7 +134,7 @@ class _CartFilledState extends State<CartFilled> {
                                 style: TextStyle(
                                   fontFamily: "Raleway",
                                   fontSize:
-                                  getResponsiveSize(context, fontSize: 14),
+                                      getResponsiveSize(context, fontSize: 14),
                                   fontWeight: FontWeight.bold,
                                   color: Colors.black,
                                 ),
@@ -146,20 +148,26 @@ class _CartFilledState extends State<CartFilled> {
                 ),
                 const SizedBox(width: 20),
                 BlocListener<CartCubit, CartState>(
-                  listener: (context, state) {
+                  listener: (context, state) async {
+                    final prefs = await SharedPreferences.getInstance();
                     if (state is CheckAvailabilitySuccessfulState) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>  CheckoutView(
-                            cartItems: cartItems,
-                            totalPrice : totalPrice.toString(),
+                      if (context.mounted) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CheckoutView(
+                              cartItems: cartItems,
+                              totalPrice: totalPrice.toString(),
+                              address: prefs.getString("address")!,
+                              phoneNum: prefs.getString("phoneNum")!,
+                            ),
                           ),
-                        ),
-                      );
+                        );
+                      }
                     }
-
-                    if (state is CheckAvailabilityFailureState && !hasShownSnackBar) {
+                    if (state is CheckAvailabilityFailureState &&
+                        !hasShownSnackBar &&
+                        context.mounted) {
                       // Show SnackBar once
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
@@ -178,40 +186,67 @@ class _CartFilledState extends State<CartFilled> {
                       context.read<CartCubit>().resetCartState();
                     }
                   },
-                  child: BlocBuilder<CartCubit, CartState>(
-                    builder: (context, state) {
-                      return Flexible(
-                        child: SizedBox(
-                          width: getResponsiveSize(context, fontSize: 350),
-                          height: getResponsiveSize(context, fontSize: 55),
-                          child: ElevatedButton(
-                            onPressed: () {
-                              hasShownSnackBar = false; // Reset flag before checking
-                              context.read<CartCubit>().checkAvailability();
-                             // Navigator.push(context, MaterialPageRoute(builder: (context) => const PlantsOrderedView(),));
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFFDCDCDC),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 10),
-                            ),
-                            child: Text(
-                              "Checkout",
-                              style: TextStyle(
-                                fontFamily: "Poppins",
-                                fontSize:
-                                getResponsiveSize(context, fontSize: 18),
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
+                  child: BlocListener<CartCubit, CartState>(
+                    listener: (context, state) {
+
                     },
+                    child: BlocBuilder<CartCubit, CartState>(
+                      builder: (context, state) {
+                        return Flexible(
+                          child: SizedBox(
+                              width: getResponsiveSize(context, fontSize: 350),
+                              height: getResponsiveSize(context, fontSize: 55),
+                              child: !cCubit.isEditPressed ?
+                              ElevatedButton(
+                                onPressed: () {
+                                  hasShownSnackBar =
+                                      false; // Reset flag before checking
+                                  context.read<CartCubit>().checkAvailability();
+                                  // Navigator.push(context, MaterialPageRoute(builder: (context) => const PlantsOrderedView(),));
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFFDCDCDC),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 20, vertical: 10),
+                                ),
+                                child: Text(
+                                  "Checkout",
+                                  style: TextStyle(
+                                    fontFamily: "Poppins",
+                                    fontSize: getResponsiveSize(context,
+                                        fontSize: 18),
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ) :ElevatedButton(
+                                onPressed: () {
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFFDCDCDC),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 20, vertical: 10),
+                                ),
+                                child: Text(
+                                  "Checkout",
+                                  style: TextStyle(
+                                    fontFamily: "Poppins",
+                                    fontSize: getResponsiveSize(context,
+                                        fontSize: 18),
+                                    color: Colors.grey,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ) ),
+                        );
+                      },
+                    ),
                   ),
                 ),
               ],
