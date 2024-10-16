@@ -1,3 +1,4 @@
+import 'dart:async'; // For Timer
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:plant_it/constants/constants.dart';
@@ -20,11 +21,13 @@ class SplashView extends StatefulWidget {
 }
 
 class _SplashViewState extends State<SplashView> {
+  bool _visible = true; // Initial state
+  late Timer _timer;    // Timer to toggle animation
 
   @override
-
-
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
+    _startFadingAnimation();
     var sCubit = context.read<AuthCubit>();
     var pCubit = context.read<ProfileCubit>();
     var hCubit = context.read<HomeProductsCubit>();
@@ -32,6 +35,79 @@ class _SplashViewState extends State<SplashView> {
     var lCubit = context.read<LikedPlantsCubit>();
     var l2Cubit = context.read<LikedCubit>();
     var cCubit = context.read<CartCubit>();
+    _checkAuthenticationAndLoadData(sCubit, pCubit, hCubit, rCubit, lCubit, l2Cubit, cCubit);
+  }
+
+  // Start the fading animation loop
+  void _startFadingAnimation() {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (mounted) {
+        setState(() {
+          _visible = !_visible; // Toggle visibility every second
+        });
+      }
+    });
+  }
+
+  // Stop the animation when data is fully loaded
+  void _stopFadingAnimation() {
+    _timer.cancel(); // Stop the periodic timer
+  }
+
+  // Asynchronously check authentication and load data
+  Future<void> _checkAuthenticationAndLoadData(
+      AuthCubit sCubit,
+      ProfileCubit pCubit,
+      HomeProductsCubit hCubit,
+      RatingsCubit rCubit,
+      LikedPlantsCubit lCubit,
+      LikedCubit l2Cubit,
+      CartCubit cCubit
+      ) async {
+    final prefs = await SharedPreferences.getInstance();
+    int? userID = prefs.getInt("userID");
+
+    // Move cubit initialization outside async gaps
+
+    if (prefs.getString("accessToken") != null &&
+        prefs.getString("accessToken")!.isNotEmpty) {
+      await sCubit.refreshToken();
+      await lCubit.getRecentlyLikedProducts(userID!, true);
+      await pCubit.getRecentlySavedProducts(true);
+      await hCubit.fetchProducts(
+          l2Cubit.getLikedProducts(userID), true);
+      await lCubit.getProductSuggestions(true);
+      await pCubit.getRecentlyPurchasedProducts(true, userID);
+      await cCubit.getCartItems();
+      await rCubit.getProductRatings(true);
+
+      _stopFadingAnimation();
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (_) => CustNavBarSelectionView(currentIndex: 1)),
+        );
+      }
+    } else {
+      Timer(const Duration(seconds: 5), () {
+        _stopFadingAnimation();
+        if (mounted) {
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => const LoginView()));
+        }
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel(); // Dispose of the timer when the widget is destroyed
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         alignment: Alignment.center,
@@ -52,76 +128,27 @@ class _SplashViewState extends State<SplashView> {
               ),
             ),
           ),
-          Positioned(
-            bottom: 80,
-            left: 0,
-            right: 0,
-            child: Center(
-              child: ElevatedButton(
-                onPressed: ()async {
-                  final prefs = await SharedPreferences.getInstance();
-                  if (prefs.getString("accessToken") != null &&
-                      prefs.getString("accessToken")!.isNotEmpty) {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (_) =>
-                              CustNavBarSelectionView(currentIndex: 1)),
-                    );
-                    lCubit.getRecentlyLikedProducts(sCubit.userID, true);
-                    pCubit.getRecentlySavedProducts(true);
-                    hCubit.fetchProducts(
-                        l2Cubit.getLikedProducts(sCubit.userID), true);
-                    lCubit.getProductSuggestions(true);
-                    pCubit.getRecentlyPurchasedProducts(true, sCubit.userID);
-                    cCubit.getCartItems();
-                    rCubit.getProductRatings(true);
-                  } else {
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const LoginView()));
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 15,
-                    horizontal: 100,
-                  ),
-                  backgroundColor: AppColors.basicallyWhite,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
+          AnimatedOpacity(
+            opacity: _visible ? 1 : 0, // Use the toggling _visible value
+            duration: const Duration(seconds: 1),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  ImagesCust.logo,
+                  height: 97,
+                  width: 100,
                 ),
-                child: Text(
-                  "Get Started",
+                Text(
+                  "Plant-it",
                   style: TextStyle(
-                    fontSize: getResponsiveSize(context, fontSize: 18),
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Poppins',
-                    color: AppColors.darkGreenL,
-                  ),
+                      fontSize: getResponsiveSize(context, fontSize: 32),
+                      fontWeight: FontWeight.w700,
+                      fontFamily: "Poppins",
+                      color: Colors.white),
                 ),
-              ),
+              ],
             ),
-          ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset(
-                ImagesCust.logo,
-                height: 97,
-                width: 100,
-              ),
-              Text(
-                "Plant-it",
-                style: TextStyle(
-                    fontSize: getResponsiveSize(context, fontSize: 32),
-                    fontWeight: FontWeight.w700,
-                    fontFamily: "Poppins",
-                    color: Colors.white),
-              ),
-            ],
           ),
         ],
       ),

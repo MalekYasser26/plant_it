@@ -85,7 +85,6 @@ class _DescriptionViewState extends State<DescriptionView> {
             state is RemoveBookmarkSuccessfulState) {
           final SingleProduct product = state.product;
               pCubit.bookmarkedProducts.containsKey(widget.product.id);
-          print(pCubit.bookmarkedProducts);
           final List<String> productImages =
               product.images.map((image) => image.imgUrl).toList();
           return SafeArea(
@@ -361,7 +360,6 @@ class _DescriptionViewState extends State<DescriptionView> {
                                   onPressed: () async {
                                     await cCubit.addCartItem(
                                         product.id, quantity);
-                                    print(aCubit.userID);
                                   },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: const Color(0xFFDCDCDC),

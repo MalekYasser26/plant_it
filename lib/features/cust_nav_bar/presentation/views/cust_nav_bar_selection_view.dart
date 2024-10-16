@@ -25,6 +25,7 @@ class _CustNavBarSelectionViewState extends State<CustNavBarSelectionView> {
     var lCubit = context.read<LikedPlantsCubit>();
     var pCubit = context.read<ProfileCubit>();
     var rCubit = context.read<RatingsCubit>();
+    var sCubit = context.read<AuthCubit>();
     return Scaffold(
       backgroundColor: AppColors.basicallyWhite,
       body: pages[widget.currentIndex],
@@ -45,6 +46,7 @@ class _CustNavBarSelectionViewState extends State<CustNavBarSelectionView> {
           } if (index==3){
             pCubit.getRecentlyPurchasedProducts(true,prefs.getInt("userID")!);
             pCubit.groupDatesByStatus();
+            //sCubit.refreshToken();
           }
           setState(() {
             widget.currentIndex = index;

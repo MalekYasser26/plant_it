@@ -16,7 +16,6 @@ class LikedCubit extends Cubit<LikedState> {
 
   Future<void> _initializeLikedProducts() async {
     await getCachedLikedProducts();
-    // After loading from cache, you can emit success if needed
     emit(LoadLikeSuccessState(likeCounter: 0, productID: -1));
   }
 
@@ -36,16 +35,17 @@ class LikedCubit extends Cubit<LikedState> {
         final Map<String, dynamic> responseData = json.decode(response.body);
         final int likeId = responseData['data']['addedLike']['id'];
         likedProducts[productID] = likeId;
-        int likeCounter = responseData['data']['addedLike']['product']['likesCounter'];
+        int likeCounter =
+            responseData['data']['addedLike']['product']['likesCounter'];
         // Cache the updated liked products
         await cacheLikedProducts(likedProducts);
-        emit(AddLikeSuccessState(likeCounter: likeCounter, productID: productID));
+        emit(AddLikeSuccessState(
+            likeCounter: likeCounter, productID: productID));
       } else {
         throw Exception('Failed to add liked products');
       }
     } catch (e) {
       print(e.toString());
-      print(productID);
       emit(AddLikeFailureState(likeCounter: 0, productID: -1));
     }
   }
@@ -55,13 +55,11 @@ class LikedCubit extends Cubit<LikedState> {
     emit(RemoveLikeLoadingState(likeCounter: 0, productID: -1));
     final likeID = likedProducts[productID];
     if (likeID == null) {
-      print("$productID : ssssss");
       emit(RemoveLikeFailureState(likeCounter: 0, productID: -1));
       return;
     }
 
     try {
-      print("trying 1 ");
       final response = await http.delete(
         Uri.parse('$baseUrlHasoon/Likes/likeId?likeId=$likeID'),
         headers: {
@@ -69,17 +67,16 @@ class LikedCubit extends Cubit<LikedState> {
           'Authorization': 'Bearer ${prefs.getString("accessToken")}',
         },
       );
-      print(response.statusCode);
       print(prefs.getString('accessToken'));
+      print(prefs.getString('name'));
       if (response.statusCode == 200) {
-        print("trying 2 ");
         likedProducts.remove(productID);
         final Map<String, dynamic> responseData = json.decode(response.body);
         int likeCounter = responseData['data'];
-
         // Cache the updated liked products
         await cacheLikedProducts(likedProducts);
-        emit(RemoveLikeSuccessState(likeCounter: likeCounter, productID: productID));
+        emit(RemoveLikeSuccessState(
+            likeCounter: likeCounter, productID: productID));
       } else {
         print(json.decode(response.body));
         throw Exception('Failed to remove liked product');
@@ -93,16 +90,18 @@ class LikedCubit extends Cubit<LikedState> {
   Future<void> getLikedProducts(int userID) async {
     emit(LoadLikeLoadingState(likeCounter: 0, productID: -1));
     final prefs = await SharedPreferences.getInstance();
+    print("Hereeeeeeeeeeeeeeeeeeee : ");
     print(prefs.getInt('userID'));
+    print(prefs.getString('accessToken'));
     // Check if we have cached liked products first
     if (likedProducts.isNotEmpty) {
       emit(LoadLikeSuccessState(likeCounter: 0, productID: -1));
       return;
     }
-
     try {
       final response = await http.get(
-        Uri.parse('$baseUrlHasoon/Likes/userId?userId=${prefs.getInt('userID')}'),
+        Uri.parse(
+            '$baseUrlHasoon/Likes/userId?userId=$userID'),
         headers: {
           'accept': '*/*',
           'Content-Type': 'application/json',
@@ -114,15 +113,13 @@ class LikedCubit extends Cubit<LikedState> {
         final List<dynamic> data = json.decode(response.body)['data'];
 
         // Store the productId and likeId in the map
-        likedProducts = {
-          for (var item in data)
-            item['productId']: item['id']
-        };
+        likedProducts = {for (var item in data) item['productId']: item['id']};
 
         // Cache the liked products
         await cacheLikedProducts(likedProducts);
         emit(LoadLikeSuccessState(likeCounter: 0, productID: -1));
       } else {
+        print(response.body);
         throw Exception('Failed to load liked products');
       }
     } catch (e) {
@@ -133,21 +130,26 @@ class LikedCubit extends Cubit<LikedState> {
 
   Future<void> cacheLikedProducts(Map<int, int> likedProducts) async {
     final prefs = await SharedPreferences.getInstance();
-    // Convert the Map<int, int> to Map<String, int> for JSON encoding
-    final Map<String, int> likedProductsStringKeys = likedProducts.map((key, value) => MapEntry(key.toString(), value));
-
+    final Map<String, int> likedProductsStringKeys =
+        likedProducts.map((key, value) => MapEntry(key.toString(), value));
     await prefs.setString(
-      'liked_products',
-      json.encode(likedProductsStringKeys),
-    );
+        'liked_products', json.encode(likedProductsStringKeys));
   }
 
   Future<void> getCachedLikedProducts() async {
     final prefs = await SharedPreferences.getInstance();
     final String? cachedLikedProductsString = prefs.getString('liked_products');
     if (cachedLikedProductsString != null) {
-      final Map<String, dynamic> jsonMap = json.decode(cachedLikedProductsString);
-      likedProducts = jsonMap.map<int, int>((key, value) => MapEntry(int.parse(key), value as int));
+      final Map<String, dynamic> jsonMap =
+          json.decode(cachedLikedProductsString);
+      likedProducts = jsonMap.map<int, int>(
+          (key, value) => MapEntry(int.parse(key), value as int));
     }
+  }
+  Future<void> clearLikedProductsCache() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('liked_products');
+    likedProducts.clear();
+    emit(LikedInitial());
   }
 }

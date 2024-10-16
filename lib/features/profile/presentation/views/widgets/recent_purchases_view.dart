@@ -40,7 +40,6 @@ class RecentPurchasesView extends StatelessWidget {
                   double rating = entry.value;
                   if (pCubit.purchasedProductIDs.contains(productId)) {
                     productRatings.add(rating);
-                    print('here');
                   }
                 }
                 return Column(

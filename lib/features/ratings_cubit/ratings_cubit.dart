@@ -37,7 +37,6 @@ class RatingsCubit extends Cubit<RatingsState> {
           productRatings[item['productId']] =
               (item['averageRating'] as num).toDouble();
         }
-          print("here 1" );
         // Cache the product ratings after fetching
         await cacheProductRatings(productRatings);
 
@@ -48,19 +47,15 @@ class RatingsCubit extends Cubit<RatingsState> {
         throw Exception('Failed to load product ratings. Status code: ${response.statusCode}');
       }
     } catch (error) {
-      print('Error occurred: $error');
       emit(ProductRatingFailureState());
       return {};
     }
   }
 
   double? isRatingFound(int productID) {
-    print(cachedRatings);
     if (cachedRatings.containsKey(productID)) {
-      print("FOUNDDDDD");
       return cachedRatings[productID];
     } else {
-      print("NOT FOUNDDDDD");
       return -1;
     }
   }
@@ -72,7 +67,6 @@ class RatingsCubit extends Cubit<RatingsState> {
     emit(AddRatingLoadingState());
     final prefs = await SharedPreferences.getInstance();
     print(prefs.getString("accessToken"));
-    print("I am ");
     try {
       final response = await http.post(
         Uri.parse('$baseUrlHasoon/ProductRating/ratings'),
@@ -101,7 +95,6 @@ class RatingsCubit extends Cubit<RatingsState> {
         throw Exception('Failed to add rating: ${response.body}');
       }
     } catch (e) {
-      print("catch : ");
       print(e.toString());
       emit(AddRatingFailureState(message: e.toString()));
     }
@@ -140,7 +133,6 @@ class RatingsCubit extends Cubit<RatingsState> {
         throw Exception('Failed to add rating: ${response.body}');
       }
     } catch (e) {
-      print("catch : ");
       print(e.toString());
       emit(AddRatingFailureState(message: e.toString()));
     }
@@ -161,13 +153,11 @@ class RatingsCubit extends Cubit<RatingsState> {
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = json.decode(response.body);
-        print(responseData);
         userRating = responseData['rating'] * 1.0 ?? 0;
         emit(GetUserRatingSuccessState(
           userRating: userRating,
         ));
       } else if (response.statusCode == 404) {
-        print("no rating here ");
         userRating = 0;
         emit(GetUserRatingSuccessState(
           userRating: userRating,
@@ -178,7 +168,6 @@ class RatingsCubit extends Cubit<RatingsState> {
             'Failed to load user rating. Status code: ${response.statusCode}');
       }
     } catch (error) {
-      print('Error occurred: $error');
       emit(GetUserRatingFailureState());
     }
 

@@ -3,10 +3,13 @@ import 'dart:developer';
 import 'package:bloc/bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:meta/meta.dart';
 import 'package:http/http.dart' as http;
 import 'package:plant_it/constants/constants.dart';
+import 'package:plant_it/features/favourites/presentation/view_model/liked_cubit.dart';
+import 'package:plant_it/features/profile/presentation/view_model/profile_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 part 'auth_state.dart';
@@ -21,6 +24,7 @@ class AuthCubit extends Cubit<AuthState> {
 
   Future<void> signIn(String email, String password) async {
     emit(SigninLoadingState());
+    final prefs = await SharedPreferences.getInstance();
     try {
       final response = await http.post(
         Uri.parse('$baseUrlHasoon/Authentication/Login'),
@@ -34,24 +38,23 @@ class AuthCubit extends Cubit<AuthState> {
       var userData = responseBody['userData'];
       if (response.statusCode == 200) {
         // Save tokens and user data
-        emit(SigninSuccessState());
         String accessToken = responseBody['token'];
         final refreshToken = responseBody['refreshToken'];
-
-        name = userData['displayedName'];
-        phoneNum = userData['phoneNumber'];
-        address = userData['address'];
-        userID = userData['id'];
-
-        // Store tokens and user data in SharedPreferences
-        final prefs = await SharedPreferences.getInstance();
         await prefs.setString('accessToken', accessToken);
         await prefs.setString('refreshToken', refreshToken);
         await prefs.setString('name', name);
         await prefs.setString('phoneNum', phoneNum);
         await prefs.setString('address', address);
         await prefs.setInt('userID', userID);
+        name = userData['displayedName'];
+        phoneNum = userData['phoneNumber'];
+        address = userData['address'];
+        userID = prefs.getInt('userID') ?? userData['id'];
 
+
+        log(prefs.getString("refreshToken")!);
+        log(prefs.getString("accessToken")!);
+        emit(SigninSuccessState());
       } else {
         errorMsg = responseBody['message'];
         emit(SigninFailureState());
@@ -61,12 +64,7 @@ class AuthCubit extends Cubit<AuthState> {
       emit(SigninFailureState());
     }
   }
-  Future<void> signIn2() async {
-    final response = await http.get(
-      Uri.parse('https://plantitapi.runasp.net/api/Authentication/google-login'),
-    );
-    print(response.body);
-  }
+
 
   final GoogleSignIn googleSignIn = GoogleSignIn(
     clientId:
@@ -76,9 +74,6 @@ class AuthCubit extends Cubit<AuthState> {
       'https://www.googleapis.com/auth/contacts.readonly',
     ],
   );
-
-
-
   Future<void> signInWithGoogle() async {
     emit(SigninLoadingState());
     try {
@@ -109,10 +104,10 @@ class AuthCubit extends Cubit<AuthState> {
           emit(SigninSuccessState());
           String accessToken = responseBody['token'];
           final refreshToken = responseBody['refreshToken'];
-          name = userData['displayedName']??"";
-          phoneNum = userData['phoneNumber']??"";
-          address = userData['address']??"";
-          userID = userData['id']??"";
+          name = userData['displayedName'];
+          phoneNum = userData['phoneNumber'];
+          address = userData['address'];
+          userID = userData['id'];
           // Store tokens and user data in SharedPreferences
           final prefs = await SharedPreferences.getInstance();
           await prefs.setString('accessToken', accessToken);
@@ -120,7 +115,10 @@ class AuthCubit extends Cubit<AuthState> {
           await prefs.setString('name', name);
           await prefs.setString('phoneNum', phoneNum);
           await prefs.setString('address', address);
+          print("user id : $userID");
           await prefs.setInt('userID', userID);
+          log(prefs.getString("refreshToken")!);
+          log(prefs.getString("accessToken")!);
         } else {
           errorMsg = responseBody['message'];
           emit(SigninFailureState());
@@ -128,20 +126,6 @@ class AuthCubit extends Cubit<AuthState> {
       }
     } catch (e) {
       emit(SigninFailureState());
-      print('Error signing in with Google: $e');
-    }
-  }
-  Future<void> googleSignOut() async {
-    try {
-      // Sign out from Firebase
-      await FirebaseAuth.instance.signOut();
-      await GoogleSignIn().signOut();
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.remove('accessToken');
-      emit(AuthInitial());
-      print("User logged out successfully");
-    } catch (e) {
-      print("Error logging out: $e");
     }
   }
   Future<void> signUp(String email, String password, String displayedName, String phoneNum, String address) async {
@@ -171,10 +155,12 @@ class AuthCubit extends Cubit<AuthState> {
         this.phoneNum = userData['phoneNumber'];
         this.address = userData['address'];
 
-        // Store tokens in SharedPreferences
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('accessToken', accessToken);
         await prefs.setString('refreshToken', refreshToken);
+        print("methoood");
+        print(accessToken);
+        print(refreshToken);
 
       } else {
         errorMsg = responseBody['message'];
@@ -185,13 +171,15 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
   Future<void> refreshToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    print("before try : ");
+    log(prefs.getString("refreshToken")!);
+    log(prefs.getString("accessToken")!);
     try {
-      final prefs = await SharedPreferences.getInstance();
       String? refreshToken = prefs.getString('refreshToken');
       if (refreshToken == null) {
         throw Exception('No refresh token found');
       }
-
       final response = await http.post(
         Uri.parse('$baseUrlHasoon/Authentication/refreshToken?oldRefReshToken=$refreshToken'),
         headers: {
@@ -201,24 +189,52 @@ class AuthCubit extends Cubit<AuthState> {
       );
 
       final responseBody = json.decode(response.body);
+     // log(prefs.getString("refreshToken")!);
+      // log(prefs.getString("accessToken")!);
       if (response.statusCode == 200 && responseBody['succeeded'] == true) {
         // Update tokens in memory and SharedPreferences
         String accessToken = responseBody['data']['accessToken'];
         refreshToken = responseBody['data']['refreshToken'];
         await prefs.setString('accessToken', accessToken);
         await prefs.setString('refreshToken', refreshToken!);
-
+        print(refreshToken);
+        print(responseBody);
       } else {
+        print(responseBody);
+        print(response.statusCode);
         throw Exception('Failed to refresh token');
       }
     } catch (e) {
       print('Error refreshing token: ${e.toString()}');
     }
   }
-  Future<void> logOut() async {
+  Future<void> logOut(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('accessToken');
+    await prefs.remove('refreshToken');
+    await prefs.clear();
+    if (context.mounted) {
+      context.read<LikedCubit>().clearLikedProductsCache();
+      context.read<ProfileCubit>().clearBookmarkedProductsCache();
+    }
     emit(AuthInitial());
+  }
+  Future<void> googleSignOut(BuildContext context) async {
+    try {
+      // Sign out from Firebase
+      await FirebaseAuth.instance.signOut();
+      await GoogleSignIn().signOut();
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove('accessToken');
+      await prefs.remove('refreshToken');
+      await prefs.clear();
+      if (context.mounted) {
+        context.read<LikedCubit>().clearLikedProductsCache();
+        context.read<ProfileCubit>().clearBookmarkedProductsCache();
+      }
+      emit(AuthInitial());
+    } catch (e) {
+    }
   }
 
   void updateUserData({

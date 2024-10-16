@@ -20,7 +20,6 @@ class LikedPlantsCubit extends Cubit<LikedPlantsState> {
     emit(RecentlyLikedLoadingState());
     final prefs = await SharedPreferences.getInstance();
     if (cachedProducts.isNotEmpty && called == false) {
-      print("hereeeeee");
       totalItems = cachedProducts.length;
       emit(LikedSuggestedPlantsCombinedState(
           productSuggestions: productSuggestions,
@@ -29,7 +28,7 @@ class LikedPlantsCubit extends Cubit<LikedPlantsState> {
     } else {
       try {
         final response = await http.get(
-          Uri.parse("$baseUrlHasoon/Likes/userId?userId=${prefs.getInt('userID')}"),
+          Uri.parse("$baseUrlHasoon/Likes/userId?userId=$userID"),
           headers: {
             'accept': '*/*',
             'Content-Type': 'application/json',
@@ -70,7 +69,6 @@ class LikedPlantsCubit extends Cubit<LikedPlantsState> {
           productSuggestions: productSuggestions,
           recentlyLikedProducts: cachedProducts,
           totalItems: totalItems));
-      print("hereeeee111111");
       return;
     } else {
       try {
@@ -99,9 +97,7 @@ class LikedPlantsCubit extends Cubit<LikedPlantsState> {
               productSuggestions: productSuggestions,
               recentlyLikedProducts: cachedProducts,
               totalItems: totalItems));
-          print("hereeeee212323");
         } else {
-          print("+++");
           print(productSuggestions);
           emit(SuggestedProductFailureState());
         }

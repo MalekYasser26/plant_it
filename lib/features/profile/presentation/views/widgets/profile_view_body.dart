@@ -55,8 +55,8 @@ class _ProfileViewBodyState extends State<ProfileViewBody> {
             child: IconButton(
                 onPressed: () {
                   pCubit.clearGroupedByStatus();
-                  sCubit.logOut();
-                  sCubit.googleSignOut();
+                  sCubit.logOut(context);
+                  sCubit.googleSignOut(context);
                   Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(

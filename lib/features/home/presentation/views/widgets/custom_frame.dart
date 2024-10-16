@@ -32,18 +32,24 @@ class _CustomFrameState extends State<CustomFrame> {
     return BlocBuilder<LikedCubit, LikedState>(
       buildWhen: (previousState, currentState) {
         if (currentState is AddLikeSuccessState || currentState is RemoveLikeSuccessState) {
-          // Only rebuild if the product in the state matches this product's ID
           return currentState.productID == widget.product.id;
         }
-        return false; // No rebuild otherwise
+        // Rebuild when cached likes are loaded
+        if (currentState is LoadLikeSuccessState) {
+          return true;
+        }
+        return false;
       },
       builder: (context, state) {
+        // Current like counter logic...
         int currentLikeCounter = widget.product.likesCounter;
         if (state is AddLikeSuccessState && state.productID == widget.product.id) {
           currentLikeCounter = state.likeCounter;
         } else if (state is RemoveLikeSuccessState && state.productID == widget.product.id) {
           currentLikeCounter = state.likeCounter;
         }
+
+        // Ensure the height and liked status are set properly
         if (!_imageHeights.containsKey(widget.product.id)) {
           _imageHeights[widget.product.id] = (150.0 + Random().nextInt(51)).clamp(150, 200) as double;
         }

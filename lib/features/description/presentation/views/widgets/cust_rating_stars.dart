@@ -78,7 +78,6 @@ class _CustRatingStarsState extends State<CustRatingStars> {
                   rCubit.addProductRating(
                       productId: widget.productId, rating: v.round());
                 }
-               print(widget.productId);
                 print(rCubit.isRatingFound(widget.productId));
               });
             },

@@ -52,7 +52,6 @@ class ProfileCubit extends Cubit<ProfileState> {
       // Checking the response status
       if (response.statusCode == 200) {
         emit(ProfileSuccessfulState()); // Emit success state
-        print("User updated successfully: ${response.body}");
       } else {
         emit(ProfileFailureState()); // Emit failure state
         print(
@@ -60,7 +59,6 @@ class ProfileCubit extends Cubit<ProfileState> {
       }
     } catch (error) {
       emit(ProfileFailureState()); // Emit failure state in case of error
-      print("An error occurred: $error");
     }
   }
 
@@ -87,7 +85,6 @@ class ProfileCubit extends Cubit<ProfileState> {
           for (var item in responseBody) {
             bookmarkedProducts[item['productId']] = item['id'];
           }
-          print(bookmarkedProducts);
           savedProducts = responseBody
               .map((json) => RecentlySavedProductModel.fromJson(json))
               .toList();
@@ -95,11 +92,9 @@ class ProfileCubit extends Cubit<ProfileState> {
           emit(RecentlySavedPurchasedSuccessfulState(savedProducts));
         } else {
           emit(RecentlySavedPurchasedFailureState());
-          print("Failed to load saved products: ${response.statusCode}");
         }
       } catch (error) {
         emit(RecentlySavedPurchasedFailureState());
-        print("An error occurred: $error");
       }
     }
   }
@@ -111,7 +106,7 @@ class ProfileCubit extends Cubit<ProfileState> {
     {
       try {
         final response = await http.get(
-          Uri.parse("$baseUrlArsoon/Order/${prefs.getInt('userID')}"),
+          Uri.parse("$baseUrlArsoon/Order/$userID"),
           headers: {
             'accept': 'application/json',
             'Authorization': 'Bearer ${prefs.getString("accessToken")}',
@@ -134,11 +129,9 @@ class ProfileCubit extends Cubit<ProfileState> {
           emit(RecentlySavedPurchasedSuccessfulState(savedProducts));
         } else {
           emit(RecentlySavedPurchasedFailureState());
-          print("Failed to load purchased products: ${response.statusCode}");
         }
       } catch (error) {
         emit(RecentlySavedPurchasedFailureState());
-        print("An error occurred: $error");
       }
     }
   }
@@ -161,7 +154,6 @@ class ProfileCubit extends Cubit<ProfileState> {
           (status, datesSet) => MapEntry(status, datesSet.toList()),
     );
 
-    print(groupedByStatus); // To verify the result
 
     return groupedByStatus;
   }
@@ -207,5 +199,15 @@ class ProfileCubit extends Cubit<ProfileState> {
 
     // If no cache or expired, return an empty list
     return [];
+  }
+  Future<void> clearBookmarkedProductsCache() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('liked_products');
+    bookmarkedProducts.clear();
+    savedProducts.clear();
+    purchasedProductIDs.clear();
+    orderStatuses.clear();
+    orderStatusDates.clear();
+    groupedByStatus.clear();
   }
 }

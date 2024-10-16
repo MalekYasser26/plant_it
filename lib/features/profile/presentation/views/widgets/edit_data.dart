@@ -43,7 +43,6 @@ class _EditDataState extends State<EditData> {
     // Update the value for the specified key
     await prefs.setString(key, newValue);
 
-    print('Updated $key to $newValue in SharedPreferences');
   }
 
   @override
@@ -54,7 +53,6 @@ class _EditDataState extends State<EditData> {
     return BlocListener<ProfileCubit, ProfileState>(
       listener: (context, state) {
         if (state is ProfileSuccessfulState) {
-          print("hhhhhhhhhhhhh");
           widget.loadData();
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(

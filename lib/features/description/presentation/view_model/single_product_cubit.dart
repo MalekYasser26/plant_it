@@ -30,7 +30,6 @@ class SingleProductCubit extends Cubit<SingleProductState> {
         final SingleProduct product = SingleProduct.fromJson(productJson);
         emit(SingleProductSuccessfulState(product));
       } else {
-        print(response.body);
         emit(SingleProductFailureState(product));
       }
     } catch (e) {
@@ -83,7 +82,6 @@ class SingleProductCubit extends Cubit<SingleProductState> {
           await cacheBookmarkedProducts(bookmarkedProducts);
           emit(AddBookmarkSuccessfulState(product: product));
         } else {
-          print(response.body);
 
           emit(AddBookmarkFailureState(product));
         }
@@ -134,7 +132,6 @@ class SingleProductCubit extends Cubit<SingleProductState> {
     final prefs = await SharedPreferences.getInstance();
     final Map<String, int> bookmarkedProductsStringKeys =
     bookmarkedProducts.map((key, value) => MapEntry(key.toString(), value));
-
     await prefs.setString('bookmarked_products', json.encode(bookmarkedProductsStringKeys));
   }
 

@@ -18,7 +18,7 @@ class CheckoutCubit extends Cubit<CheckoutState> {
     } else {
       try {
         final response = await http.post(
-          Uri.parse('$baseUrlArsoon/Order/${prefs.getInt('userID')}'),
+          Uri.parse('$baseUrlArsoon/Order/$userID}'),
           headers: {
             'accept': 'application/json',
             'Authorization': 'Bearer ${prefs.getString("accessToken")}',
@@ -27,10 +27,8 @@ class CheckoutCubit extends Cubit<CheckoutState> {
         );
 
         if (response.statusCode == 200) {
-          print("checkout done ");
           emit(CheckoutSuccessfulState());
         } else {
-          print(response.body);
           emit(CheckoutFailureState());
           throw Exception('Failed to place order ');
         }

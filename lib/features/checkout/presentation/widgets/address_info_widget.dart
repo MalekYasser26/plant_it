@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:plant_it/constants/constants.dart';
-import 'package:plant_it/features/auth/presentation/view_model/auth_cubit.dart';
 import 'package:plant_it/features/checkout/presentation/widgets/line_text.dart';
 
 class AddressInfoWidget extends StatelessWidget {

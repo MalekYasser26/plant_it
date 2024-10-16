@@ -40,7 +40,6 @@ class _RecentPurchasesSectionState extends State<RecentPurchasesSection> {
               ),
               TextButton(
                 onPressed: () {
-                  print("show all");
                   Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -77,7 +76,6 @@ class _RecentPurchasesSectionState extends State<RecentPurchasesSection> {
                 }
               }
               if (products.isNotEmpty) {
-                print(products.length);
                 print(productRatings.length);
                 return Expanded(
                   child: ListView.separated(

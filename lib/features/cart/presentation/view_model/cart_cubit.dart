@@ -112,12 +112,10 @@ class CartCubit extends Cubit<CartState> {
           emit(AddCartItemFailureState(json.decode(response.body)['message']));
         }
       } else {
-        print('Failed to add cart item: ${response.statusCode}');
         emit(AddCartItemFailureState(json.decode(response.body)[
             'message'])); // Emit failure state if response is not OK
       }
     } catch (e) {
-      print('Error occurred: $e');
       emit(AddCartItemFailureState(
           e.toString())); // Handle error state for exceptions
     }
@@ -180,7 +178,6 @@ class CartCubit extends Cubit<CartState> {
       );
 
       final result = json.decode(response.body);
-      print(result['succeeded']);
 
       if (result['succeeded'] == true) {
         emit(CheckAvailabilitySuccessfulState());

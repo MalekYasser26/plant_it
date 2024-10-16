@@ -166,7 +166,6 @@ class _CartItemState extends State<CartItem> {
                                     ),
                                     IconButton(
                                       onPressed: () {
-                                        print(cCubit.isEditPressed);
                                         if (cCubit.isEditPressed==true) {
                                           cCubit.updateCartItem(
                                             widget.productID,
@@ -187,7 +186,6 @@ class _CartItemState extends State<CartItem> {
                                 )
                                     : IconButton(
                                   onPressed: () {
-                                    print(cCubit.isEditPressed);
                                     if (cCubit.isEditPressed==false) {
                                       cCubit.changeState();
                                       setState(() {

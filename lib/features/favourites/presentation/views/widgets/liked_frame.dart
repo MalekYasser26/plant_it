@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:plant_it/constants/constants.dart';
+import 'package:plant_it/features/auth/presentation/view_model/auth_cubit.dart';
 import 'package:plant_it/features/description/presentation/views/description_view.dart';
 import 'package:plant_it/features/favourites/presentation/view_model/liked_cubit.dart';
 import 'package:plant_it/features/favourites/presentation/view_model/liked_plants_cubit.dart';
@@ -49,6 +50,7 @@ class _LikedFrameState extends State<LikedFrame> {
       builder: (context, state) {
         var lCubit = context.read<LikedCubit>();
         var lpCubit = context.read<LikedPlantsCubit>();
+        var sCubit = context.read<AuthCubit>();
         bool isLiked = lCubit.likedProducts.containsKey(widget.id);
 
         return Container(
@@ -135,7 +137,7 @@ class _LikedFrameState extends State<LikedFrame> {
                             await lCubit.removeLikedProducts(widget.id);
                           }
                           await lpCubit.getRecentlyLikedProducts(
-                              prefs.getInt('userID')!, true);
+                              sCubit.userID, true);
                         },
                         child: Icon(
                           isLiked ? Icons.favorite : Icons.favorite_border,
