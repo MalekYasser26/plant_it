@@ -65,11 +65,11 @@ class LikedPlantsCubit extends Cubit<LikedPlantsState> {
     final prefs = await SharedPreferences.getInstance();
 
     if (productSuggestions.isNotEmpty && called == false) {
+      print("I am here ");
       emit(LikedSuggestedPlantsCombinedState(
           productSuggestions: productSuggestions,
           recentlyLikedProducts: cachedProducts,
           totalItems: totalItems));
-      return;
     } else {
       try {
         final response = await http.get(
@@ -98,6 +98,8 @@ class LikedPlantsCubit extends Cubit<LikedPlantsState> {
               recentlyLikedProducts: cachedProducts,
               totalItems: totalItems));
         } else {
+          print(" I am really here ");
+          print(response.statusCode);
           print(productSuggestions);
           emit(SuggestedProductFailureState());
         }
@@ -173,4 +175,12 @@ class LikedPlantsCubit extends Cubit<LikedPlantsState> {
     // If no cache is available or it's expired, return an empty list
     return [];
   }
+
+  Future<void> clearLikedSuggestedProductsCache() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('cached_saved_products');
+    cachedProducts.clear();
+    productSuggestions.clear();
+  }
+
 }
