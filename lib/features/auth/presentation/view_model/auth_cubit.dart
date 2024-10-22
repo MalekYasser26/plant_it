@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:meta/meta.dart';
 import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
 import 'package:plant_it/constants/constants.dart';
 import 'package:plant_it/features/favourites/presentation/view_model/liked_cubit.dart';
 import 'package:plant_it/features/profile/presentation/view_model/profile_cubit.dart';
@@ -25,6 +26,7 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> signIn(String email, String password) async {
     emit(SigninLoadingState());
     final prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
     try {
       final response = await http.post(
         Uri.parse('$baseUrlHasoon/Authentication/Login'),
@@ -40,27 +42,23 @@ class AuthCubit extends Cubit<AuthState> {
         // Save tokens and user data
         String accessToken = responseBody['token'];
         final refreshToken = responseBody['refreshToken'];
+        name = userData['displayedName'];
+        phoneNum = userData['phoneNumber'];
+        address = userData['address'];
+        userID = userData['id'];
         await prefs.setString('accessToken', accessToken);
         await prefs.setString('refreshToken', refreshToken);
         await prefs.setString('name', name);
         await prefs.setString('phoneNum', phoneNum);
         await prefs.setString('address', address);
         await prefs.setInt('userID', userID);
-        name = userData['displayedName'];
-        phoneNum = userData['phoneNumber'];
-        address = userData['address'];
-        userID = prefs.getInt('userID') ?? userData['id'];
-
-
-        log(prefs.getString("refreshToken")!);
-        log(prefs.getString("accessToken")!);
         emit(SigninSuccessState());
       } else {
         errorMsg = responseBody['message'];
         emit(SigninFailureState());
       }
     } catch (e) {
-      print(e.toString());
+      //print(e.toString());
       emit(SigninFailureState());
     }
   }
@@ -76,6 +74,7 @@ class AuthCubit extends Cubit<AuthState> {
   );
   Future<void> signInWithGoogle() async {
     emit(SigninLoadingState());
+
     try {
       // Trigger the authentication flow
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
@@ -92,33 +91,31 @@ class AuthCubit extends Cubit<AuthState> {
         UserCredential userCredential = await FirebaseAuth.instance
             .signInWithCredential(credential);
         String? token = await userCredential.user?.getIdToken();
-        log('Firebase Token: $token');
         final response = await http.post(
           Uri.parse('$baseUrlHasoon/Authentication/google-login?token=$token'),
           headers: {'Content-Type': 'application/json'},
         );
         final responseBody = json.decode(response.body);
+        final prefs = await SharedPreferences.getInstance();
+        prefs.clear();
         var userData = responseBody['userData'];
+        //print(responseBody);
         if (response.statusCode == 200) {
           // Save tokens and user data
           emit(SigninSuccessState());
           String accessToken = responseBody['token'];
-          final refreshToken = responseBody['refreshToken'];
+          String refreshToken = responseBody['refreshToken'];
           name = userData['displayedName'];
           phoneNum = userData['phoneNumber'];
           address = userData['address'];
           userID = userData['id'];
           // Store tokens and user data in SharedPreferences
-          final prefs = await SharedPreferences.getInstance();
           await prefs.setString('accessToken', accessToken);
           await prefs.setString('refreshToken', refreshToken);
           await prefs.setString('name', name);
           await prefs.setString('phoneNum', phoneNum);
           await prefs.setString('address', address);
-          print("user id : $userID");
           await prefs.setInt('userID', userID);
-          log(prefs.getString("refreshToken")!);
-          log(prefs.getString("accessToken")!);
         } else {
           errorMsg = responseBody['message'];
           emit(SigninFailureState());
@@ -158,9 +155,7 @@ class AuthCubit extends Cubit<AuthState> {
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('accessToken', accessToken);
         await prefs.setString('refreshToken', refreshToken);
-        print("methoood");
-        print(accessToken);
-        print(refreshToken);
+      //  print(accessToken);
 
       } else {
         errorMsg = responseBody['message'];
@@ -172,7 +167,6 @@ class AuthCubit extends Cubit<AuthState> {
   }
   Future<void> refreshToken() async {
     final prefs = await SharedPreferences.getInstance();
-    print("before try : ");
     log(prefs.getString("refreshToken")!);
     log(prefs.getString("accessToken")!);
     try {
@@ -197,15 +191,11 @@ class AuthCubit extends Cubit<AuthState> {
         refreshToken = responseBody['data']['refreshToken'];
         await prefs.setString('accessToken', accessToken);
         await prefs.setString('refreshToken', refreshToken!);
-        print(refreshToken);
-        print(responseBody);
       } else {
-        print(responseBody);
-        print(response.statusCode);
         throw Exception('Failed to refresh token');
       }
     } catch (e) {
-      print('Error refreshing token: ${e.toString()}');
+      //print('Error refreshing token: ${e.toString()}');
     }
   }
   Future<void> logOut(BuildContext context) async {
@@ -218,6 +208,22 @@ class AuthCubit extends Cubit<AuthState> {
       context.read<ProfileCubit>().clearBookmarkedProductsCache();
     }
     emit(AuthInitial());
+  }
+  Future<void> deleteCacheDir() async {
+    final cacheDir = await getTemporaryDirectory();
+
+    if (cacheDir.existsSync()) {
+      cacheDir.deleteSync(recursive: true);
+      print("deleted cache dir");
+    }
+  }
+
+  Future<void> deleteAppDir() async {
+    final appDir = await getApplicationSupportDirectory();
+    if(appDir.existsSync()){
+      appDir.deleteSync(recursive: true);
+      print("deleted app dir");
+    }
   }
   Future<void> googleSignOut(BuildContext context) async {
     try {

@@ -29,6 +29,7 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
+    var sCubit = context.read<AuthCubit>();
     return Directionality(
       textDirection: TextDirection.ltr,
       child: SafeArea(
@@ -55,12 +56,17 @@ class _HomeViewState extends State<HomeView> {
                             width: getResponsiveSize(context, fontSize: 40),
                           ),
                           const SizedBox(width: 5),
-                          Text(
-                            "Plant-it",
-                            style: TextStyle(
-                              fontFamily: "Poppins",
-                              fontSize: getResponsiveSize(context, fontSize: 30),
-                              fontWeight: FontWeight.bold,
+                          InkWell(
+                            onTap: ()async {
+                             await sCubit.refreshToken() ;
+                            },
+                            child: Text(
+                              "Plant-it",
+                              style: TextStyle(
+                                fontFamily: "Poppins",
+                                fontSize: getResponsiveSize(context, fontSize: 30),
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           )
                         ],

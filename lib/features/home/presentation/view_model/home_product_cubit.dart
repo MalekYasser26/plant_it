@@ -27,7 +27,6 @@ class HomeProductsCubit extends Cubit<HomeProductState> {
 
         if (response.statusCode == 200) {
           final List<dynamic> productJson = json.decode(response.body);
-          print(productJson);
           final List<HomeProduct> products = productJson.map((json) =>
               HomeProduct.fromJson(json)).toList();
 

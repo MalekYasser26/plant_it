@@ -48,8 +48,7 @@ class LoginBody extends StatelessWidget {
                 listener: (context, state) {
                   if (state is SigninSuccessState) {
                     pCubit.clearGroupedByStatus();
-                    print("login error :");
-                    print(sCubit.userID);
+                    print("Login id : ${sCubit.userID}");
                     lCubit.getRecentlyLikedProducts(sCubit.userID,true);
                      pCubit.getRecentlySavedProducts(true);
                      hCubit.fetchProducts(
@@ -129,7 +128,7 @@ class LoginBody extends StatelessWidget {
                                       emailController.text,
                                       passwordController.text,
                                     );
-                                   // sCubit.refreshToken();
+                                    sCubit.refreshToken();
                                   }
                                 },
                               ),

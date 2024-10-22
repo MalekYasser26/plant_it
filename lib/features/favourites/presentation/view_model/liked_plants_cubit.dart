@@ -65,7 +65,6 @@ class LikedPlantsCubit extends Cubit<LikedPlantsState> {
     final prefs = await SharedPreferences.getInstance();
 
     if (productSuggestions.isNotEmpty && called == false) {
-      print("I am here ");
       emit(LikedSuggestedPlantsCombinedState(
           productSuggestions: productSuggestions,
           recentlyLikedProducts: cachedProducts,
@@ -98,9 +97,7 @@ class LikedPlantsCubit extends Cubit<LikedPlantsState> {
               recentlyLikedProducts: cachedProducts,
               totalItems: totalItems));
         } else {
-          print(" I am really here ");
-          print(response.statusCode);
-          print(productSuggestions);
+          //print(response.statusCode);
           emit(SuggestedProductFailureState());
         }
       } catch (e) {

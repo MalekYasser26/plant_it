@@ -71,15 +71,18 @@ class _SplashViewState extends State<SplashView> {
 
     if (prefs.getString("accessToken") != null &&
         prefs.getString("accessToken")!.isNotEmpty) {
+      //print(prefs.getString("accessToken"));
+      //print(prefs.getString("refreshToken"));
+      //print(prefs.getInt("userID"));
       await sCubit.refreshToken();
-      await lCubit.getRecentlyLikedProducts(userID!, true);
-      await pCubit.getRecentlySavedProducts(true);
-      await hCubit.fetchProducts(
-          l2Cubit.getLikedProducts(userID), true);
-      await lCubit.getProductSuggestions(true);
-      await pCubit.getRecentlyPurchasedProducts(true, userID);
-      await cCubit.getCartItems();
-      await rCubit.getProductRatings(true);
+      // await lCubit.getRecentlyLikedProducts(userID!, true);
+      // await pCubit.getRecentlySavedProducts(true);
+      // await hCubit.fetchProducts(
+      //     l2Cubit.getLikedProducts(userID), true);
+      // await lCubit.getProductSuggestions(true);
+      // await pCubit.getRecentlyPurchasedProducts(true, userID);
+      // await cCubit.getCartItems();
+      // await rCubit.getProductRatings(true);
 
       _stopFadingAnimation();
       if (mounted) {

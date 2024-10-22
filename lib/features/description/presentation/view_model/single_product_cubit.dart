@@ -82,7 +82,7 @@ class SingleProductCubit extends Cubit<SingleProductState> {
           await cacheBookmarkedProducts(bookmarkedProducts);
           emit(AddBookmarkSuccessfulState(product: product));
         } else {
-
+          print(response.body);
           emit(AddBookmarkFailureState(product));
         }
       } catch (e) {

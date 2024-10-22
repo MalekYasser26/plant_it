@@ -81,7 +81,7 @@ class CartCubit extends Cubit<CartState> {
         emit(UpdateCartFailureState(json.decode(response.body)['message']));
       }
     } catch (e) {
-      print(e.toString());
+      //print(e.toString());
       emit(UpdateCartFailureState(e.toString()));
     }
   }

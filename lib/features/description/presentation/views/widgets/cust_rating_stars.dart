@@ -34,7 +34,7 @@ class _CustRatingStarsState extends State<CustRatingStars> {
                     rCubit.isRatingFound(widget.productId) == -1  ?
                     rCubit.addProductRating(productId: widget.productId, rating: v.round()) :
                     rCubit.editProductRating(productId: widget.productId, rating: v.round()) ;
-                    print(rCubit.isRatingFound(widget.productId));
+                    //print(rCubit.isRatingFound(widget.productId));
                   });
                 },
                 starCount: 5,
@@ -78,7 +78,7 @@ class _CustRatingStarsState extends State<CustRatingStars> {
                   rCubit.addProductRating(
                       productId: widget.productId, rating: v.round());
                 }
-                print(rCubit.isRatingFound(widget.productId));
+                //print(rCubit.isRatingFound(widget.productId));
               });
             },
             starCount: 5,

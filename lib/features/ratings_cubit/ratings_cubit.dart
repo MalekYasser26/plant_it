@@ -66,7 +66,7 @@ class RatingsCubit extends Cubit<RatingsState> {
   }) async {
     emit(AddRatingLoadingState());
     final prefs = await SharedPreferences.getInstance();
-    print(prefs.getString("accessToken"));
+    //print(prefs.getString("accessToken"));
     try {
       final response = await http.post(
         Uri.parse('$baseUrlHasoon/ProductRating/ratings'),
@@ -87,15 +87,15 @@ class RatingsCubit extends Cubit<RatingsState> {
           productRatings[productId] = (rating as num).toDouble();
           emit(AddRatingSuccessfulState());
         } else {
-          print("${prefs.getString('accessToken')}");
+         // print("${prefs.getString('accessToken')}");
           throw Exception('Failed to add rating: ${responseData['message']}');
         }
       } else {
-        print("${prefs.getString('accessToken')}");
+        //print("${prefs.getString('accessToken')}");
         throw Exception('Failed to add rating: ${response.body}');
       }
     } catch (e) {
-      print(e.toString());
+     // print(e.toString());
       emit(AddRatingFailureState(message: e.toString()));
     }
   }
@@ -133,7 +133,7 @@ class RatingsCubit extends Cubit<RatingsState> {
         throw Exception('Failed to add rating: ${response.body}');
       }
     } catch (e) {
-      print(e.toString());
+      //print(e.toString());
       emit(AddRatingFailureState(message: e.toString()));
     }
   }

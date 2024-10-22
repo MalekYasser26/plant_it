@@ -54,8 +54,8 @@ class ProfileCubit extends Cubit<ProfileState> {
         emit(ProfileSuccessfulState()); // Emit success state
       } else {
         emit(ProfileFailureState()); // Emit failure state
-        print(
-            "Failed to update user: ${response.statusCode}, ${response.body}");
+        // print(
+        //     "Failed to update user: ${response.statusCode}, ${response.body}");
       }
     } catch (error) {
       emit(ProfileFailureState()); // Emit failure state in case of error
@@ -102,7 +102,7 @@ class ProfileCubit extends Cubit<ProfileState> {
   Future<void> getRecentlyPurchasedProducts(bool called, int userID) async {
     emit(RecentlySavedPurchasedLoadingState());
     final prefs = await SharedPreferences.getInstance();
-    print(prefs.getInt('userID'));
+    //print(prefs.getInt('userID'));
     {
       try {
         final response = await http.get(

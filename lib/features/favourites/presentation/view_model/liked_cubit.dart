@@ -30,7 +30,6 @@ class LikedCubit extends Cubit<LikedState> {
           'Authorization': 'Bearer ${prefs.getString("accessToken")}',
         },
       );
-
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = json.decode(response.body);
         final int likeId = responseData['data']['addedLike']['id'];
@@ -90,15 +89,16 @@ class LikedCubit extends Cubit<LikedState> {
   Future<void> getLikedProducts(int userID) async {
     emit(LoadLikeLoadingState(likeCounter: 0, productID: -1));
     final prefs = await SharedPreferences.getInstance();
-    print("Hereeeeeeeeeeeeeeeeeeee : ");
     print(prefs.getInt('userID'));
     print(prefs.getString('accessToken'));
     // Check if we have cached liked products first
     if (likedProducts.isNotEmpty) {
+      print("1");
       emit(LoadLikeSuccessState(likeCounter: 0, productID: -1));
       return;
     }
     try {
+      likedProducts = {} ;
       final response = await http.get(
         Uri.parse(
             '$baseUrlHasoon/Likes/userId?userId=$userID'),
@@ -111,15 +111,13 @@ class LikedCubit extends Cubit<LikedState> {
 
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body)['data'];
-
-        // Store the productId and likeId in the map
+        print("2");
+        print(response.body);
         likedProducts = {for (var item in data) item['productId']: item['id']};
-
         // Cache the liked products
         await cacheLikedProducts(likedProducts);
         emit(LoadLikeSuccessState(likeCounter: 0, productID: -1));
       } else {
-        print(response.body);
         throw Exception('Failed to load liked products');
       }
     } catch (e) {
