@@ -100,6 +100,7 @@ class _DescriptionViewState extends State<DescriptionView> {
               ),
               body: Column(
                 children: [
+
                   Expanded(
                     child: SingleChildScrollView(
                       physics: const BouncingScrollPhysics(),
@@ -252,53 +253,41 @@ class _DescriptionViewState extends State<DescriptionView> {
                     children: [
                       BlocListener<CartCubit, CartState>(
                         listener: (context, state) {
+                          // Handle cart addition and error states for CartCubit
                           if (state is AddCartItemSuccessfulState) {
-                            SchedulerBinding.instance.addPostFrameCallback((_) {
-                              // Show success message and navigate to the cart page
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  behavior: SnackBarBehavior.floating,
-                                  content: Text(
-                                    "Added item Successfully",
-                                    style: TextStyle(
-                                      fontFamily: "Poppins",
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                behavior: SnackBarBehavior.floating,
+                                content: Text(
+                                  "Added item Successfully",
+                                  style: TextStyle(
+                                    fontFamily: "Poppins",
+                                    fontWeight: FontWeight.bold,
                                   ),
-                                  backgroundColor: AppColors.darkGreen,
                                 ),
-                              );
-                              // Reset the state back to initial
-                              context.read<CartCubit>().resetCartState();
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => CustNavBarSelectionView(currentIndex: 3),
-                                ),
-                              );
-                            });
+                                backgroundColor: AppColors.darkGreen,
+                              ),
+                            );
+                            cCubit.resetCartState();
                           } else if (state is AddCartItemFailureState) {
-                            SchedulerBinding.instance.addPostFrameCallback((_) {
-                              // Show error message
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  behavior: SnackBarBehavior.floating,
-                                  content: Text(
-                                    state.errorMsg,
-                                    style: const TextStyle(
-                                      fontFamily: "Poppins",
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                            print("why : ");
+                            print(context);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                behavior: SnackBarBehavior.floating,
+                                content: Text(
+                                  state.errorMsg,
+                                  style: const TextStyle(
+                                    fontFamily: "Poppins",
+                                    fontWeight: FontWeight.bold,
                                   ),
-                                  backgroundColor: Colors.red,
                                 ),
-                              );
-                              // Reset the state
-                              context.read<CartCubit>().resetCartState();
-                            });
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                            cCubit.resetCartState();
                           }
-                        },
-                        child: Padding(
+                        },                        child: Padding(
                           padding: const EdgeInsets.all(10.0),
                           child: Row(
                             children: [

@@ -47,7 +47,6 @@ class CartCubit extends Cubit<CartState> {
               item['id']; // Update your cartIDs map if needed
         }
 
-        // Emit success state with the cart items
         emit(CartSuccessfulStateFilled(cartItems: cartItems));
       }
     } catch (e) {
@@ -89,7 +88,6 @@ class CartCubit extends Cubit<CartState> {
   Future<void> addCartItem(int productID, int quantity) async {
     emit(AddCartItemLoadingState());
     final prefs = await SharedPreferences.getInstance();
-
     try {
       final response = await http.post(
         Uri.parse('$baseUrlHasoon/Cart'), // Corrected URL
@@ -97,7 +95,6 @@ class CartCubit extends Cubit<CartState> {
           'accept': '*/*',
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ${prefs.getString("accessToken")}',
-          // Assuming accessToken is already defined
         },
         body: json.encode({
           'productId': productID,
