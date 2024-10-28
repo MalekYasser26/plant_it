@@ -25,6 +25,7 @@ class _EditDataState extends State<EditData> {
   late TextEditingController _addressController;
 
   @override
+  @override
   void initState() {
     super.initState();
 
@@ -33,7 +34,38 @@ class _EditDataState extends State<EditData> {
     _phoneNumController = TextEditingController();
     _addressController = TextEditingController();
 
-    widget.loadData(); // Load the data
+    // Load initial data asynchronously
+    _loadInitialData();
+    widget.loadData();
+  }
+
+  Future<void> _loadInitialData() async {
+    // Get the name from SharedPreferences asynchronously
+    final nameFromPrefs = await getName();
+    final addressFromPrefs = await getAddress();
+    final phoneNumFromPrefs = await getPhoneNum();
+    setState(() {
+      _nameController.text = nameFromPrefs;
+      _addressController.text=addressFromPrefs;
+      _phoneNumController.text=phoneNumFromPrefs;
+    });
+  }
+
+  Future<String> getName() async {
+    final prefs = await SharedPreferences.getInstance();
+    final name = prefs.getString("name") ?? ''; // Default to an empty string if null
+    print("Nameeee : $name");
+    return name;
+  }
+  Future<String> getPhoneNum() async {
+    final prefs = await SharedPreferences.getInstance();
+    final phoneNum = prefs.getString("phoneNum") ?? ''; // Default to an empty string if null
+    return phoneNum;
+  }
+  Future<String> getAddress() async {
+    final prefs = await SharedPreferences.getInstance();
+    final address = prefs.getString("address") ?? ''; // Default to an empty string if null
+    return address;
   }
 
   Future<void> _updateSharedPrefValue(String key, String newValue) async {

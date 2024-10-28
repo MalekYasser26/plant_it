@@ -180,6 +180,7 @@ class _HiBrunoSectionState extends State<HiBrunoSection> {
               top: 20,
             ),
             child:  EditData(
+
               loadData: () async {
                 final prefs = await SharedPreferences.getInstance();
                 setState(() {

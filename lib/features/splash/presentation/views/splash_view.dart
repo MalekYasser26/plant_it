@@ -35,6 +35,7 @@ class _SplashViewState extends State<SplashView> {
     var lCubit = context.read<LikedPlantsCubit>();
     var l2Cubit = context.read<LikedCubit>();
     var cCubit = context.read<CartCubit>();
+    sCubit.adjustUserID();
     _checkAuthenticationAndLoadData(sCubit, pCubit, hCubit, rCubit, lCubit, l2Cubit, cCubit);
   }
 
@@ -66,7 +67,9 @@ class _SplashViewState extends State<SplashView> {
       ) async {
     final prefs = await SharedPreferences.getInstance();
     int? userID = prefs.getInt("userID");
-
+    String ? name =prefs.getString("name");
+    String ? phoneNum =prefs.getString("phoneNum");
+    String ? address =prefs.getString("address");
     // Move cubit initialization outside async gaps
 
     if (prefs.getString("accessToken") != null &&
@@ -75,6 +78,10 @@ class _SplashViewState extends State<SplashView> {
       //print(prefs.getString("refreshToken"));
       //print(prefs.getInt("userID"));
       await sCubit.refreshToken();
+      sCubit.userID = userID!;
+      sCubit.name = name!;
+      sCubit.phoneNum = phoneNum!;
+      sCubit.address = address!;
       // await lCubit.getRecentlyLikedProducts(userID!, true);
       // await pCubit.getRecentlySavedProducts(true);
       // await hCubit.fetchProducts(

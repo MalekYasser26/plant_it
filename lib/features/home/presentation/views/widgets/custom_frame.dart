@@ -55,7 +55,6 @@ class _CustomFrameState extends State<CustomFrame> {
         }
         double imageHeight = _imageHeights[widget.product.id]!;
         bool isLiked = lCubit.likedProducts.containsKey(widget.product.id);
-        print("is liked : ${lCubit.likedProducts}");
         return Padding(
           padding:  EdgeInsets.only(top :imageHeight/28),
           child: Container(

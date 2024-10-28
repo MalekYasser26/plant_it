@@ -41,6 +41,7 @@ class JoinThroughWidget extends StatelessWidget {
             InkWell(
               onTap: () {
                 sCubit.signInWithGoogle();
+                sCubit.refreshToken();
               },
               child: Image.asset(
                 ImagesCust.googleLogo,

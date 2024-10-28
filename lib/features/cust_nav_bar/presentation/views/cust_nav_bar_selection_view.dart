@@ -34,17 +34,17 @@ class _CustNavBarSelectionViewState extends State<CustNavBarSelectionView> {
         onTap: (index)async {
           final prefs = await SharedPreferences.getInstance();
           if (index ==2){
-            lCubit.getRecentlyLikedProducts(prefs.getInt("userID")!,false);
+            lCubit.getRecentlyLikedProducts(sCubit.userID,false);
             lCubit.getProductSuggestions(true);
             rCubit.getProductRatings(false);
           }
           if (index ==0){
-            pCubit.getRecentlyPurchasedProducts(false,prefs.getInt("userID")!);
+            pCubit.getRecentlyPurchasedProducts(false,sCubit.userID);
             rCubit.getProductRatings(false);
             pCubit.getRecentlySavedProducts(false);
             pCubit.groupDatesByStatus();
           } if (index==3){
-            pCubit.getRecentlyPurchasedProducts(true,prefs.getInt("userID")!);
+            pCubit.getRecentlyPurchasedProducts(true,sCubit.userID);
             pCubit.groupDatesByStatus();
             //sCubit.refreshToken();
           }

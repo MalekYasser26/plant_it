@@ -248,162 +248,136 @@ class _DescriptionViewState extends State<DescriptionView> {
                       ),
                     ),
                   ),
-                  BlocBuilder<CartCubit, CartState>(
-                    builder: (context, state) {
-                      if (state is AddCartItemSuccessfulState) {
-                        // Show success message and navigate to the cart page
-                        SchedulerBinding.instance.addPostFrameCallback((_) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              behavior: SnackBarBehavior.floating,
-                              content: Text(
-                                "Added item Successfully",
-                                style: TextStyle(
-                                  fontFamily: "Poppins",
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              backgroundColor: AppColors.darkGreen,
-                            ),
-                          );
-                          // Reset the state back to initial using the resetCartState method
-                          context.read<CartCubit>().resetCartState();
-
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  CustNavBarSelectionView(currentIndex: 3),
-                            ),
-                          );
-                        });
-                      }
-
-                      if (state is AddCartItemFailureState) {
-                        // Show error message
-                        SchedulerBinding.instance.addPostFrameCallback((_) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              behavior: SnackBarBehavior.floating,
-                              content: Text(
-                                state.errorMsg,
-                                style: const TextStyle(
-                                  fontFamily: "Poppins",
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              backgroundColor: Colors.red,
-                            ),
-                          );
-                          // Reset the state using the resetCartState method
-                          context.read<CartCubit>().resetCartState();
-                        });
-                      }
-                      return Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 10),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFDCDCDC),
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              child: Row(
-                                children: [
-                                  InkWell(
-                                    child: Icon(
-                                      Icons.remove,
-                                      size: getResponsiveSize(context,
-                                          fontSize: 30),
+                  Column(
+                    children: [
+                      BlocListener<CartCubit, CartState>(
+                        listener: (context, state) {
+                          if (state is AddCartItemSuccessfulState) {
+                            SchedulerBinding.instance.addPostFrameCallback((_) {
+                              // Show success message and navigate to the cart page
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  behavior: SnackBarBehavior.floating,
+                                  content: Text(
+                                    "Added item Successfully",
+                                    style: TextStyle(
+                                      fontFamily: "Poppins",
+                                      fontWeight: FontWeight.bold,
                                     ),
-                                    onTap: () {
-                                      setState(() {
-                                        if (quantity > 1) quantity--;
-                                      });
-                                    },
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 5.0),
+                                  backgroundColor: AppColors.darkGreen,
+                                ),
+                              );
+                              // Reset the state back to initial
+                              context.read<CartCubit>().resetCartState();
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => CustNavBarSelectionView(currentIndex: 3),
+                                ),
+                              );
+                            });
+                          } else if (state is AddCartItemFailureState) {
+                            SchedulerBinding.instance.addPostFrameCallback((_) {
+                              // Show error message
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  behavior: SnackBarBehavior.floating,
+                                  content: Text(
+                                    state.errorMsg,
+                                    style: const TextStyle(
+                                      fontFamily: "Poppins",
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                              // Reset the state
+                              context.read<CartCubit>().resetCartState();
+                            });
+                          }
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFDCDCDC),
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                child: Row(
+                                  children: [
+                                    InkWell(
+                                      child: Icon(
+                                        Icons.remove,
+                                        size: getResponsiveSize(context, fontSize: 30),
+                                      ),
+                                      onTap: () {
+                                        setState(() {
+                                          if (quantity > 1) quantity--;
+                                        });
+                                      },
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                                      child: Text(
+                                        quantity.toString(),
+                                        style: TextStyle(
+                                          fontSize: getResponsiveSize(context, fontSize: 20),
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                    InkWell(
+                                      child: Icon(
+                                        Icons.add,
+                                        size: getResponsiveSize(context, fontSize: 30),
+                                      ),
+                                      onTap: () {
+                                        setState(() {
+                                          quantity++;
+                                        });
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(width: 20),
+                              Flexible(
+                                child: SizedBox(
+                                  width: getResponsiveSize(context, fontSize: 350),
+                                  child: ElevatedButton(
+                                    onPressed: () async {
+                                      await cCubit.addCartItem(product.id, quantity);
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color(0xFFDCDCDC),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(15),
+                                      ),
+                                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                                    ),
                                     child: Text(
-                                      quantity.toString(),
+                                      "Add to cart",
                                       style: TextStyle(
-                                        fontSize: getResponsiveSize(context,
-                                            fontSize: 20),
+                                        fontFamily: "Poppins",
+                                        fontSize: getResponsiveSize(context, fontSize: 18),
+                                        color: Colors.black,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                   ),
-                                  InkWell(
-                                    child: Icon(
-                                      Icons.add,
-                                      size: getResponsiveSize(context,
-                                          fontSize: 30),
-                                    ),
-                                    onTap: () {
-                                      setState(() {
-                                        quantity++;
-                                      });
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(width: 20),
-                            Flexible(
-                              child: SizedBox(
-                                width:
-                                    getResponsiveSize(context, fontSize: 350),
-                                child: ElevatedButton(
-                                  onPressed: () async {
-                                    await cCubit.addCartItem(
-                                        product.id, quantity);
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color(0xFFDCDCDC),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(15),
-                                    ),
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 20, vertical: 10),
-                                  ),
-                                  child: Text(
-                                    "Add to cart",
-                                    style: TextStyle(
-                                      fontFamily: "Poppins",
-                                      fontSize: getResponsiveSize(context,
-                                          fontSize: 18),
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: CustomBottomNavBar(
-                      currentIndex: 1,
-                      onTap: (index) {
-                        _currentIndex = index;
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => CustNavBarSelectionView(
-                              currentIndex: _currentIndex,
-                            ),
+                            ],
                           ),
-                        );
-                      },
-                    ),
-                  ),
+                        ),
+                      ),
+                    ],
+                  )
                 ],
               ),
             ),

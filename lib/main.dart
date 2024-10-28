@@ -22,19 +22,19 @@ Future <void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  final authCubit = AuthCubit();
+  //final authCubit = AuthCubit();
 
   runApp(
-    DevicePreview(
-      enabled: !kReleaseMode,
-      builder: (context) =>  MyApp(userID: authCubit.userID,), // Pass AuthCubit
-    ),
+    // DevicePreview(
+    //   enabled: !kReleaseMode,
+    //   builder: (context) => const MyApp(), // Pass AuthCubit
+    // ),
+    const MyApp(),
   );
 }
 
 class MyApp extends StatelessWidget {
-  final int userID ;
-  const MyApp({super.key, required this.userID,});
+  const MyApp({super.key,});
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +50,6 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => RatingsCubit(),),
         BlocProvider(create: (context) => CheckoutCubit(),),
       ],
-      key: ObjectKey(userID),
       child: const MaterialApp(
         home: SplashView(),
         debugShowCheckedModeBanner: false,
