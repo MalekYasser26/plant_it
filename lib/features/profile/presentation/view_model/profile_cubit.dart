@@ -128,9 +128,15 @@ class ProfileCubit extends Cubit<ProfileState> {
           }
           emit(RecentlySavedPurchasedSuccessfulState(savedProducts));
         } else {
+          print("else :");
+          print("${response.body}");
+          print("ssad ${prefs.getString("accessToken")}");
+          print("ssad ${prefs.getInt("userID")}");
+
           emit(RecentlySavedPurchasedFailureState());
         }
       } catch (error) {
+        print("ssad $error");
         emit(RecentlySavedPurchasedFailureState());
       }
     }

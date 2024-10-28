@@ -33,6 +33,8 @@ class CheckoutCubit extends Cubit<CheckoutState> {
           throw Exception('Failed to place order ');
         }
       } catch (e) {
+        print(userID);
+        print(prefs.getString("accessToken"));
         emit(CheckoutFailureState());
       }
     }

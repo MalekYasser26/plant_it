@@ -21,30 +21,35 @@ class AuthCubit extends Cubit<AuthState> {
   String address = '';
   String name = '';
   String phoneNum = '';
-  int userID = -1;
+  late int userID ;
 
   Future<void> signIn(String email, String password) async {
     emit(SigninLoadingState());
     final prefs = await SharedPreferences.getInstance();
     await prefs.clear();
+    print(1);
     try {
       final response = await http.post(
         Uri.parse('$baseUrlHasoon/Authentication/Login'),
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          'Content-Type': 'application/json',
+          'accept':'*/*',
+        },
         body: json.encode({
           'email': email,
           'password': password,
         }),
       );
+      print(2);
       final responseBody = json.decode(response.body);
       var userData = responseBody['userData'];
+      print(responseBody);
       if (response.statusCode == 200) {
-        // Save tokens and user data
         String accessToken = responseBody['token'];
         final refreshToken = responseBody['refreshToken'];
-        name = userData['displayedName'];
-        phoneNum = userData['phoneNumber'];
-        address = userData['address'];
+        name = userData['displayedName']??'';
+        phoneNum = userData['phoneNumber']??'';
+        address = userData['address']??'';
         userID = userData['id'];
         await prefs.setString('accessToken', accessToken);
         await prefs.setString('refreshToken', refreshToken);
@@ -55,14 +60,21 @@ class AuthCubit extends Cubit<AuthState> {
         emit(SigninSuccessState());
       } else {
         errorMsg = responseBody['message'];
+        print(errorMsg);
         emit(SigninFailureState());
       }
+      print(4);
     } catch (e) {
-      //print(e.toString());
+      print(5);
+      print("catch : $email , $password");
+      print(e.toString());
       emit(SigninFailureState());
     }
   }
-
+  Future<int?> adjustUserID()async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getInt("userID");
+  }
 
   final GoogleSignIn googleSignIn = GoogleSignIn(
     clientId:
@@ -102,12 +114,12 @@ class AuthCubit extends Cubit<AuthState> {
         //print(responseBody);
         if (response.statusCode == 200) {
           // Save tokens and user data
-          emit(SigninSuccessState());
+          print("google : $responseBody");
           String accessToken = responseBody['token'];
           String refreshToken = responseBody['refreshToken'];
           name = userData['displayedName'];
-          phoneNum = userData['phoneNumber'];
-          address = userData['address'];
+          phoneNum = userData['phoneNumber']??"";
+          address = userData['address']??"";
           userID = userData['id'];
           // Store tokens and user data in SharedPreferences
           await prefs.setString('accessToken', accessToken);
@@ -116,6 +128,8 @@ class AuthCubit extends Cubit<AuthState> {
           await prefs.setString('phoneNum', phoneNum);
           await prefs.setString('address', address);
           await prefs.setInt('userID', userID);
+          emit(SigninSuccessState());
+
         } else {
           errorMsg = responseBody['message'];
           emit(SigninFailureState());
@@ -127,48 +141,57 @@ class AuthCubit extends Cubit<AuthState> {
   }
   Future<void> signUp(String email, String password, String displayedName, String phoneNum, String address) async {
     emit(SignupLoadingState());
+    final response = await http.post(
+      Uri.parse('$baseUrlHasoon/Authentication/Register'),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode({
+        'username': email,
+        'displayedName': displayedName,
+        'email': email,
+        'password': password,
+        'phoneNum': phoneNum,
+        'address': address,
+      }),
+    );
+    final responseBody = json.decode(response.body);
     try {
-      final response = await http.post(
-        Uri.parse('$baseUrlHasoon/Authentication/Register'),
-        headers: {'Content-Type': 'application/json'},
-        body: json.encode({
-          'username': email,
-          'displayedName': displayedName,
-          'email': email,
-          'password': password,
-          'phoneNum': phoneNum,
-          'address': address,
-        }),
-      );
-      final responseBody = json.decode(response.body);
       var userData = responseBody['data'];
       if (response.statusCode == 200 && responseBody['succeeded'] == true) {
         // Save tokens and user data
-        emit(SignupSuccessState());
         String accessToken = responseBody['token'];
         final refreshToken = responseBody['refreshToken'];
-
-        name = userData['displayedName'];
-        this.phoneNum = userData['phoneNumber'];
-        this.address = userData['address'];
-
+        name = displayedName;
+        this.phoneNum = phoneNum;
+        this.address = address;
+        userID = responseBody['data']['id'];
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('accessToken', accessToken);
         await prefs.setString('refreshToken', refreshToken);
-      //  print(accessToken);
-
+        await prefs.setString('name', name);
+        await prefs.setString('phoneNum', phoneNum);
+        await prefs.setString('address', address);
+        await prefs.setInt('userID', userID);
+        print("I AM HERE : $responseBody");
+        emit(SignupSuccessState());
+        print("ssad ${prefs.getString("accessToken")}");
+        print("ssad ${prefs.getString("refreshToken")}");
+        print("ssad ${prefs.getString("name")}");
+        print("ssad ${prefs.getString("phoneNum")}");
+        print("ssad ${prefs.getString("address")}");
+        print("ssad ${prefs.getInt("userID")}");
       } else {
         errorMsg = responseBody['message'];
+        print("Error here : $responseBody");
         emit(SignupFailureState());
       }
     } catch (e) {
+      print("catch here : $responseBody");
+
       emit(SignupFailureState());
     }
   }
   Future<void> refreshToken() async {
     final prefs = await SharedPreferences.getInstance();
-    log(prefs.getString("refreshToken")!);
-    log(prefs.getString("accessToken")!);
     try {
       String? refreshToken = prefs.getString('refreshToken');
       if (refreshToken == null) {
@@ -209,22 +232,6 @@ class AuthCubit extends Cubit<AuthState> {
     }
     emit(AuthInitial());
   }
-  Future<void> deleteCacheDir() async {
-    final cacheDir = await getTemporaryDirectory();
-
-    if (cacheDir.existsSync()) {
-      cacheDir.deleteSync(recursive: true);
-      print("deleted cache dir");
-    }
-  }
-
-  Future<void> deleteAppDir() async {
-    final appDir = await getApplicationSupportDirectory();
-    if(appDir.existsSync()){
-      appDir.deleteSync(recursive: true);
-      print("deleted app dir");
-    }
-  }
   Future<void> googleSignOut(BuildContext context) async {
     try {
       // Sign out from Firebase
@@ -242,7 +249,6 @@ class AuthCubit extends Cubit<AuthState> {
     } catch (e) {
     }
   }
-
   void updateUserData({
     required String updatedName,
     required String updatedPhoneNum,
