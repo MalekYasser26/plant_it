@@ -16,7 +16,7 @@ class _HiBrunoSectionState extends State<HiBrunoSection> {
   String name = '';
   String phoneNum = '';
   String address = '';
-
+  int userID=-1 ;
 
   @override
   void initState() {
@@ -30,6 +30,7 @@ class _HiBrunoSectionState extends State<HiBrunoSection> {
       name = prefs.getString('name') ?? '';
       phoneNum = prefs.getString('phoneNum') ?? '';
       address = prefs.getString('address') ?? '';
+      userID = prefs.getInt('userID')??-1;
     });
   }
   @override
@@ -42,14 +43,13 @@ class _HiBrunoSectionState extends State<HiBrunoSection> {
             CircleAvatar(
               minRadius: 30,
               maxRadius: 40,
-              backgroundColor: const Color(0xFF629584),
+              backgroundColor: AppColors.barelyGreen,
               child: ClipRRect(
                   clipBehavior: Clip.antiAlias,
                   borderRadius: BorderRadius.circular(50),
-                child: Text(
-                  name.isNotEmpty ? name.characters.first : '',
-                  style: const TextStyle(fontFamily: "Poor Story", color: AppColors.basicallyWhite, fontSize: 30),
-                ),
+                child: userID >= 0
+                    ? Image.asset('assets/images/pl${userID % 5}.png')
+                    : Image.asset('assets/images/pl1.png'), // Replace with actual placeholder
               ),
             ),
 
