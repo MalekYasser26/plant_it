@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:image_picker/image_picker.dart'; // Add this import
-import 'dart:io'; // For working with file system paths
 import 'package:plant_it/constants/constants.dart';
 import 'package:plant_it/features/profile/presentation/view_model/profile_cubit.dart';
 import 'package:plant_it/features/profile/presentation/views/widgets/edit_data.dart';
@@ -15,8 +13,6 @@ class HiBrunoSection extends StatefulWidget {
 }
 
 class _HiBrunoSectionState extends State<HiBrunoSection> {
-  File? _image; // Store the selected image here
-  final ImagePicker _picker = ImagePicker();
   String name = '';
   String phoneNum = '';
   String address = '';
@@ -43,34 +39,20 @@ class _HiBrunoSectionState extends State<HiBrunoSection> {
       children: [
         Row(
           children: [
-            InkWell(
-              onTap: () {
-                _pickImage();
-              },
-              child: Stack(
-                children: [
-                  CircleAvatar(
-                    minRadius: 30,
-                    maxRadius: 40,
-                    child: ClipRRect(
-                      clipBehavior: Clip.antiAlias,
-                      borderRadius: BorderRadius.circular(50),
-                      child: _image != null
-                          ? Image.file(_image!, fit: BoxFit.cover)
-                          : Image.asset('assets/images/bruno.png'), // Default image if no image is selected
-                    ),
-                  ),
-                  const Positioned(
-                    right: 0,
-                    bottom: 0,
-                    child: Icon(
-                      Icons.camera_alt_outlined,
-                      color: Colors.black,
-                    ),
-                  ),
-                ],
+            CircleAvatar(
+              minRadius: 30,
+              maxRadius: 40,
+              backgroundColor: const Color(0xFF629584),
+              child: ClipRRect(
+                  clipBehavior: Clip.antiAlias,
+                  borderRadius: BorderRadius.circular(50),
+                child: Text(
+                  name.isNotEmpty ? name.characters.first : '',
+                  style: const TextStyle(fontFamily: "Poor Story", color: AppColors.basicallyWhite, fontSize: 30),
+                ),
               ),
             ),
+
             const SizedBox(width: 10),
             Expanded(
               child: Padding(
@@ -150,15 +132,6 @@ class _HiBrunoSectionState extends State<HiBrunoSection> {
     );
   }
 
-  Future<void> _pickImage() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-
-    if (pickedFile != null) {
-      setState(() {
-        _image = File(pickedFile.path); // Save the selected image
-      });
-    }
-  }
 
   void _showEditInfoModal(BuildContext context) {
     var pCubit = context.read<ProfileCubit>();
